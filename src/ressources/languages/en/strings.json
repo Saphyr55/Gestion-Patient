@@ -1,0 +1,19 @@
+{
+    "frame_connection_title":"Connection",
+    "frame_connection_id":"Your ID",
+    "frame_connection_password":"Your password",
+    "frame_connection_login":"Log in",
+    "frame_connection_password_forgot":"Password Forgot",
+    "frame_connection_password_id_wrong":"Wrong Password or Id",
+
+    "frame_medecin_title":"Gestion Patient Application - Univ Tours",
+    "frame_medecin_confirm_delete_patient":"Are you sure you want to delete the patient",
+    "frame_medecin_lastname":"Lastname",
+    "frame_medecin_firstname":"Firstname",
+    "frame_medecin_birthday":"Birthday",
+    "frame_medecin_age":"Age",
+    "frame_medecin_delete":"Delete",
+    "frame_medecin_new_consultation":"New Consultation",
+    "frame_medecin_popup_add":"Add",
+    "frame_medecin_popup_delete":"Delete"
+}

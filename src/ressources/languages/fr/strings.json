@@ -1,0 +1,19 @@
+{
+    "frame_connection_title" : "Connexion",
+    "frame_connection_id" : "Votre identifiant",
+    "frame_connection_password" : "Votre mot de passe",
+    "frame_connection_login" : "Se connecter",
+    "frame_connection_password_forgot" : "Mot de passe oublié",
+    "frame_connection_password_id_wrong" : "Mauvais mot de passe ou identifiant",
+
+    "frame_medecin_title":"Gestion Patient Application - Univ Tours",
+    "frame_medecin_confirm_delete_patient":"Êtes-vous sûr de supprimer le patient",
+    "frame_medecin_lastname":"Nom",
+    "frame_medecin_firstname":"Prénom",
+    "frame_medecin_birthday":"Naissance",
+    "frame_medecin_age":"Age",
+    "frame_medecin_delete":"Supprimer",
+    "frame_medecin_new_consultation":"Nouvelle Consultation",
+    "frame_medecin_popup_add":"Ajouter",
+    "frame_medecin_popup_delete":"Supprimer"
+}

@@ -1,0 +1,7 @@
+Ordonnance du 00/00/0000
+Medecin : ------------
+Patient : ------------
+
+Medicament prescrit : -----------------------------
+
+Signature : -----------------
