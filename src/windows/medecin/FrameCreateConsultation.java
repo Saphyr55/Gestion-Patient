@@ -3,7 +3,6 @@
  */
 package windows.medecin;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
