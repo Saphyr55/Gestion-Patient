@@ -12,11 +12,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import hopital.loading.language.LoadingLanguage;
+import hopital.loading.paths.LoadingPath;
 import hopital.patient.Patient;
 import hopital.personnels.Administrator;
 import hopital.personnels.Medecin;
 
 public abstract class Hopital {
+	
+	/**
+	 * 
+	 */
+	private static LoadingPath loadingPath = new LoadingPath();
 	
 	/**
 	 * ArrayList
@@ -28,11 +35,12 @@ public abstract class Hopital {
 	/**
 	 *	Paths
 	 */
-	public static final String pathOrdonnances = "./src/log/patient/ordonnances/";
-	public static final String pathPatients = "./src/log/patient/patients.txt";
-	public static final String pathMedecins = "./src/log/medecin/medecins.txt";
-	public static final String pathAdmins = "./src/log/admin/admins.txt";
-	public static final String pathFolderMedecin = "./src/log/medecin/";
+	public static final String pathFolderLog = (String) loadingPath.getJsonObject().get("path_log");
+	public static final String pathOrdonnances = (String) loadingPath.getJsonObject().get("path_ordonnances");
+	public static final String pathPatients = (String) loadingPath.getJsonObject().get("path_patients");
+	public static final String pathMedecins = (String) loadingPath.getJsonObject().get("path_medecins");
+	public static final String pathAdmins = (String) loadingPath.getJsonObject().get("path_admin");
+	public static final String pathFolderMedecin = (String) loadingPath.getJsonObject().get("path_folder");
 	
 	/**
 	 * Les files Writers
@@ -143,7 +151,6 @@ public abstract class Hopital {
 				readerMedecin.close();
 				readerAdmins.close();
 				readerPatients.close();
-				readerMedecinPatients.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

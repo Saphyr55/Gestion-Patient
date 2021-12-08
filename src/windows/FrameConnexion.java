@@ -232,7 +232,7 @@ public class FrameConnexion extends JFrame {
 						string = line;
 						strings = string.split("§");
 						nLine++;
-						if(strings[1].equals(identifiantText) && strings[strings.length - 1].equals(password)) 
+						if(strings[1].equals(identifiantText) && strings[5].equals(password)) 
 						{
 							for(int i = 0; i < Hopital.getAdmins().size(); i++) 
 							{

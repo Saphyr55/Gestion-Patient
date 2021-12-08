@@ -190,18 +190,25 @@ public class FrameMedecin extends JFrame {
 		 * Actionne l'affichage de la liste d'ordonnances 
 		 * et les données du patient selectionner
 		 */
-		
 		listPatient.addMouseListener(new MouseAdapter() 
 		{	
 			@Override
 			public void mouseClicked(MouseEvent event) 
-			{
+			{	
+				/**
+				 * Recupere index de selection si on clique une fois
+				 */
 				@SuppressWarnings("unchecked")
 				JList<String> list = (JList<String>) event.getSource();    
 				int index = list.locationToIndex(event.getPoint());
 				if ( event.getClickCount() == 1 ) 
 		        {
+					// le patient courant sur l'index recuperer lors du clique
 		            currentPatient = currentMedecin.getPatients().get(index);
+		            
+		            /**
+		             * Le clique gauche declenche la liste la d'ordonnance du patient selectionner
+		             */
 					if(SwingUtilities.isLeftMouseButton(event)) 
 					{
 			            panelPrincipal.remove(panelPatient);
@@ -214,22 +221,42 @@ public class FrameMedecin extends JFrame {
 			            panelPrincipal.revalidate();
 					}
 					
+					/**
+					 * Le clique droit declenche une popup permetant de supprimer ou ajouter un patient
+					 */
 					else if(SwingUtilities.isRightMouseButton(event))
 					{
 						try {
+							/**
+							 * La popup 
+							 */
 							setPopupMenuOnRigthClickListPatient().show(
 								event.getComponent(), event.getX(), event.getY());	
-							menuItemAddPatient.addActionListener(new ActionListener() {
+							
+							/**
+							 * Si la selection est supprimer alors lance showConfimDialog 
+							 * pour pouvoir confirmer l'acte de suppression
+							 */
+							menuItemSupprPatient.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) 
-								{
+								{	
 									int input = JOptionPane.showConfirmDialog(null,frame_medecin_confirm_delete_patient);
+									
+									/**
+									 * 
+									 */
 									if(input == JOptionPane.YES_OPTION) 
 									{
 										System.out.println(currentPatient.getLastName()+" a ete supprimer");
 									}
 								}
 							});
+							
+							/**
+							 * Si la selection est d'ajouter un patient 
+							 * affichage une fenetre d'ajout de patient dans la liste de medecin
+							 */
 							menuItemAddPatient.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
@@ -394,6 +421,11 @@ public class FrameMedecin extends JFrame {
 					}
 			});
 		}
+		
+		/**
+		 * Lors du clique du button nouvelle consultation
+		 * Affiche une fenetre avec les options de creation de consultation 
+		 */
 		ajoutOrdonnance.addActionListener(new ActionListener() 
 		{
 			@Override
@@ -406,6 +438,10 @@ public class FrameMedecin extends JFrame {
 		return panelPatient;
 	}
 	
+	/**
+	 * PopupMenu lors du click droit sur la liste de patient
+	 * @return popupMenu 
+	 */
 	private JPopupMenu setPopupMenuOnRigthClickListPatient()
 	{
 		popupMenuListPatient = new JPopupMenu();
