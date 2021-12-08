@@ -96,12 +96,6 @@ public class Consultation {
 		this.name = nameOrdonnanceDebugLoadWindow;
 	}
 	
-//	public Ordonnance(Medecin medecin, Patient patient, ArrayList<String> medicaments, boolean run) {
-//		this.medecin = medecin;
-//		this.patient = patient;
-//		this.medicament = 
-//	}
-	
     /**
      * Permet de formater une ordonnance en fonction des paramatre donner
      * @param ordonnance
