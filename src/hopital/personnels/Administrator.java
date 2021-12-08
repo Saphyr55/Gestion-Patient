@@ -30,7 +30,7 @@ public class Administrator extends Personnel {
 			reader.close();
 			setIdentifiant(200000+nLine);
 			BufferedWriter writer = new BufferedWriter(Hopital.getAdminsWriterFile());
-			writer.write(nLine+"ง"+getIdentifiant()+"ง"+getFirstName()+"ง"+getLastName()+"ง"+getEmail()+"ง"+getPassword());
+			writer.write(nLine+"ยง"+getIdentifiant()+"ยง"+getFirstName()+"ยง"+getLastName()+"ยง"+getEmail()+"ยง"+getPassword());
 			writer.newLine();
 			writer.close();
 		} catch (IOException e) {

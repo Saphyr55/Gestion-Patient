@@ -73,7 +73,7 @@ public class Consultation {
 				ordonnance = new File(Hopital.pathOrdonnances+"/"+patient.getFirstName().toLowerCase()+
 										patient.getLastName().toLowerCase()+"/"+name+format);
 				if(ordonnance.createNewFile()) {
-					System.out.println("Ordonnance créée");
+					System.out.println("Ordonnance crÃ©Ã©e");
 				} else throw new IOException("Fichier existant"); 
 				
 				/*

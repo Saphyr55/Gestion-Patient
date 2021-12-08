@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 import hopital.Consultation;
 import hopital.Hopital;
@@ -75,7 +74,7 @@ public class Patient implements IPersonne{
 			 * Ecriture dans le dossier patients de l'hopital
 			 */
 			writer = new BufferedWriter(Hopital.getPatientsWriterFile());
-			writer.write(id+"ง"+getFirstName()+"ง"+getLastName()+"ง"+Hopital.FORMATEUR_DATE.format(getBirthday()));
+			writer.write(id+"ยง"+getFirstName()+"ยง"+getLastName()+"ยง"+Hopital.FORMATEUR_DATE.format(getBirthday()));
 			writer.newLine();
 		}catch (IOException e) {
 			e.printStackTrace();
@@ -115,7 +114,7 @@ public class Patient implements IPersonne{
 		 */
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(medecin.getPatientsFile() , true));
-			writer.write(nLine+"ง"+this.id+"ง"+getFirstName()+"ง"+getLastName()+"ง"+Hopital.FORMATEUR_DATE.format(getBirthday()));
+			writer.write(nLine+"ยง"+this.id+"ยง"+getFirstName()+"ยง"+getLastName()+"ยง"+Hopital.FORMATEUR_DATE.format(getBirthday()));
 			nLine++;
 			writer.newLine();
 			writer.close();

@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import hopital.loading.language.LoadingLanguage;
 import hopital.loading.paths.LoadingPath;
 import hopital.patient.Patient;
 import hopital.personnels.Administrator;
@@ -72,9 +71,9 @@ public abstract class Hopital {
 	public static final DateTimeFormatter FORMATEUR_LOCALDATE = DateTimeFormatter.ofPattern(FORMAT_DATE);
 	
 	/**
-	 * Permet de lire tous les fichier contenant les données
+	 * Permet de lire tous les fichier contenant les donnÃ©es
 	 * des medecins, des patients, des admins pour ensuite 
-	 * les mettre dans une arraylist qui va facilité le code
+	 * les mettre dans une arraylist qui va facilitÃ© le code
 	 * dans les fenetres
 	 * @throws IOException 
 	 * @throws ParseException 
@@ -93,8 +92,8 @@ public abstract class Hopital {
 			String[] strings;
 			while((line = readerMedecin.readLine()) != null) {
 				string = line;
-				strings = string.split("§");
-				new Medecin(Integer.parseInt(strings[1]),strings[2], strings[3], strings[4], strings[5]);
+				strings = string.split("Â§");
+				new Medecin( Integer.parseInt(strings[1]),strings[2], strings[3], strings[4], strings[5] );
 			}
 			
 			/*
@@ -106,7 +105,7 @@ public abstract class Hopital {
 			strings = null;
 			while((line = readerAdmins.readLine()) != null) {
 				string = line;
-				strings = string.split("§");
+				strings = string.split("Â§");
 				new Administrator(Integer.parseInt(strings[1]),strings[2], strings[3], strings[4], strings[5]);
 			}
 			
@@ -119,7 +118,7 @@ public abstract class Hopital {
 			strings = null;
 			while((line = readerPatients.readLine()) != null) {
 				string = line;
-				strings = string.split("§");
+				strings = string.split("Â§");
 				LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);				
 				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date);
 			}
@@ -138,7 +137,7 @@ public abstract class Hopital {
 				strings = null;
 				while((line = readerMedecinPatients.readLine()) != null) {
 					string = line;
-					strings = string.split("§");
+					strings = string.split("Â§");
 					LocalDate date = LocalDate.parse(strings[4], FORMATEUR_LOCALDATE);
 					new Patient(Integer.parseInt(strings[1]), medecin ,strings[2], strings[3], date);
 				}

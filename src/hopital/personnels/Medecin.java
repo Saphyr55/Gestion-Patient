@@ -63,15 +63,13 @@ public class Medecin extends Personnel{
 			 * Ecriture du medecin le fichier "medecins.txt"
 			 */
 			BufferedWriter writer = new BufferedWriter(Hopital.getMedecinWriterFile());
-			writer.write(nLine+"ง"+getIdentifiant()+"ง"+getFirstName()+"ง"+getLastName()+"ง"+getEmail()+"ง"+getPassword());
+			writer.write(nLine+"ยง"+getIdentifiant()+"ยง"+getFirstName()+"ยง"+getLastName()+"ยง"+getEmail()+"ยง"+getPassword());
 			writer.newLine();
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
 
 	/**
 	 * 

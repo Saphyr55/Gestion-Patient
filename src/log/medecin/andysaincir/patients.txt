@@ -1,7 +1,7 @@
-1§1§Claude§Francois§22/09/2003
-1§2§prenom1§nom1§02/08/1985
-1§3§prenom2§nom2§23/10/1972
-1§4§prenom3§nom3§24/12/1990
-1§5§prenom4§nom4§13/01/1947
-1§6§prenom5§nom5§05/11/1955
-1§7§prenom6§nom6§30/03/2005
+1Â§1Â§ClaudeÂ§FrancoisÂ§22/09/2003
+1Â§2Â§prenom1Â§nom1Â§02/08/1985
+1Â§3Â§prenom2Â§nom2Â§23/10/1972
+1Â§4Â§prenom3Â§nom3Â§24/12/1990
+1Â§5Â§prenom4Â§nom4Â§13/01/1947
+1Â§6Â§prenom5Â§nom5Â§05/11/1955
+1Â§7Â§prenom6Â§nom6Â§30/03/2005

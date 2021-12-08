@@ -53,7 +53,7 @@ public class FrameMedecin extends JFrame {
 	private static final long serialVersionUID = -257774359093762865L;
 	
 	/*
-	 * 
+	 * Charge de quoi charger les differents textes dans strings.json
 	 */
 	//private static Language language = FrameConnexion.getLanguage();
 	private static LoadingLanguage loadingLanguage = FrameConnexion.getLoadingLanguage();
@@ -97,7 +97,7 @@ public class FrameMedecin extends JFrame {
 	private JMenuItem menuItemAddPatient, menuItemSupprPatient;
 	
 	/**
-	 * Composant des données 
+	 * Composant des donnï¿½es 
 	 */
 	private JPanel panelPatient, panelTop, panelBottom, panelData, panelOrdonnance ;
 	private JLabel lastNamePatient, firstNamePatient, birthdayPatient ,agePatient;
@@ -108,7 +108,7 @@ public class FrameMedecin extends JFrame {
 	private JButton suppr, ajoutOrdonnance;
 	
 	/*
-	 * Gestion donnée frame
+	 * Gestion donnï¿½e frame
 	 */
 	private static Medecin currentMedecin = FrameConnexion.getCurrentMedecin();
 	private static Patient currentPatient;
@@ -188,7 +188,7 @@ public class FrameMedecin extends JFrame {
 		
 		/*
 		 * Actionne l'affichage de la liste d'ordonnances 
-		 * et les données du patient selectionner
+		 * et les donnï¿½es du patient selectionner
 		 */
 		listPatient.addMouseListener(new MouseAdapter() 
 		{	
@@ -282,23 +282,42 @@ public class FrameMedecin extends JFrame {
 	 */
 	private void loadingListOrdonnance(Patient patient) 
 	{
+		/**
+		 * Recuperation de toutes les ordonnances du patient
+		 */
         Hopital.loadingOrdonnancesPatient(patient);
+
+		/**
+		 * Si la liste est vide on la remplie
+		 */
         if(nameListOrdonnanceDefaultModel.isEmpty())
-        {
-	        for (int i = 0; i < patient.getOrdonnancesFile().size(); i++) 
-	        {
+        {	
+			for (int i = 0; i < patient.getOrdonnancesFile().size(); i++) 
+	        {	
+				/**
+				 * Ajout de tous les elements pour la JList dans nameListOrdonnanceDefaultModel
+				 * si nameListOrdonnanceDefaultModel ne containt pas deja l'Ã©lement  
+				 */
 	        	if(!nameListOrdonnanceDefaultModel.contains(
-	        	patient.getOrdonnancesFile().get(i).getName()
-	        	.replace("&", " ").replace(".txt", ""))) 
+	        			patient.getOrdonnancesFile().get(i).getName()
+	        			.replace("&", " ").replace(".txt", ""))) 
 	        	{
 	        		nameListOrdonnanceDefaultModel.addElement(
 	        				patient.getOrdonnancesFile().get(i).getName()
 	        				.replace("&", " ").replace(".txt", ""));
 	        	}
 	        }
+			/** 
+			 * Initiatlisation de la JList et le JScrollPane 
+			 */
 	        listOrdonnanceJList = new JList<>(nameListOrdonnanceDefaultModel);
 	        listOrdonnanceScrollPane = new JScrollPane(listOrdonnanceJList);
         }
+		/**
+		 * Si la liste n'est pas vide on la vide 
+		 * On reinitialise la jlist et jscrollpane
+		 * Et on appelle la meme fonction
+		 */
         else
         {
         	nameListOrdonnanceDefaultModel.removeAllElements();
@@ -314,8 +333,8 @@ public class FrameMedecin extends JFrame {
 	}
 	
 	/**
-	 * Permet d'afficher les metadonnées du patient
-	 * selectionné lors de la liste de patient
+	 * Permet d'afficher les metadonnees du patient
+	 * selectionne lors de la liste de patient
 	 * @param patient
 	 * @return panel patient avec data
 	 */
@@ -455,7 +474,7 @@ public class FrameMedecin extends JFrame {
     /**
      * Lis une ordonnance et l'affiche au clique de l'ordonnance
      * @param file adresse du fichier
-     * @return chaine de caractère
+     * @return chaine de caractere
      */
     private void readOrdonnance(File ordonnance)
     {
