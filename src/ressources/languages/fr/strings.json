@@ -1,5 +1,5 @@
 {
-    "frame_connection_title" : "Connexion",
+    "frame_connection_title" : "Connexion - Univ Tours",
     "frame_connection_id" : "Votre identifiant",
     "frame_connection_password" : "Votre mot de passe",
     "frame_connection_login" : "Se connecter",
@@ -18,8 +18,8 @@
     "frame_medecin_popup_delete":"Supprimer",
 
     "frame_medecin_new_consultation_tile":"Nouvelle Consultation",
-    "frame_medecin_new_consultation_lastname_medecin":"Nom du medecin",
-    "frame_medecin_new_consultation_firstname_medecin":"Prénom du medecin",
+    "frame_medecin_new_consultation_lastname_medecin":"Nom du Médecin",
+    "frame_medecin_new_consultation_firstname_medecin":"Prénom du Médecin",
     "frame_medecin_new_consultation_lastname_patient":"Nom du patient",
     "frame_medecin_new_consultation_firstname_patient":"Prénom du patient"
 }

@@ -12,8 +12,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import hopital.loading.language.Language;
-
 /**
  * @author Utilisateur
  *

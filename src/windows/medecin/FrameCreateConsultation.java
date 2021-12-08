@@ -26,8 +26,8 @@ public class FrameCreateConsultation extends JFrame{
 	 */
 	private static LoadingLanguage loadingLanguage = FrameConnexion.getLoadingLanguage();
 
-	private static final int width = 600;
-	private static final int height = 700;
+	private static final int width = 700;
+	private static final int height = 720;
 	private static final String title = (String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation_tile");
 	private static boolean isVisible = true;
 
@@ -47,9 +47,12 @@ public class FrameCreateConsultation extends JFrame{
 	 */
 	private JPanel contentPanel = (JPanel) getContentPane();
 	private JPanel panelTop, panelCenter, panelBottom;
+	private JPanel panelNamePatient, panelNameMedecin;
+	private JPanel panelPrescription, panelAvisMedical;
 	private JLabel lastNamePatient, firstNamePatient, lastNameMedecin, firstNameMedecin;
-	private JLabel avisMedecicalLabel, prescriptionLabel;
-	private JTextArea avisMedecical, prescription;
+	private JLabel avisMedicalLabel, prescriptionLabel;
+	private JTextArea avisMedicalTextArea, prescriptionTextArea;
+	private JScrollPane avisMedicalScrollPane, prescriptionScrollPane;
 	private JCheckBox signatureMedecin;
 
 	/**
@@ -94,56 +97,77 @@ public class FrameCreateConsultation extends JFrame{
 	 * @return panelTop
 	 */
 	private JPanel consultationDataTop(){
-		panelTop = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 5));
-		JPanel panelPatientName = new JPanel(new GridLayout(2,1,10,10));
-		JPanel panelMedecinName = new JPanel(new GridLayout(2,1,10,10));
+		panelTop = new JPanel(new BorderLayout());
+		panelTop.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
+		panelNameMedecin = new JPanel();
+		panelNamePatient = new JPanel();
 
-		// patient nom et prenom
-		firstNamePatient = new JLabel(frame_medecin_new_consultation_firstname_patient+" : " + currentPatient.getFirstName());
-		lastNamePatient = new JLabel(frame_medecin_new_consultation_lastname_patient+" : "+ currentPatient.getLastName());
-
-		// medecin nom et prenom
+		lastNameMedecin = new JLabel(frame_medecin_new_consultation_lastname_medecin+" : "+currentMedecin.getLastName());
 		firstNameMedecin = new JLabel(frame_medecin_new_consultation_firstname_medecin+" : "+currentMedecin.getFirstName());
-		lastNameMedecin = new JLabel(frame_medecin_new_consultation_lastname_medecin+ " : "+currentMedecin.getLastName());
 
-		/**
-		 * Dimension et font size
-		 */
-		firstNamePatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 18));
-		firstNameMedecin.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 18));
-		lastNamePatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 18));
-		lastNameMedecin.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 18));
+		lastNamePatient =new JLabel(frame_medecin_new_consultation_lastname_patient+" : "+ currentPatient.getLastName());
+		firstNamePatient =new JLabel(frame_medecin_new_consultation_firstname_patient+" : "+currentPatient.getFirstName());
 
-		/**
-		 *
-		 */
-		panelMedecinName.add(lastNameMedecin);
-		panelMedecinName.add(firstNameMedecin);
-		panelPatientName.add(lastNamePatient);
-		panelPatientName.add(firstNamePatient);
+		lastNamePatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
+		firstNamePatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
+		lastNameMedecin.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
+		firstNameMedecin.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
 
-		// Ajout des composant au panel top
-		panelTop.add(panelPatientName);
-		panelTop.add(panelMedecinName);
+		panelNameMedecin.add(lastNameMedecin);
+		panelNameMedecin.add(firstNameMedecin);
+
+		panelNamePatient.add(lastNamePatient);
+		panelNamePatient.add(firstNamePatient);
+
+		panelNameMedecin.setLayout(new BoxLayout(panelNameMedecin, BoxLayout.Y_AXIS));
+		panelNamePatient.setLayout(new BoxLayout(panelNamePatient, BoxLayout.Y_AXIS));
+
+		panelTop.add(panelNameMedecin, BorderLayout.WEST);
+		panelTop.add(panelNamePatient, BorderLayout.EAST);
 
 		return panelTop;
 	}
 
 	private JPanel setConsultationCenter(){
-		panelCenter = new JPanel(new GridLayout(4,1));
+		panelCenter = new JPanel(new GridLayout(2,1, 0,50));
+		panelAvisMedical = new JPanel();
+		panelPrescription = new JPanel();
 
-		prescriptionLabel = new JLabel("Ajouter des prescriptions");
-		avisMedecicalLabel = new JLabel("Votre avis médical");
+		avisMedicalLabel = new JLabel("Avis Medical : ");
+		avisMedicalTextArea = new JTextArea();
+		avisMedicalScrollPane = new JScrollPane(avisMedicalTextArea);
 
-		prescription = new JTextArea();
-		avisMedecical =new JTextArea();
+		avisMedicalTextArea.setLineWrap(true);
+		avisMedicalTextArea.setWrapStyleWord(false);
+		avisMedicalTextArea.setFont(avisMedicalTextArea.getFont().deriveFont(25f));
 
-		panelCenter.add(prescriptionLabel);
-		panelCenter.add(prescription);
-		panelCenter.add(avisMedecicalLabel);
-		panelCenter.add(avisMedecical);
+		panelAvisMedical.add(avisMedicalLabel);
+		panelAvisMedical.add(avisMedicalScrollPane);
+		panelAvisMedical.setLayout(new BoxLayout(panelAvisMedical, BoxLayout.Y_AXIS));
+
+		prescriptionLabel = new JLabel("Prescription : ");
+		prescriptionTextArea = new JTextArea();
+		prescriptionScrollPane = new JScrollPane(prescriptionTextArea);
+
+		prescriptionTextArea.setLineWrap(true);
+		prescriptionTextArea.setWrapStyleWord(false);
+		prescriptionTextArea.setFont(prescriptionTextArea.getFont().deriveFont(25f));
+
+		panelPrescription.add(prescriptionLabel);
+		panelPrescription.add(prescriptionScrollPane);
+		panelPrescription.setLayout(new BoxLayout(panelPrescription, BoxLayout.Y_AXIS));
+
+		avisMedicalLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
+		prescriptionLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
+
+		panelCenter.add(panelAvisMedical);
+		panelCenter.add(panelPrescription);
 
 		return panelCenter;
 	}
 
+	private JPanel setConsultationBottom(){
+
+		return panelBottom;
+	}
 }

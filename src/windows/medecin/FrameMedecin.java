@@ -66,10 +66,10 @@ public class FrameMedecin extends JFrame {
 	private static final String title = (String) loadingLanguage.getJsonObject().get("frame_medecin_title");
 	private static boolean isVisible = true;
 	
-	/*
+	/**
 	 * Tous les textes a charger
 	 */
-	private static final String frame_medecin_confirm_delete_patient = (String) loadingLanguage.getJsonObject().get("frame_medecin_title");
+	private static final String frame_medecin_confirm_delete_patient = (String) loadingLanguage.getJsonObject().get("frame_medecin_confirm_delete_patient");
 	private static final String frame_medecin_lastname = (String) loadingLanguage.getJsonObject().get("frame_medecin_lastname");
 	private static final String frame_medecin_firstname = (String) loadingLanguage.getJsonObject().get("frame_medecin_firstname");
 	private static final String frame_medecin_birthday = (String) loadingLanguage.getJsonObject().get("frame_medecin_birthday");
@@ -99,15 +99,15 @@ public class FrameMedecin extends JFrame {
 	/**
 	 * Composant des donn§es 
 	 */
-	private JPanel panelPatient, panelTop, panelBottom, panelData, panelOrdonnance ;
+	private JPanel panelPatient, panelTop, panelBottom, panelData, panelConsultation ;
 	private JLabel lastNamePatient, firstNamePatient, birthdayPatient ,agePatient;
-	private JList<String> listOrdonnanceJList;
-	private DefaultListModel<String> nameListOrdonnanceDefaultModel = new DefaultListModel<>();
-	private JScrollPane listOrdonnanceScrollPane = new JScrollPane();
-	private JTextArea ordonnanceText;
-	private JButton suppr, ajoutOrdonnance;
+	private JList<String> listConsultationJList;
+	private DefaultListModel<String> nameListConsultationDefaultModel = new DefaultListModel<>();
+	private JScrollPane listConsultationScrollPane = new JScrollPane();
+	private JTextArea consultationText;
+	private JButton suppr, ajoutConsultation;
 	
-	/*
+	/**
 	 * Gestion donn§e frame
 	 */
 	private static Medecin currentMedecin = FrameConnexion.getCurrentMedecin();
@@ -214,8 +214,8 @@ public class FrameMedecin extends JFrame {
 			            panelPrincipal.remove(panelPatient);
 			            loadingListOrdonnance(currentPatient);
 			            
-			    		if(panelOrdonnance != null) 
-			            	panelPrincipal.remove(panelOrdonnance);
+			    		if(panelConsultation != null)
+			            	panelPrincipal.remove(panelConsultation);
 			            
 			    		panelPrincipal.add(setPatient(currentPatient));
 			            panelPrincipal.revalidate();
@@ -289,7 +289,7 @@ public class FrameMedecin extends JFrame {
 		/**
 		 * Si la liste est vide on la remplie
 		 */
-        if(nameListOrdonnanceDefaultModel.isEmpty())
+        if(nameListConsultationDefaultModel.isEmpty())
         {	
 			for (int i = 0; i < patient.getOrdonnancesFile().size(); i++) 
 	        {	
@@ -297,11 +297,11 @@ public class FrameMedecin extends JFrame {
 				 * Ajout de tous les elements pour la JList dans nameListOrdonnanceDefaultModel
 				 * si nameListOrdonnanceDefaultModel ne containt pas deja l'élement  
 				 */
-	        	if(!nameListOrdonnanceDefaultModel.contains(
+	        	if(!nameListConsultationDefaultModel.contains(
 	        			patient.getOrdonnancesFile().get(i).getName()
 	        			.replace("&", " ").replace(".txt", ""))) 
 	        	{
-	        		nameListOrdonnanceDefaultModel.addElement(
+	        		nameListConsultationDefaultModel.addElement(
 	        				patient.getOrdonnancesFile().get(i).getName()
 	        				.replace("&", " ").replace(".txt", ""));
 	        	}
@@ -309,8 +309,8 @@ public class FrameMedecin extends JFrame {
 			/*
 			 * Initiatlisation de la JList et le JScrollPane 
 			 */
-	        listOrdonnanceJList = new JList<>(nameListOrdonnanceDefaultModel);
-	        listOrdonnanceScrollPane = new JScrollPane(listOrdonnanceJList);
+	        listConsultationJList = new JList<>(nameListConsultationDefaultModel);
+	        listConsultationScrollPane = new JScrollPane(listConsultationJList);
         }
 		/*
 		 * Si la liste n'est pas vide on la vide 
@@ -319,13 +319,13 @@ public class FrameMedecin extends JFrame {
 		 */
         else
         {
-        	nameListOrdonnanceDefaultModel.removeAllElements();
+        	nameListConsultationDefaultModel.removeAllElements();
         	
-        	listOrdonnanceJList = null;
-        	listOrdonnanceJList = new JList<>(nameListOrdonnanceDefaultModel);
+        	listConsultationJList = null;
+        	listConsultationJList = new JList<>(nameListConsultationDefaultModel);
         	
-        	listOrdonnanceScrollPane = null;
-        	listOrdonnanceScrollPane = new JScrollPane(listOrdonnanceJList);
+        	listConsultationScrollPane = null;
+        	listConsultationScrollPane = new JScrollPane(listConsultationJList);
         	
         	loadingListOrdonnance(patient);
         }
@@ -360,23 +360,23 @@ public class FrameMedecin extends JFrame {
 		birthdayPatient = new JLabel(frame_medecin_birthday+" : "+patient.getBirthday());
 		agePatient = new JLabel(frame_medecin_age+" : "+agePatientInteger);
 		suppr = new JButton(frame_medecin_delete);	
-		ajoutOrdonnance = new JButton(frame_medecin_new_consultation);
+		ajoutConsultation = new JButton(frame_medecin_new_consultation);
 		
 		/*
 		 * panel bottom
 		 */
 		panelBottom = new JPanel(new BorderLayout());
-		panelOrdonnance = new JPanel(new BorderLayout());
-		ordonnanceText = new JTextArea();
+		panelConsultation = new JPanel(new BorderLayout());
+		consultationText = new JTextArea();
 		panelData = new JPanel();
 
 		/*
 		 * Option generales sur la liste d'ordonnance, le button supprimer un patient,
 		 * le button ajouter un patient et nom, prenom, date de naissance du patient courant.
 		 */
-		ordonnanceText.setEditable(false);
-		listOrdonnanceScrollPane.setPreferredSize(new Dimension(200, 0));
-		ajoutOrdonnance.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));	
+		consultationText.setEditable(false);
+		listConsultationScrollPane.setPreferredSize(new Dimension(200, 0));
+		ajoutConsultation.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
 		lastNamePatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));	
 		firstNamePatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));	
 		birthdayPatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
@@ -395,12 +395,12 @@ public class FrameMedecin extends JFrame {
 		/*
 		 *  Ajout des composants du panel du bas
 		 */
-		panelOrdonnance.add(ajoutOrdonnance ,BorderLayout.NORTH);
-		panelOrdonnance.add(listOrdonnanceScrollPane, BorderLayout.CENTER);
-		panelBottom.add(panelOrdonnance, BorderLayout.WEST);
-		panelBottom.add(ordonnanceText , BorderLayout.CENTER);
-		panelBottom.add(panelData, BorderLayout.EAST);
-		
+		panelConsultation.add(ajoutConsultation ,BorderLayout.NORTH);
+		panelConsultation.add(listConsultationScrollPane, BorderLayout.CENTER);
+		panelBottom.add(consultationText , BorderLayout.CENTER);
+		panelBottom.add(panelData, BorderLayout.WEST);
+		panelBottom.add(panelConsultation, BorderLayout.EAST);
+
 		/*
 		 * Ajout JPanel top et bottom au JPanel panelPatient
 		 */
@@ -410,9 +410,9 @@ public class FrameMedecin extends JFrame {
 		/*
 		 * Action sur la liste d'ordonnance
 		 */
-		if(listOrdonnanceJList != null) 
+		if(listConsultationJList != null)
 		{
-			listOrdonnanceJList.addMouseListener(new MouseAdapter() 
+			listConsultationJList.addMouseListener(new MouseAdapter()
 			{
 					@Override
 					public void mousePressed(MouseEvent event) 
@@ -427,7 +427,7 @@ public class FrameMedecin extends JFrame {
 							{
 								int index = list.locationToIndex(event.getPoint());
 						        ordonnance = patient.getOrdonnancesFile().get(index);
-						        ordonnanceText.setText("");
+						        consultationText.setText("");
 						   		readOrdonnance(ordonnance);
 						   		panelPrincipal.revalidate();
 							}
@@ -444,7 +444,7 @@ public class FrameMedecin extends JFrame {
 		 * Lors du clique du button nouvelle consultation
 		 * Affiche une fenetre avec les options de creation de consultation 
 		 */
-		ajoutOrdonnance.addActionListener(new ActionListener() 
+		ajoutConsultation.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
@@ -497,7 +497,7 @@ public class FrameMedecin extends JFrame {
             {
 				line=reader.readLine();
 				if(line!=null)
-					this.ordonnanceText.setText(this.ordonnanceText.getText()+line+"\n");
+					this.consultationText.setText(this.consultationText.getText()+line+"\n");
 			} while (line!=null);
         }
         catch( Exception e )
@@ -509,15 +509,8 @@ public class FrameMedecin extends JFrame {
 	/**
 	 * @return the listOrdonnance
 	 */
-	public JList<String> getListOrdonnance() {
-		return listOrdonnanceJList;
-	}
-
-	/**
-	 * @param listOrdonnance the listOrdonnance to set
-	 */
-	public void setListOrdonnance(JList<String> listOrdonnance) {
-		this.listOrdonnanceJList = listOrdonnance;
+	public JList<String> getListConsultation() {
+		return listConsultationJList;
 	}
 
 	/**
@@ -552,14 +545,14 @@ public class FrameMedecin extends JFrame {
 	 * @return the nameListOrdonnance
 	 */
 	public DefaultListModel<String> getNameListOrdonnance() {
-		return nameListOrdonnanceDefaultModel;
+		return nameListConsultationDefaultModel;
 	}
 
 	/**
 	 * @param nameListOrdonnance the nameListOrdonnance to set
 	 */
 	public void setNameListOrdonnance(DefaultListModel<String> nameListOrdonnance) {
-		this.nameListOrdonnanceDefaultModel = nameListOrdonnance;
+		this.nameListConsultationDefaultModel = nameListOrdonnance;
 	}
 	
 	/**

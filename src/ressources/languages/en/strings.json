@@ -1,5 +1,5 @@
 {
-    "frame_connection_title":"Connection",
+    "frame_connection_title":"Connection - Univ Tours",
     "frame_connection_id":"Your ID",
     "frame_connection_password":"Your password",
     "frame_connection_login":"Log in",
@@ -17,6 +17,10 @@
     "frame_medecin_popup_add":"Add",
     "frame_medecin_popup_delete":"Delete",
 
-    "frame_medecin_new_consultation_tile":"New Consultation"
+    "frame_medecin_new_consultation_tile":"New Consultation",
+    "frame_medecin_new_consultation_lastname_medecin":"Doctor's Lastname",
+    "frame_medecin_new_consultation_firstname_medecin":"Doctor's Firstname",
+    "frame_medecin_new_consultation_lastname_patient":"Patient's Lastname",
+    "frame_medecin_new_consultation_firstname_patient":"Patient's Firstname"
 
 }
