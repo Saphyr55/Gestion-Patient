@@ -5,16 +5,8 @@ import windows.FrameConnexion;
 
 public class Launch {
 
-	public static void main(String[] args) throws ParseException {
-			
-
-//		
+	public static void main(String[] args) {
 		new FrameConnexion();
 		Logger.logCommand();
-		//new LoadingLanguage(Language.FR); 
-		
 	}
-	
-
-	
 }

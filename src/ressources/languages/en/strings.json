@@ -15,5 +15,8 @@
     "frame_medecin_delete":"Delete",
     "frame_medecin_new_consultation":"New Consultation",
     "frame_medecin_popup_add":"Add",
-    "frame_medecin_popup_delete":"Delete"
+    "frame_medecin_popup_delete":"Delete",
+
+    "frame_medecin_new_consultation_tile":"New Consultation"
+
 }

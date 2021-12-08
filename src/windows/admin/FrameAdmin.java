@@ -38,7 +38,7 @@ public class FrameAdmin extends JFrame {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void setOptionFrame() {
 		try {

@@ -69,15 +69,15 @@ public class FrameMedecin extends JFrame {
 	/*
 	 * Tous les textes a charger
 	 */
-	private static String frame_medecin_confirm_delete_patient = (String) loadingLanguage.getJsonObject().get("frame_medecin_title");
-	private static String frame_medecin_lastname = (String) loadingLanguage.getJsonObject().get("frame_medecin_lastname");
-	private static String frame_medecin_firstname = (String) loadingLanguage.getJsonObject().get("frame_medecin_firstname");
-	private static String frame_medecin_birthday = (String) loadingLanguage.getJsonObject().get("frame_medecin_birthday");
-	private static String frame_medecin_age = (String) loadingLanguage.getJsonObject().get("frame_medecin_age");
-	private static String frame_medecin_delete = (String) loadingLanguage.getJsonObject().get("frame_medecin_delete");
-	private static String frame_medecin_new_consultation = (String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation");
-	private static String frame_medecin_popup_add = (String) loadingLanguage.getJsonObject().get("frame_medecin_popup_add");
-	private static String frame_medecin_popup_delete = (String) loadingLanguage.getJsonObject().get("frame_medecin_popup_delete");
+	private static final String frame_medecin_confirm_delete_patient = (String) loadingLanguage.getJsonObject().get("frame_medecin_title");
+	private static final String frame_medecin_lastname = (String) loadingLanguage.getJsonObject().get("frame_medecin_lastname");
+	private static final String frame_medecin_firstname = (String) loadingLanguage.getJsonObject().get("frame_medecin_firstname");
+	private static final String frame_medecin_birthday = (String) loadingLanguage.getJsonObject().get("frame_medecin_birthday");
+	private static final String frame_medecin_age = (String) loadingLanguage.getJsonObject().get("frame_medecin_age");
+	private static final String frame_medecin_delete = (String) loadingLanguage.getJsonObject().get("frame_medecin_delete");
+	private static final String frame_medecin_new_consultation = (String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation");
+	private static final String frame_medecin_popup_add = (String) loadingLanguage.getJsonObject().get("frame_medecin_popup_add");
+	private static final String frame_medecin_popup_delete = (String) loadingLanguage.getJsonObject().get("frame_medecin_popup_delete");
 
 	/**
 	 * Composant de la frame
@@ -190,8 +190,8 @@ public class FrameMedecin extends JFrame {
 		 * Actionne l'affichage de la liste d'ordonnances 
 		 * et les données du patient selectionner
 		 */
-		listPatient.addMouseListener(new MouseAdapter() 
-		{	
+		listPatient.addMouseListener(new MouseAdapter()
+		{
 			@Override
 			public void mouseClicked(MouseEvent event) 
 			{	
@@ -233,7 +233,7 @@ public class FrameMedecin extends JFrame {
 							setPopupMenuOnRigthClickListPatient().show(
 								event.getComponent(), event.getX(), event.getY());	
 							
-							/**
+							/*
 							 * Si la selection est supprimer alors lance showConfimDialog 
 							 * pour pouvoir confirmer l'acte de suppression
 							 */
@@ -241,9 +241,9 @@ public class FrameMedecin extends JFrame {
 								@Override
 								public void actionPerformed(ActionEvent e) 
 								{	
-									int input = JOptionPane.showConfirmDialog(null,frame_medecin_confirm_delete_patient);
+									int input = JOptionPane.showConfirmDialog(null, frame_medecin_confirm_delete_patient);
 									
-									/**
+									/*
 									 * 
 									 */
 									if(input == JOptionPane.YES_OPTION) 
@@ -252,23 +252,22 @@ public class FrameMedecin extends JFrame {
 									}
 								}
 							});
-							
-							/**
+
+							/*
 							 * Si la selection est d'ajouter un patient 
 							 * affichage une fenetre d'ajout de patient dans la liste de medecin
 							 */
 							menuItemAddPatient.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									
+
 								}
 							});
 						}catch (IndexOutOfBoundsException e) { 
 							e.printStackTrace();
 						}
-						
 					}
-		        } 
+		        }
 		    }
 		});
 		
@@ -307,13 +306,13 @@ public class FrameMedecin extends JFrame {
 	        				.replace("&", " ").replace(".txt", ""));
 	        	}
 	        }
-			/** 
+			/*
 			 * Initiatlisation de la JList et le JScrollPane 
 			 */
 	        listOrdonnanceJList = new JList<>(nameListOrdonnanceDefaultModel);
 	        listOrdonnanceScrollPane = new JScrollPane(listOrdonnanceJList);
         }
-		/**
+		/*
 		 * Si la liste n'est pas vide on la vide 
 		 * On reinitialise la jlist et jscrollpane
 		 * Et on appelle la meme fonction
@@ -340,7 +339,7 @@ public class FrameMedecin extends JFrame {
 	 */
 	private JPanel setPatient(Patient patient) {
 	
-		/**
+		/*
 		 *  Initialisation des composants
 		 */
 		panelPatient = new JPanel(new BorderLayout());
@@ -441,7 +440,7 @@ public class FrameMedecin extends JFrame {
 			});
 		}
 		
-		/**
+		/*
 		 * Lors du clique du button nouvelle consultation
 		 * Affiche une fenetre avec les options de creation de consultation 
 		 */
@@ -450,7 +449,8 @@ public class FrameMedecin extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				new FrameCreateConsultation();
+				if(currentPatient != null)
+					new FrameCreateConsultation();
 			}
 		});
 		
@@ -472,9 +472,8 @@ public class FrameMedecin extends JFrame {
 	}
 	
     /**
-     * Lis une ordonnance et l'affiche au clique de l'ordonnance
-     * @param file adresse du fichier
-     * @return chaine de caractere
+     * Lis une ordonnance et l'affiche au clique de la consultation
+     * @param  ordonnance
      */
     private void readOrdonnance(File ordonnance)
     {
@@ -484,7 +483,7 @@ public class FrameMedecin extends JFrame {
     	Consultation ordo;
     	try
         {	
-    		if(ordonnance == null) 
+    		if(ordonnance == null)
     		{
     			ordo = new Consultation();
     			in = new FileReader(Hopital.pathOrdonnances+ordo.getName()+".txt");
