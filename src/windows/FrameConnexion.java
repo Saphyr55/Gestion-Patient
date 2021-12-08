@@ -22,7 +22,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -167,7 +166,7 @@ public class FrameConnexion extends JFrame {
 		connexionButton.setPreferredSize(new Dimension(200, 40));
 		
 		/*
-		 * Partie du mot de passe oublié et affichage d'un message erreur en rouge disant mauvais mot de passe ou identifiant 
+		 * Partie du mot de passe oubliÂ§ et affichage d'un message erreur en rouge disant mauvais mot de passe ou identifiant 
 		 */
 		passwordForgot = new JButton((String) loadingLanguage.getJsonObject().get("frame_connection_password_forgot"));
 		wrongConnexion = new JLabel("<html><font color='red'></font></html>");
@@ -194,7 +193,7 @@ public class FrameConnexion extends JFrame {
 		connexionPanel.add(connexion);
 		
 		/*
-		 * Permetant de se connecter a une Frame destiné a un certains personnel
+		 * Permetant de se connecter a une Frame destinÂ§ a un certains personnel
 		 * un appuyant sur le button se connecter
 		 */
 		connexionButton.addActionListener(new ActionListener() {
@@ -225,14 +224,14 @@ public class FrameConnexion extends JFrame {
 					 * Lis le fichier admins puis verifie pour chaque
 					 * ligne le bon identifiant et mot de passe
 					 * Et attribue l'admin courrant a l'admin de la connexion
-					 * permettant de capturer les donnée du admin pour la FrameAdmin
+					 * permettant de capturer les donnÂ§e du admin pour la FrameAdmin
 					 */
 					while((line = readerAdmins.readLine()) != null) 
 					{
 						string = line;
-						strings = string.split("§");
+						strings = string.split("Â§");
 						nLine++;
-						if(strings[1].equals(identifiantText) && strings[5].equals(password)) 
+						if( strings[1].equals(identifiantText) && strings[strings.length - 1].equals(password) ) 
 						{
 							for(int i = 0; i < Hopital.getAdmins().size(); i++) 
 							{
@@ -250,13 +249,13 @@ public class FrameConnexion extends JFrame {
 					/*
 					 * Cas pour le fichier medecins
 					 * Lis le fichier medecins puis verifie pour chaque
-					 * ligne le bon identifiant et mot de passe
+					 * ligne est le bon identifiant et mot de passe
 					 * Et attribue le medecin courant au medecin de la connexion
-					 * permettant de capturer les donnée du medecin pour la FrameMedecin
+					 * permettant de capturer les donnÂ§e du medecin pour la FrameMedecin
 					 */
 					while((line = readerMedecins.readLine()) != null ) {
 						string = line;
-						strings = string.split("§");
+						strings = string.split("Â§");
 						nLine++;
 						if(strings[1].equals(identifiantText) && strings[strings.length - 1].equals(password)) {
 							for(int i = 0 ; i < Hopital.getMedecins().size() ; i++) {
@@ -281,7 +280,7 @@ public class FrameConnexion extends JFrame {
 					
 					/*
 					 *  Affiche Mauvais mot de passe ou identifiant en rouge
-					 *  avec une durrée de 10 secondes
+					 *  avec une durrÃ©e de 10 secondes
 					 */
 					wrongConnexion.setText(
 							"<html><font color='red'>"+

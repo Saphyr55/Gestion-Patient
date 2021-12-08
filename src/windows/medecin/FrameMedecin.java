@@ -97,7 +97,7 @@ public class FrameMedecin extends JFrame {
 	private JMenuItem menuItemAddPatient, menuItemSupprPatient;
 	
 	/**
-	 * Composant des donn�es 
+	 * Composant des donn§es 
 	 */
 	private JPanel panelPatient, panelTop, panelBottom, panelData, panelOrdonnance ;
 	private JLabel lastNamePatient, firstNamePatient, birthdayPatient ,agePatient;
@@ -108,7 +108,7 @@ public class FrameMedecin extends JFrame {
 	private JButton suppr, ajoutOrdonnance;
 	
 	/*
-	 * Gestion donn�e frame
+	 * Gestion donn§e frame
 	 */
 	private static Medecin currentMedecin = FrameConnexion.getCurrentMedecin();
 	private static Patient currentPatient;
@@ -188,7 +188,7 @@ public class FrameMedecin extends JFrame {
 		
 		/*
 		 * Actionne l'affichage de la liste d'ordonnances 
-		 * et les donn�es du patient selectionner
+		 * et les données du patient selectionner
 		 */
 		listPatient.addMouseListener(new MouseAdapter() 
 		{	
