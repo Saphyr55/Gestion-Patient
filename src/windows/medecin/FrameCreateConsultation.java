@@ -20,15 +20,15 @@ import java.awt.event.ActionListener;
  * @author Andy
  *
  */
-public class FrameCreateConsultation extends JFrame implements ActionListener  {
+public class FrameCreateConsultation extends JFrame {
 
 	/**
 	 *
 	 */
 	private static LoadingLanguage loadingLanguage = FrameConnexion.getLoadingLanguage();
 
-	private static final int width = 1000;
-	private static final int height = 720;
+	private static final int width = 400;
+	private static final int height = 610;
 	private static final String title = (String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation_tile");
 	private static boolean isVisible = true;
 
@@ -47,16 +47,46 @@ public class FrameCreateConsultation extends JFrame implements ActionListener  {
 	 * 
 	 */
 	private JPanel contentPanel = (JPanel) getContentPane();
-	private JPanel panelPrincipalCenter, panelWest;
-	private JPanel panelTop, panelCenter, panelBottom;
-	private JPanel panelNamePatient, panelNameMedecin;
-	private JPanel panelPrescription, panelAvisMedical;
-	private JLabel lastNamePatient, firstNamePatient, lastNameMedecin, firstNameMedecin;
-	private JLabel avisMedicalLabel, prescriptionLabel;
-	private JTextArea avisMedicalTextArea, prescriptionTextArea;
-	private JScrollPane avisMedicalScrollPane, prescriptionScrollPane;
-	private JCheckBox signatureMedecin;
-	private JList<String> selectedTypeOfConsultation;
+	
+	/**
+	 * 
+	 */
+	private JPanel panelWest; 
+
+
+
+	/**
+	 * 
+	 */
+	private JPanel panelCenter; 
+	
+	private JPanel panelNamePatient;
+	private JLabel labelLastnamePatient, labelFirstnamePatient;
+	
+	private JPanel panelAvisMedical;
+	private JTextArea textAreaAvisMedical;
+	
+	private JPanel panelPrescrition;
+	private JTextField textFieldPrescription;
+	private JSpinner spinnerCountNumberPrescription;
+	private SpinnerModel spinnerModelNumberPrescription;
+	private JButton buttonAddPrescription;
+
+	private JPanel panelListPrescribedMedication;
+	private JLabel labelPrescribedMedication;
+	private JList<String> listPrescribedMedication;
+
+	/**
+	 * 
+	 */
+	private JPanel panelSouth;
+
+	private JPanel panelSign;
+	private JLabel labelSign;
+	private JCheckBox checkBoxSign;
+
+	private JPanel panelConfirm;
+	private JButton buttonConfirm, buttonCancel;
 
 	/**
 	 * 
@@ -70,26 +100,15 @@ public class FrameCreateConsultation extends JFrame implements ActionListener  {
 	public FrameCreateConsultation() {
 		super(title);
 		setOptionWindow();
-		JButton button = new JButton("Click");
-
-		
-		panelPrincipalCenter = new JPanel(new BorderLayout());
-		panelPrincipalCenter.add(consultationDataTop(), BorderLayout.NORTH);
-		panelPrincipalCenter.add(setConsultationCenter(), BorderLayout.CENTER);
-		contentPanel.add(panelPrincipalCenter, BorderLayout.CENTER);
-		contentPanel.add(setConsultationOptionMenuWest(), BorderLayout.WEST);
-		panelPrincipalCenter.add(button, BorderLayout.SOUTH);
-		
-		button.addActionListener( this::setActionListenerButtonClick );
-
-
 		setVisible(isVisible);
 	}
 
-	private void setActionListenerButtonClick( ActionEvent event ) {
-		event.getSource();
-		System.out.println("Salut");
+	private JPanel setOptionPanelWest(){
+		panelWest = new JPanel();
+
+		return panelWest;
 	}
+
 
 	/**
 	 *
@@ -108,96 +127,5 @@ public class FrameCreateConsultation extends JFrame implements ActionListener  {
 			currentMedecin = Hopital.getMedecins().get(0);
 			currentPatient = Hopital.getPatients().get(0);
 		}
-	}
-	private JPanel setConsultationOptionMenuWest(){
-		panelWest = new JPanel();
-		selectedTypeOfConsultation = new JList<>();
-
-		return panelWest;
-	}
-
-	/**
-	 *
-	 * @return panelTop
-	 */
-	private JPanel consultationDataTop(){
-		panelTop = new JPanel(new BorderLayout());
-		panelTop.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
-		panelNameMedecin = new JPanel();
-		panelNamePatient = new JPanel();
-
-		lastNameMedecin = new JLabel(frame_medecin_new_consultation_lastname_medecin+" : "+currentMedecin.getLastName());
-		firstNameMedecin = new JLabel(frame_medecin_new_consultation_firstname_medecin+" : "+currentMedecin.getFirstName());
-
-		lastNamePatient =new JLabel(frame_medecin_new_consultation_lastname_patient+" : "+ currentPatient.getLastName());
-		firstNamePatient =new JLabel(frame_medecin_new_consultation_firstname_patient+" : "+currentPatient.getFirstName());
-
-		lastNamePatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
-		firstNamePatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
-		lastNameMedecin.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
-		firstNameMedecin.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
-
-		panelNameMedecin.add(lastNameMedecin);
-		panelNameMedecin.add(firstNameMedecin);
-
-		panelNamePatient.add(lastNamePatient);
-		panelNamePatient.add(firstNamePatient);
-
-		panelNameMedecin.setLayout(new BoxLayout(panelNameMedecin, BoxLayout.Y_AXIS));
-		panelNamePatient.setLayout(new BoxLayout(panelNamePatient, BoxLayout.Y_AXIS));
-
-		panelTop.add(panelNameMedecin, BorderLayout.WEST);
-		panelTop.add(panelNamePatient, BorderLayout.EAST);
-
-		return panelTop;
-	}
-
-	private JPanel setConsultationCenter(){
-		panelCenter = new JPanel(new GridLayout(2,1, 0,50));
-		panelCenter.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
-		panelAvisMedical = new JPanel();
-		panelPrescription = new JPanel();
-
-		avisMedicalLabel = new JLabel("Avis Medical : ");
-		avisMedicalTextArea = new JTextArea();
-		avisMedicalScrollPane = new JScrollPane(avisMedicalTextArea);
-
-		avisMedicalTextArea.setLineWrap(true);
-		avisMedicalTextArea.setWrapStyleWord(false);
-		avisMedicalTextArea.setFont(avisMedicalTextArea.getFont().deriveFont(25f));
-
-		panelAvisMedical.add(avisMedicalLabel);
-		panelAvisMedical.add(avisMedicalScrollPane);
-		panelAvisMedical.setLayout(new BoxLayout(panelAvisMedical, BoxLayout.Y_AXIS));
-
-		prescriptionLabel = new JLabel("Prescription : ");
-		prescriptionTextArea = new JTextArea();
-		prescriptionScrollPane = new JScrollPane(prescriptionTextArea);
-
-		prescriptionTextArea.setLineWrap(true);
-		prescriptionTextArea.setWrapStyleWord(false);
-		prescriptionTextArea.setFont(prescriptionTextArea.getFont().deriveFont(25f));
-
-		panelPrescription.add(prescriptionLabel);
-		panelPrescription.add(prescriptionScrollPane);
-		panelPrescription.setLayout(new BoxLayout(panelPrescription, BoxLayout.Y_AXIS));
-
-		avisMedicalLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
-		prescriptionLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
-
-		panelCenter.add(panelAvisMedical);
-		panelCenter.add(panelPrescription);
-
-		return panelCenter;
-	}
-
-	private JPanel setConsultationBottom(){
-
-		return panelBottom;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
 	}
 }

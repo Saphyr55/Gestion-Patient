@@ -91,12 +91,15 @@ public abstract class Hopital {
 			String line;
 			String string;
 			String[] strings;
-			while((line = readerMedecin.readLine()) != null) {
+
+			while((line = readerMedecin.readLine()) != null) 
+			{
 				string = line;
 				strings = string.split("&");
-				new Medecin( Integer.parseInt(strings[1]),strings[2], strings[3], strings[4], strings[5] );
+
+				new Medecin( Integer.parseInt(strings[1]), strings[2], strings[3], strings[4], strings[5] );
 			}
-			
+
 			/*
 			 * Lis le fichier admins puis ajoute les administrateur du fichier
 			 * dans une arryalist
@@ -104,9 +107,12 @@ public abstract class Hopital {
 			line = null;
 			string = null;
 			strings = null;
-			while((line = readerAdmins.readLine()) != null) {
+			
+			while((line = readerAdmins.readLine()) != null) 
+			{
 				string = line;
 				strings = string.split("&");
+			
 				new Administrator(Integer.parseInt(strings[1]),strings[2], strings[3], strings[4], strings[5]);
 			}
 			
@@ -117,10 +123,14 @@ public abstract class Hopital {
 			line = null;
 			string = null;
 			strings = null;
-			while((line = readerPatients.readLine()) != null) {
+			
+			while((line = readerPatients.readLine()) != null) 
+			{
 				string = line;
 				strings = string.split("&");
+			
 				LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);				
+			
 				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date);
 			}
 			

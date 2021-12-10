@@ -78,6 +78,7 @@ public class FrameMedecin extends JFrame {
 	private static final String frame_medecin_new_consultation = (String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation");
 	private static final String frame_medecin_popup_add = (String) loadingLanguage.getJsonObject().get("frame_medecin_popup_add");
 	private static final String frame_medecin_popup_delete = (String) loadingLanguage.getJsonObject().get("frame_medecin_popup_delete");
+	private static final String frame_medecin_popup_add_consultation = (String) loadingLanguage.getJsonObject().get("frame_medecin_popup_add_consultation");
 
 	/**
 	 * Composant de la frame
@@ -94,7 +95,7 @@ public class FrameMedecin extends JFrame {
 	private JTextField foundPatientField;
 	private DefaultListModel<String> namePatients = new DefaultListModel<>();
 	private JPopupMenu popupMenuListPatient;
-	private JMenuItem menuItemAddPatient, menuItemSupprPatient;
+	private JMenuItem menuItemAddPatient, menuItemSupprPatient, menuItemAddConsultation;
 	
 	/**
 	 * Composant des donn§es 
@@ -466,8 +467,10 @@ public class FrameMedecin extends JFrame {
 		popupMenuListPatient = new JPopupMenu();
 		menuItemAddPatient= new JMenuItem(frame_medecin_popup_add);
 		menuItemSupprPatient= new JMenuItem(frame_medecin_popup_delete);
+		menuItemAddConsultation = new JMenuItem(frame_medecin_popup_add_consultation);
 		popupMenuListPatient.add(menuItemAddPatient);
 		popupMenuListPatient.add(menuItemSupprPatient);
+		popupMenuListPatient.add(menuItemAddConsultation);
 		return popupMenuListPatient;
 	}
 	

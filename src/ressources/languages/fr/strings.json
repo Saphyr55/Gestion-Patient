@@ -16,6 +16,7 @@
     "frame_medecin_new_consultation":"Nouvelle Consultation",
     "frame_medecin_popup_add":"Ajouter",
     "frame_medecin_popup_delete":"Supprimer",
+    "frame_medecin_popup_add_consultation":"Ajouter consultation",
 
     "frame_medecin_new_consultation_tile":"Nouvelle Consultation",
     "frame_medecin_new_consultation_lastname_medecin":"Nom du Médecin",
