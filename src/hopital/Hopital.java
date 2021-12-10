@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -92,7 +93,7 @@ public abstract class Hopital {
 			String[] strings;
 			while((line = readerMedecin.readLine()) != null) {
 				string = line;
-				strings = string.split("§");
+				strings = string.split("&");
 				new Medecin( Integer.parseInt(strings[1]),strings[2], strings[3], strings[4], strings[5] );
 			}
 			
@@ -105,7 +106,7 @@ public abstract class Hopital {
 			strings = null;
 			while((line = readerAdmins.readLine()) != null) {
 				string = line;
-				strings = string.split("§");
+				strings = string.split("&");
 				new Administrator(Integer.parseInt(strings[1]),strings[2], strings[3], strings[4], strings[5]);
 			}
 			
@@ -118,7 +119,7 @@ public abstract class Hopital {
 			strings = null;
 			while((line = readerPatients.readLine()) != null) {
 				string = line;
-				strings = string.split("§");
+				strings = string.split("&");
 				LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);				
 				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date);
 			}
@@ -137,7 +138,7 @@ public abstract class Hopital {
 				strings = null;
 				while((line = readerMedecinPatients.readLine()) != null) {
 					string = line;
-					strings = string.split("§");
+					strings = string.split("&");
 					LocalDate date = LocalDate.parse(strings[4], FORMATEUR_LOCALDATE);
 					new Patient(Integer.parseInt(strings[1]), medecin ,strings[2], strings[3], date);
 				}

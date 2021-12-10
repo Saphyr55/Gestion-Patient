@@ -229,7 +229,8 @@ public class FrameConnexion extends JFrame {
 					while((line = readerAdmins.readLine()) != null) 
 					{
 						string = line;
-						strings = string.split("§");
+						strings = string.split("&");
+						
 						nLine++;
 						if( strings[1].equals(identifiantText) && strings[strings.length - 1].equals(password) ) 
 						{
@@ -255,7 +256,7 @@ public class FrameConnexion extends JFrame {
 					 */
 					while((line = readerMedecins.readLine()) != null ) {
 						string = line;
-						strings = string.split("§");
+						strings = string.split("&");
 						nLine++;
 						if(strings[1].equals(identifiantText) && strings[strings.length - 1].equals(password)) {
 							for(int i = 0 ; i < Hopital.getMedecins().size() ; i++) {

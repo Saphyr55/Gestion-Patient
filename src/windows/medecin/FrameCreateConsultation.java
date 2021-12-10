@@ -4,7 +4,6 @@
 package windows.medecin;
 
 import javax.swing.*;
-
 import com.formdev.flatlaf.FlatDarculaLaf;
 
 import hopital.Hopital;
@@ -14,19 +13,21 @@ import hopital.personnels.Medecin;
 import windows.FrameConnexion;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author Andy
  *
  */
-public class FrameCreateConsultation extends JFrame{
+public class FrameCreateConsultation extends JFrame implements ActionListener  {
 
 	/**
 	 *
 	 */
 	private static LoadingLanguage loadingLanguage = FrameConnexion.getLoadingLanguage();
 
-	private static final int width = 700;
+	private static final int width = 1000;
 	private static final int height = 720;
 	private static final String title = (String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation_tile");
 	private static boolean isVisible = true;
@@ -46,6 +47,7 @@ public class FrameCreateConsultation extends JFrame{
 	 * 
 	 */
 	private JPanel contentPanel = (JPanel) getContentPane();
+	private JPanel panelPrincipalCenter, panelWest;
 	private JPanel panelTop, panelCenter, panelBottom;
 	private JPanel panelNamePatient, panelNameMedecin;
 	private JPanel panelPrescription, panelAvisMedical;
@@ -54,6 +56,7 @@ public class FrameCreateConsultation extends JFrame{
 	private JTextArea avisMedicalTextArea, prescriptionTextArea;
 	private JScrollPane avisMedicalScrollPane, prescriptionScrollPane;
 	private JCheckBox signatureMedecin;
+	private JList<String> selectedTypeOfConsultation;
 
 	/**
 	 * 
@@ -67,10 +70,25 @@ public class FrameCreateConsultation extends JFrame{
 	public FrameCreateConsultation() {
 		super(title);
 		setOptionWindow();
-		contentPanel.add(consultationDataTop(), BorderLayout.NORTH);
-		contentPanel.add(setConsultationCenter(), BorderLayout.CENTER);
-		setVisible(isVisible);
+		JButton button = new JButton("Click");
 
+		
+		panelPrincipalCenter = new JPanel(new BorderLayout());
+		panelPrincipalCenter.add(consultationDataTop(), BorderLayout.NORTH);
+		panelPrincipalCenter.add(setConsultationCenter(), BorderLayout.CENTER);
+		contentPanel.add(panelPrincipalCenter, BorderLayout.CENTER);
+		contentPanel.add(setConsultationOptionMenuWest(), BorderLayout.WEST);
+		panelPrincipalCenter.add(button, BorderLayout.SOUTH);
+		
+		button.addActionListener( this::setActionListenerButtonClick );
+
+
+		setVisible(isVisible);
+	}
+
+	private void setActionListenerButtonClick( ActionEvent event ) {
+		event.getSource();
+		System.out.println("Salut");
 	}
 
 	/**
@@ -90,6 +108,12 @@ public class FrameCreateConsultation extends JFrame{
 			currentMedecin = Hopital.getMedecins().get(0);
 			currentPatient = Hopital.getPatients().get(0);
 		}
+	}
+	private JPanel setConsultationOptionMenuWest(){
+		panelWest = new JPanel();
+		selectedTypeOfConsultation = new JList<>();
+
+		return panelWest;
 	}
 
 	/**
@@ -130,6 +154,7 @@ public class FrameCreateConsultation extends JFrame{
 
 	private JPanel setConsultationCenter(){
 		panelCenter = new JPanel(new GridLayout(2,1, 0,50));
+		panelCenter.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
 		panelAvisMedical = new JPanel();
 		panelPrescription = new JPanel();
 
@@ -169,5 +194,10 @@ public class FrameCreateConsultation extends JFrame{
 	private JPanel setConsultationBottom(){
 
 		return panelBottom;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
 	}
 }

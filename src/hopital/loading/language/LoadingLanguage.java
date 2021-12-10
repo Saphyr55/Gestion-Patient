@@ -13,7 +13,7 @@ public class LoadingLanguage {
 	
 	private JSONParser parser;
 	private JSONObject jsonObject;
-	private static final String encoding = "UTF-8";
+	public static final String encoding = "UTF-8";
 	
 	public LoadingLanguage(Language language) {
 		if(language == null) language = Language.EN;
