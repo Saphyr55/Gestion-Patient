@@ -94,8 +94,8 @@ public class FrameConnexion extends JFrame {
 	/*
 	 * List de langue en string, et l'enum Language
 	 */
-	private String[] languagesString = { "English", "French" };
-	private String[] languagesStringForJComboBox = { "Select Languages", "English", "French" };
+	private String[] languagesString = { "English", "French", "Español" };
+	private String[] languagesStringForJComboBox = { "Select Languages", "English", "French", "Español"};
 	private ArrayList<Language> languages = new ArrayList<>();
 
 	public FrameConnexion() {
