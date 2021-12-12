@@ -31,6 +31,9 @@ public abstract class Hopital {
 	private static ArrayList<Medecin> medecins = new ArrayList<>();
 	private static ArrayList<Administrator> admins = new ArrayList<>();
 	private static ArrayList<Patient> patients = new ArrayList<>();
+	private static ArrayList<Patient> patientsLogger = new ArrayList<>();
+	private static ArrayList<Administrator> administratorsLooger = new ArrayList<>();
+	private static ArrayList<Medecin> medecinsLogger = new ArrayList<>();
 
 	/**
 	 * Paths
@@ -151,7 +154,7 @@ public abstract class Hopital {
 	 * Lis le fichier patients puis ajoute les patients du fichier
 	 * dans une arryalist
 	 */
-	public static final void loadingPatient() {
+	public static void loadingPatient() {
 		try {
 			readerPatients = new BufferedReader(getPatientsReaderFile());
 			String line = null;
@@ -171,17 +174,45 @@ public abstract class Hopital {
 		}
 	}
 
+	/*
+	 * Lis le fichier patients puis ajoute les patients du fichier
+	 * dans une arryalist 
+	 */
+   public static void loadingPatientLogger() {
+	   try {
+		   readerPatients = new BufferedReader(getPatientsReaderFile());
+		   String line = null;
+		   String string = null;
+		   String[] strings = null;
+
+		   while ((line = readerPatients.readLine()) != null) {
+			   string = line;
+			   strings = string.split("&");
+
+			   LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);
+
+			   new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date);
+		   }
+	   } catch (Exception e) {
+		   e.printStackTrace();
+	   }
+   }
+
 	/**
 	 * Charge les ordonnances d'un patients
 	 * Cette methode est utilisé lors du clique sur d'un
 	 * patient pour afficher sa liste d'ordonnances
+	 * 
 	 * @param patient
 	 */
 	public static void loadingOrdonnancesPatient(Patient patient) {
-		File[] ordonnancesPatientFile = new File(pathOrdonnances + patient.getFirstName() + patient.getLastName() + "/").listFiles();
-		for (int i = 0; i < ordonnancesPatientFile.length; i++) {
-			if (!patient.getOrdonnancesFile().contains(ordonnancesPatientFile[i]))
-				patient.getOrdonnancesFile().add(ordonnancesPatientFile[i]);
+		File[] ordonnancesPatientFile = new File(pathOrdonnances + patient.getFirstName() + patient.getLastName() + "/")
+				.listFiles();
+		if (ordonnancesPatientFile != null) {
+			for (int i = 0; i < ordonnancesPatientFile.length; i++) {
+				if (!patient.getOrdonnancesFile().contains(ordonnancesPatientFile[i]))
+					patient.getOrdonnancesFile().add(ordonnancesPatientFile[i]);
+			}
 		}
 	}
 

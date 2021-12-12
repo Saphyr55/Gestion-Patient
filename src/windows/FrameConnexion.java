@@ -25,9 +25,12 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import hopital.Hopital;
 import hopital.expections.ConnexionExeption;
+import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.Language;
 import hopital.loading.language.LoadingLanguage;
 import hopital.personnels.Administrator;
@@ -38,31 +41,36 @@ import windows.medecin.FrameMedecin;
 /**
  * Frame de connexion
  * Permet au personnel de l'hopital de ce connecter
- * avec leur identifiant et motdepasse
+ * avec leur identifiant et mot de passe
  * 
  * @author Andy
  *
  */
 public class FrameConnexion extends JFrame {
 
-	/*
+	/**
 	 * Language du logiciel par default
 	 */
 	private static Language language;
 	private static LoadingLanguage loadingLanguage = new LoadingLanguage(language);
 
 	/**
+	 * Charchegement des dimensions
+	 */
+	private static LoadingDimens loadingDimens = new LoadingDimens();
+
+	/**
 	 * Variable option window connexion
 	 */
-	private final static int height = 550;
-	private final static int width = 400;
+	private final static int height = (int) ((long) loadingDimens.getJsonObject().get("frame_connection_height"));
+	private final static int width = (int) ((long) loadingDimens.getJsonObject().get("frame_connection_width"));
 	private final static String title = (String) loadingLanguage.getJsonObject().get("frame_connection_title");
 	private boolean isVisible = true;
 
 	/**
 	 * Containers
 	 */
-	private JPanel contentPanel = (JPanel) getContentPane();
+	private JPanel contentPane = (JPanel) getContentPane();
 	private JPanel connexionPanel;
 	private JTextField identifiantField;
 	private JPasswordField passwordFeild;
@@ -93,8 +101,8 @@ public class FrameConnexion extends JFrame {
 	public FrameConnexion() {
 		super(title);
 		setOptionFrame();
-		contentPanel.add(formulaireConnexion());
-		contentPanel.add(panelSelectLanguage, BorderLayout.SOUTH);
+		contentPane.add(formulaireConnexion());
+		contentPane.add(panelSelectLanguage, BorderLayout.SOUTH);
 		setVisible(isVisible);
 	}
 
@@ -103,8 +111,8 @@ public class FrameConnexion extends JFrame {
 		FrameConnexion.language = language;
 		FrameConnexion.loadingLanguage = new LoadingLanguage(language);
 		setOptionFrame();
-		contentPanel.add(formulaireConnexion());
-		contentPanel.add(panelSelectLanguage, BorderLayout.SOUTH);
+		contentPane.add(formulaireConnexion());
+		contentPane.add(panelSelectLanguage, BorderLayout.SOUTH);
 		setVisible(isVisible);
 	}
 
@@ -112,14 +120,15 @@ public class FrameConnexion extends JFrame {
 	 * Option de la frame de connexion
 	 */
 	private void setOptionFrame() {
-		for (Language language : Language.values()) {
-			languages.add(language);
-		}
 		try {
-			UIManager.setLookAndFeel(new FlatDarkLaf());
+			UIManager.setLookAndFeel(new FlatIntelliJLaf());
 		} catch (Exception ex) {
 			System.err.println("Failed to initialize LaF");
 		}
+		for (Language language : Language.values()) {
+			languages.add(language);
+		}
+		this.pack();
 		this.setSize(width, height);
 		this.setResizable(false);
 		this.setLocationRelativeTo(this);
@@ -365,8 +374,19 @@ public class FrameConnexion extends JFrame {
 		return language;
 	}
 
+	/**
+	 * 
+	 * @return loading language
+	 */
 	public static LoadingLanguage getLoadingLanguage() {
 		return loadingLanguage;
 	}
 
+	/**
+	 * 
+	 * @return loading dimens
+	 */
+	public static LoadingDimens getLoadingDimens() {
+		return loadingDimens;
+	}
 }

@@ -16,11 +16,21 @@
     "frame_medecin_new_consultation":"Nouvelle Consultation",
     "frame_medecin_popup_add":"Ajouter",
     "frame_medecin_popup_delete":"Supprimer",
-    "frame_medecin_popup_add_consultation":"Ajouter consultation",
+    "frame_medecin_popup_add_consultation":"Ajouter Consultation",
 
     "frame_medecin_new_consultation_tile":"Nouvelle Consultation",
     "frame_medecin_new_consultation_lastname_medecin":"Nom du Médecin",
     "frame_medecin_new_consultation_firstname_medecin":"Prénom du Médecin",
     "frame_medecin_new_consultation_lastname_patient":"Nom du patient",
-    "frame_medecin_new_consultation_firstname_patient":"Prénom du patient"
+    "frame_medecin_new_consultation_firstname_patient":"Prénom du patient",
+
+    "frame_medecin_add_patient_title":"Ajouter patient - Univ Tours",
+    "frame_medecin_add_patient_lastname_patient":"Nom du patient",
+    "frame_medecin_add_patient_firstname_patient":"Prenom du patient",
+    "frame_medecin_add_patient_birthday_patient":"Naissance du patient",
+    "frame_medecin_add_patient_secu_number_patient":"Numero de securité social",
+    "frame_medecin_add_patient_add":"Ajouter",
+    "frame_medecin_add_patient_cancel":"Annuler",
+
+    "":""
 }

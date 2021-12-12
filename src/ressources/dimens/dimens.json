@@ -1,0 +1,15 @@
+{
+    "frame_connection_width":400,
+    "frame_connection_height":550,
+    
+    "frame_medecin_width":1080,
+    "frame_medecin_height":720,
+
+    "frame_medecin_create_consultation_width":400,
+    "frame_medecin_create_consultation_height":610,
+
+    "frame_medecin_add_patient_width":430,
+    "frame_medecin_add_patient_height":300,
+
+    "":""
+}

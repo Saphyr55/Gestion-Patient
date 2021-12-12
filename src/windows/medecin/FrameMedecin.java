@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -18,6 +20,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -28,7 +31,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -36,7 +38,7 @@ import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
 
 import hopital.Consultation;
 import hopital.Hopital;
@@ -49,7 +51,7 @@ import windows.FrameConnexion;
  * @author Andy
  *
  */
-public class FrameMedecin extends JFrame implements ActionListener {
+public class FrameMedecin extends JFrame {
 
 	/**
 	 * ID
@@ -122,6 +124,11 @@ public class FrameMedecin extends JFrame implements ActionListener {
 	private JTextArea consultationText;
 	private JButton suppr, ajoutConsultation;
 
+	/**
+	 * Frame generer
+	 */
+	private static FrameCreateConsultation frameCreateConsultation;
+	private static FrameAddPatientWithMedecin frameAddPatientWithMedecin;
 
 	/**
 	 * Gestion donn§e frame
@@ -145,7 +152,7 @@ public class FrameMedecin extends JFrame implements ActionListener {
 	 */
 	private void setOptionFrame() {
 		try {
-			UIManager.setLookAndFeel(new FlatDarculaLaf());
+			UIManager.setLookAndFeel(new FlatIntelliJLaf());
 		} catch (Exception ex) {
 			System.err.println("Failed to initialize LaF");
 		}
@@ -166,14 +173,16 @@ public class FrameMedecin extends JFrame implements ActionListener {
 		 * Inititalisation des attribus pour la liste de patient
 		 */
 		panelListPatient = new JPanel(new BorderLayout());
+		panelListPatient.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
+
 		JPanel panelTop = new JPanel(new BorderLayout());
 		addPatient = new JButton("+");
 		foundPatientField = new JTextField();
 
 		String namePatientString;
 		for (int i = 0; i < currentMedecin.getPatients().size(); i++) {
-			namePatientString = currentMedecin.getPatients().get(i).getFirstName() + " "
-			+ currentMedecin.getPatients().get(i).getLastName();
+			namePatientString = currentMedecin.getPatients().get(i).getLastName().toUpperCase() + " "
+					+ currentMedecin.getPatients().get(i).getFirstName();
 			namePatients.addElement(namePatientString);
 			listNamePatient.add(namePatientString);
 		}
@@ -225,15 +234,12 @@ public class FrameMedecin extends JFrame implements ActionListener {
 					currentPatient = currentMedecin.getPatients().get(index);
 
 					/**
-					 * Le clique gauche declenche la liste la d'ordonnance du patient selectionner
+					 * Le clique gauche declenche la liste la de consultation du patient
+					 * selectionner
 					 */
 					if (SwingUtilities.isLeftMouseButton(event)) {
 						panelPrincipal.remove(panelPatient);
-						loadingListOrdonnance(currentPatient);
-
-						if (panelConsultation != null)
-							panelPrincipal.remove(panelConsultation);
-
+						loadingListConsultation(currentPatient);
 						panelPrincipal.add(setPatient(currentPatient));
 						panelPrincipal.revalidate();
 					}
@@ -276,9 +282,17 @@ public class FrameMedecin extends JFrame implements ActionListener {
 							menuItemAddPatient.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-
+									setFrameAddPatientWithMedecin();
 								}
 							});
+
+							menuItemAddConsultation.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									setFrameCreateConsultation();
+								}
+							});
+
 						} catch (IndexOutOfBoundsException e) {
 							e.printStackTrace();
 						}
@@ -286,7 +300,7 @@ public class FrameMedecin extends JFrame implements ActionListener {
 				}
 			}
 		});
-		
+
 		/**
 		 * Trouve le patient ecrit
 		 */
@@ -306,34 +320,82 @@ public class FrameMedecin extends JFrame implements ActionListener {
 			public void changedUpdate(DocumentEvent e) {
 				filter();
 			}
-			
+
+			/**
+			 * Recupere l'entrée dans le text field
+			 * Et applique filtre model dans notre liste de patient
+			 */
 			private void filter() {
-                String filter = foundPatientField.getText();
-                filterModel( (DefaultListModel<String>) listPatient.getModel(), filter);
-            }
+				String filter = foundPatientField.getText();
+				filterModel((DefaultListModel<String>) listPatient.getModel(), filter);
+			}
+		});
+
+		/**
+		 * Affichage de la frame pour ajouter un patient lors du clique du bouton '+'
+		 */
+		addPatient.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setFrameAddPatientWithMedecin();
+			}
+
 		});
 
 		return panelListPatient;
 	}
 
 	/**
+	 * Affiche la frame pour ajouter des consultations
+	 * Ne peut etre afficher plusieur fois
+	 */
+	private void setFrameCreateConsultation() {
+		if (frameCreateConsultation == null)
+			frameCreateConsultation = new FrameCreateConsultation();
+
+		frameCreateConsultation.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent windowEvent) {
+				frameCreateConsultation = null;
+			}
+		});
+	}
+
+	/**
+	 * Affiche la frame pour ajouter des patient
+	 * Ne peut etre afficher plusieur fois
+	 */
+	private void setFrameAddPatientWithMedecin() {
+		if (frameAddPatientWithMedecin == null)
+			frameAddPatientWithMedecin = new FrameAddPatientWithMedecin();
+
+		frameAddPatientWithMedecin.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent windowEvent) {
+				frameAddPatientWithMedecin = null;
+			}
+		});
+	}
+
+	/**
 	 * Filtre de menu de recherche d'un patient
+	 * 
 	 * @param model
 	 * @param filter
 	 */
 	private void filterModel(DefaultListModel<String> model, String filter) {
-        for (String patientName : listNamePatient) {
-            if (!patientName.startsWith(filter)) {
-                if (model.contains(patientName)) {
-                    model.removeElement(patientName);
-                }
-            } else {
-                if (!model.contains(patientName)) {
-                    model.addElement(patientName);
-                }
-            }
-        }
-    }
+		for (String patientName : listNamePatient) {
+			if (!patientName.startsWith(filter)) {
+				if (model.contains(patientName)) {
+					model.removeElement(patientName);
+				}
+			} else {
+				if (!model.contains(patientName)) {
+					model.addElement(patientName);
+				}
+			}
+		}
+	}
 
 	/**
 	 * Charge toutes les ordonnances du dossier du patient en parametre
@@ -341,7 +403,8 @@ public class FrameMedecin extends JFrame implements ActionListener {
 	 * 
 	 * @param patient
 	 */
-	private void loadingListOrdonnance(Patient patient) {
+	private void loadingListConsultation(Patient patient) {
+
 		/**
 		 * Recuperation de toutes les ordonnances du patient
 		 */
@@ -352,6 +415,7 @@ public class FrameMedecin extends JFrame implements ActionListener {
 		 */
 		if (nameListConsultationDefaultModel.isEmpty()) {
 			for (int i = 0; i < patient.getOrdonnancesFile().size(); i++) {
+
 				/**
 				 * Ajout de tous les elements pour la JList dans nameListOrdonnanceDefaultModel
 				 * si nameListOrdonnanceDefaultModel ne containt pas deja l'élement
@@ -378,14 +442,10 @@ public class FrameMedecin extends JFrame implements ActionListener {
 		 */
 		else {
 			nameListConsultationDefaultModel.removeAllElements();
-
-			listConsultationJList = null;
 			listConsultationJList = new JList<>(nameListConsultationDefaultModel);
-
-			listConsultationScrollPane = null;
 			listConsultationScrollPane = new JScrollPane(listConsultationJList);
 
-			loadingListOrdonnance(patient);
+			loadingListConsultation(patient);
 		}
 	}
 
@@ -425,6 +485,7 @@ public class FrameMedecin extends JFrame implements ActionListener {
 		 */
 		panelBottom = new JPanel(new BorderLayout());
 		panelConsultation = new JPanel(new BorderLayout());
+		panelConsultation.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		consultationText = new JTextArea();
 		panelData = new JPanel();
 
@@ -501,7 +562,7 @@ public class FrameMedecin extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (currentPatient != null)
-					new FrameCreateConsultation();
+					setFrameCreateConsultation();
 			}
 		});
 
@@ -588,7 +649,7 @@ public class FrameMedecin extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * @return the nameListOrdonnance
+	 * @return nameListOrdonnance
 	 */
 	public DefaultListModel<String> getNameListOrdonnance() {
 		return nameListConsultationDefaultModel;
@@ -609,9 +670,4 @@ public class FrameMedecin extends JFrame implements ActionListener {
 		return currentPatient;
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
-	}
 }
