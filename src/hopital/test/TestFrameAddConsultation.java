@@ -6,7 +6,7 @@ import windows.medecin.FrameCreateConsultation;
 public class TestFrameAddConsultation {
 
     public static void main(String[] args) {
-        Hopital.loadingHopitalPersonnel();
+        Hopital.loadingMedecin();
         new FrameCreateConsultation();
     }
 

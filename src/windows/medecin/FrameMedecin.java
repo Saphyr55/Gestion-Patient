@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -27,10 +28,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 
@@ -105,6 +109,7 @@ public class FrameMedecin extends JFrame implements ActionListener {
 	private DefaultListModel<String> namePatients = new DefaultListModel<>();
 	private JPopupMenu popupMenuListPatient;
 	private JMenuItem menuItemAddPatient, menuItemSupprPatient, menuItemAddConsultation;
+	private ArrayList<String> listNamePatient = new ArrayList<>();
 
 	/**
 	 * Composant des donn§es
@@ -116,6 +121,7 @@ public class FrameMedecin extends JFrame implements ActionListener {
 	private JScrollPane listConsultationScrollPane = new JScrollPane();
 	private JTextArea consultationText;
 	private JButton suppr, ajoutConsultation;
+
 
 	/**
 	 * Gestion donn§e frame
@@ -164,9 +170,12 @@ public class FrameMedecin extends JFrame implements ActionListener {
 		addPatient = new JButton("+");
 		foundPatientField = new JTextField();
 
+		String namePatientString;
 		for (int i = 0; i < currentMedecin.getPatients().size(); i++) {
-			namePatients.addElement(currentMedecin.getPatients().get(i).getFirstName() + " "
-					+ currentMedecin.getPatients().get(i).getLastName());
+			namePatientString = currentMedecin.getPatients().get(i).getFirstName() + " "
+			+ currentMedecin.getPatients().get(i).getLastName();
+			namePatients.addElement(namePatientString);
+			listNamePatient.add(namePatientString);
 		}
 
 		listPatient = new JList<>(namePatients);
@@ -277,9 +286,54 @@ public class FrameMedecin extends JFrame implements ActionListener {
 				}
 			}
 		});
+		
+		/**
+		 * Trouve le patient ecrit
+		 */
+		foundPatientField.getDocument().addDocumentListener(new DocumentListener() {
+
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				filter();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				filter();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				filter();
+			}
+			
+			private void filter() {
+                String filter = foundPatientField.getText();
+                filterModel( (DefaultListModel<String>) listPatient.getModel(), filter);
+            }
+		});
 
 		return panelListPatient;
 	}
+
+	/**
+	 * Filtre de menu de recherche d'un patient
+	 * @param model
+	 * @param filter
+	 */
+	private void filterModel(DefaultListModel<String> model, String filter) {
+        for (String patientName : listNamePatient) {
+            if (!patientName.startsWith(filter)) {
+                if (model.contains(patientName)) {
+                    model.removeElement(patientName);
+                }
+            } else {
+                if (!model.contains(patientName)) {
+                    model.addElement(patientName);
+                }
+            }
+        }
+    }
 
 	/**
 	 * Charge toutes les ordonnances du dossier du patient en parametre
