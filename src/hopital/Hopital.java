@@ -19,21 +19,21 @@ import hopital.personnels.Administrator;
 import hopital.personnels.Medecin;
 
 public abstract class Hopital {
-	
+
 	/**
 	 * 
 	 */
 	private static LoadingPath loadingPath = new LoadingPath();
-	
+
 	/**
 	 * ArrayList
 	 */
-	private static ArrayList<Medecin> medecins = new ArrayList<>(); 
-	private static ArrayList<Administrator> admins = new ArrayList<>(); 
+	private static ArrayList<Medecin> medecins = new ArrayList<>();
+	private static ArrayList<Administrator> admins = new ArrayList<>();
 	private static ArrayList<Patient> patients = new ArrayList<>();
-	
+
 	/**
-	 *	Paths
+	 * Paths
 	 */
 	public static final String pathFolderLog = (String) loadingPath.getJsonObject().get("path_log");
 	public static final String pathOrdonnances = (String) loadingPath.getJsonObject().get("path_ordonnances");
@@ -41,49 +41,52 @@ public abstract class Hopital {
 	public static final String pathMedecins = (String) loadingPath.getJsonObject().get("path_medecins");
 	public static final String pathAdmins = (String) loadingPath.getJsonObject().get("path_admin");
 	public static final String pathFolderMedecin = (String) loadingPath.getJsonObject().get("path_folder");
-	
+
 	/**
 	 * Les files Writers
 	 */
 	private static FileWriter patientsWriterFile;
 	private static FileWriter medecinWriterFile;
 	private static FileWriter adminsWriterFile;
-	
+
 	/**
 	 * Les files readers
 	 */
 	private static FileReader patientsReaderFile;
 	private static FileReader medecinReaderFile;
 	private static FileReader adminsReaderFile;
-	
+
 	/**
-	 * Les bufferedReader 
+	 * Les bufferedReader
 	 */
 	private static BufferedReader readerMedecin;
 	private static BufferedReader readerAdmins;
 	private static BufferedReader readerPatients;
 	private static BufferedReader readerMedecinPatients;
-	
+
 	/**
 	 * Format
 	 */
 	public static final String FORMAT_DATE = "dd/MM/yyyy";
 	public static final SimpleDateFormat FORMATEUR_DATE = new SimpleDateFormat(FORMAT_DATE);
 	public static final DateTimeFormatter FORMATEUR_LOCALDATE = DateTimeFormatter.ofPattern(FORMAT_DATE);
-	
+
 	/**
 	 * Permet de lire tous les fichier contenant les données
-	 * des medecins, des patients, des admins pour ensuite 
+	 * des medecins, des patients, des admins pour ensuite
 	 * les mettre dans une arraylist qui va facilité le code
 	 * dans les fenetres
-	 * @throws IOException 
-	 * @throws ParseException 
+	 * 
+	 * @throws IOException
+	 * @throws ParseException
 	 */
-	public static void loadingHopitalPersonnel() {;
+	public static void loadingHopitalPersonnel() {
+
 		readerMedecin = new BufferedReader(getMedecinReaderFile());
 		readerAdmins = new BufferedReader(getAdminsReaderFile());
 		readerPatients = new BufferedReader(getPatientsReaderFile());
 		try {
+
 			/*
 			 * Lis le fichier medecins puis ajoute les medecins du fichier
 			 * dans une arryalist
@@ -92,12 +95,11 @@ public abstract class Hopital {
 			String string;
 			String[] strings;
 
-			while((line = readerMedecin.readLine()) != null) 
-			{
+			while ((line = readerMedecin.readLine()) != null) {
 				string = line;
 				strings = string.split("&");
 
-				new Medecin( Integer.parseInt(strings[1]), strings[2], strings[3], strings[4], strings[5] );
+				new Medecin(Integer.parseInt(strings[1]), strings[2], strings[3], strings[4], strings[5]);
 			}
 
 			/*
@@ -107,15 +109,14 @@ public abstract class Hopital {
 			line = null;
 			string = null;
 			strings = null;
-			
-			while((line = readerAdmins.readLine()) != null) 
-			{
+
+			while ((line = readerAdmins.readLine()) != null) {
 				string = line;
 				strings = string.split("&");
-			
-				new Administrator(Integer.parseInt(strings[1]),strings[2], strings[3], strings[4], strings[5]);
+
+				new Administrator(Integer.parseInt(strings[1]), strings[2], strings[3], strings[4], strings[5]);
 			}
-			
+
 			/*
 			 * Lis le fichier patients puis ajoute les patients du fichier
 			 * dans une arryalist
@@ -123,37 +124,35 @@ public abstract class Hopital {
 			line = null;
 			string = null;
 			strings = null;
-			
-			while((line = readerPatients.readLine()) != null) 
-			{
+
+			while ((line = readerPatients.readLine()) != null) {
 				string = line;
 				strings = string.split("&");
-			
-				LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);				
-			
+
+				LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);
+
 				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date);
 			}
-			
+
 			/*
-			 * Lis tous les fichiers "patients.txt" chez tous les medecins 
+			 * Lis tous les fichiers "patients.txt" chez tous les medecins
 			 * Puis ajoute les patients dans les arrayliste respective des medecins
- 			 */
+			 */
 			for (Medecin medecin : medecins) {
 				readerMedecinPatients = new BufferedReader(
-										new FileReader(pathFolderMedecin+medecin.getFirstName().
-														toLowerCase()+medecin.getLastName().
-														toLowerCase()+"/patients.txt"));
+						new FileReader(pathFolderMedecin + medecin.getFirstName().toLowerCase()
+								+ medecin.getLastName().toLowerCase() + "/patients.txt"));
 				line = null;
 				string = null;
 				strings = null;
-				while((line = readerMedecinPatients.readLine()) != null) {
+				while ((line = readerMedecinPatients.readLine()) != null) {
 					string = line;
 					strings = string.split("&");
 					LocalDate date = LocalDate.parse(strings[4], FORMATEUR_LOCALDATE);
-					new Patient(Integer.parseInt(strings[1]), medecin ,strings[2], strings[3], date);
+					new Patient(Integer.parseInt(strings[1]), medecin, strings[2], strings[3], date);
 				}
 			}
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -166,24 +165,25 @@ public abstract class Hopital {
 			}
 		}
 	}
-	
+
 	/**
 	 * Charge les ordonnances d'un patients,
 	 * methode utiliser lors du clique sur uns
 	 * patient pour afficher la liste d'ordonnances
+	 * 
 	 * @param patient
 	 */
 	public static void loadingOrdonnancesPatient(Patient patient) {
-		File[] ordonnancesPatientFile = new File(pathOrdonnances+
-				patient.getFirstName()+patient.getLastName()+"/").listFiles();
-		//Ordonnance ordonnancesPatients = new Ordonnance();
+		File[] ordonnancesPatientFile = new File(pathOrdonnances +
+				patient.getFirstName() + patient.getLastName() + "/").listFiles();
+		// Ordonnance ordonnancesPatients = new Ordonnance();
 		System.out.println(ordonnancesPatientFile.length);
 		for (int i = 0; i < ordonnancesPatientFile.length; i++) {
 			if (!patient.getOrdonnancesFile().contains(ordonnancesPatientFile[i]))
 				patient.getOrdonnancesFile().add(ordonnancesPatientFile[i]);
 		}
 	}
-	
+
 	/**
 	 * @return the patientsReaderFile
 	 */
@@ -255,7 +255,6 @@ public abstract class Hopital {
 		}
 		return adminsReaderFile;
 	}
-
 
 	/**
 	 * @return the medecins
