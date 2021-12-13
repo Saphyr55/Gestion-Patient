@@ -147,10 +147,10 @@ public class FrameAddPatientWithMedecin extends JFrame {
         researchPatientPanel.add(listPatientHopitalWithoutListPatientCurrentMedecinScrollPane, BorderLayout.CENTER);
         researchPatientPanel.add(researchPatientTextField, BorderLayout.NORTH);
 
-       /**
-        * Change les donnée en recuperant l'index de liste de patient de l'hopital
-        * et applique ces données
-        */
+        /**
+         * Change les donnée en recuperant l'index de liste de patient de l'hopital
+         * et applique ces données
+         */
         listPatientHopitalWithoutListPatientCurrentMedecin.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -161,12 +161,16 @@ public class FrameAddPatientWithMedecin extends JFrame {
                         lastnameCurrentPatient = currentPatient.getLastName();
                         firstnameCurrentPatient = currentPatient.getFirstName();
                         birthdayCurrentPatient = currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE);
+                        secuNumberCurrentPatient = currentPatient.getSecuNumber().
+                                                replaceAll("(.{" + "3" + "})", "$1 ").trim();
+
                         break;
                     }
                 }
                 lastnamePatient.setText(lastnameCurrentPatient);
                 firstnamePatient.setText(firstnameCurrentPatient);
                 birthdayPatient.setText(birthdayCurrentPatient);
+                secuNumberPatient.setText(secuNumberCurrentPatient);
                 contentPane.revalidate();
             }
         });

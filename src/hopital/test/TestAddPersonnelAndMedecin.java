@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import hopital.patient.Patient;
+import hopital.patient.Patient.PatientTypeCreate;
 import hopital.personnels.Administrator;
 import hopital.personnels.Medecin;
 
@@ -36,23 +37,23 @@ public class TestAddPersonnelAndMedecin {
 		Medecin medecin5 = new Medecin("prenom5", "nom5", "hoolande@gmail.com","1234");
 		Medecin medecin6 = new Medecin("prenom6", "nom6", "hoolande@gmail.com","1234");
 
-		Patient claude = new Patient("Claude", "Francois",LocalDate.of(22,9,2003));//"22/09/2003"));
-		Patient claude1 = new Patient("prenom1", "nom1",LocalDate.of(2,8,1985));//"02/08/1985"));
-		Patient claude2 = new Patient("prenom2", "nom2",LocalDate.of(23,10,1972));//"23/10/1972"));
-		Patient claude3 = new Patient("prenom3", "nom3",LocalDate.of(31,12,1990));
-		Patient claude4 = new Patient("prenom4", "nom4",LocalDate.of(13,01,1947));
-		Patient claude5 = new Patient("prenom5", "nom5",LocalDate.of(05,11,1955));
-		Patient claude6 = new Patient("prenom6", "nom6",LocalDate.of(30,03,2005));	
+		Patient claude = new Patient("Claude", "Francois",LocalDate.of(22,9,2003), "00000000000");//"22/09/2003"));
+		Patient claude1 = new Patient("prenom1", "nom1",LocalDate.of(2,8,1985), "00000000000");//"02/08/1985"));
+		Patient claude2 = new Patient("prenom2", "nom2",LocalDate.of(23,10,1972), "00000000000");//"23/10/1972"));
+		Patient claude3 = new Patient("prenom3", "nom3",LocalDate.of(31,12,1990), "00000000000");
+		Patient claude4 = new Patient("prenom4", "nom4",LocalDate.of(13,01,1947), "00000000000");
+		Patient claude5 = new Patient("prenom5", "nom5",LocalDate.of(05,11,1955),"00000000000" );
+		Patient claude6 = new Patient("prenom6", "nom6",LocalDate.of(30,03,2005), "00000000000");	
 		
 		Administrator admin = new Administrator("Andy", "Saincir", "andy@gmail.com", "1234");
 		
-		new Patient(claude.getIdentifiant(), andy, claude.getFirstName(), claude.getLastName(), claude.getBirthday(), true);
-		new Patient(claude1.getIdentifiant(), andy, claude1.getFirstName(), claude1.getLastName(),claude1.getBirthday(),  true);
-		new Patient(claude2.getIdentifiant(), andy, claude2.getFirstName(), claude2.getLastName(),claude2.getBirthday(),  true);
-		new Patient(claude3.getIdentifiant(), andy, claude3.getFirstName(), claude3.getLastName(),claude3.getBirthday(),  true);
-		new Patient(claude4.getIdentifiant(), andy, claude4.getFirstName(), claude4.getLastName(),claude4.getBirthday(),  true);
-		new Patient(claude5.getIdentifiant(), andy, claude5.getFirstName(), claude5.getLastName(),claude5.getBirthday(),  true);
-		new Patient(claude6.getIdentifiant(), andy, claude6.getFirstName(), claude6.getLastName(),claude6.getBirthday(),  true);
+		new Patient(claude.getIdentifiant(), andy, claude.getFirstName(), claude.getLastName(), claude.getBirthday(), "00000000000",PatientTypeCreate.CREATE_PATIENT_WITH_MEDECIN);
+		new Patient(claude1.getIdentifiant(), andy, claude1.getFirstName(), claude1.getLastName(),claude1.getBirthday(), "00000000000",PatientTypeCreate.CREATE_PATIENT_WITH_MEDECIN);
+		new Patient(claude2.getIdentifiant(), andy, claude2.getFirstName(), claude2.getLastName(),claude2.getBirthday(), "00000000000",PatientTypeCreate.CREATE_PATIENT_WITH_MEDECIN);
+		new Patient(claude3.getIdentifiant(), andy, claude3.getFirstName(), claude3.getLastName(),claude3.getBirthday(), "00000000000",PatientTypeCreate.CREATE_PATIENT_WITH_MEDECIN);
+		new Patient(claude4.getIdentifiant(), andy, claude4.getFirstName(), claude4.getLastName(),claude4.getBirthday(), "00000000000",PatientTypeCreate.CREATE_PATIENT_WITH_MEDECIN);
+		new Patient(claude5.getIdentifiant(), andy, claude5.getFirstName(), claude5.getLastName(),claude5.getBirthday(), "00000000000", PatientTypeCreate.CREATE_PATIENT_WITH_MEDECIN);
+		new Patient(claude6.getIdentifiant(), andy, claude6.getFirstName(), claude6.getLastName(),claude6.getBirthday(), "00000000000" ,PatientTypeCreate.CREATE_PATIENT_WITH_MEDECIN);
 		
 	}
 

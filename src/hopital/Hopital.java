@@ -104,7 +104,7 @@ public abstract class Hopital {
 
 	/*
 	 * Lis le fichier medecins puis ajoute les medecins du fichier
-	 * dans une arryalist
+	 * dans une liste
 	 * Puis lis tous les fichiers "patients.txt" chez tous les medecins
 	 * Puis ajoute les patients dans les arrayliste respective des medecins
 	 */
@@ -134,7 +134,8 @@ public abstract class Hopital {
 					string = line;
 					strings = string.split("&");
 					LocalDate date = LocalDate.parse(strings[4], FORMATEUR_LOCALDATE);
-					new Patient(Integer.parseInt(strings[1]), medecin, strings[2], strings[3], date);
+					new Patient(Integer.parseInt(strings[1]), medecin, strings[2], strings[3], date, strings[5],
+							Patient.PatientTypeCreate.LOADING_PATIENT_WITH_MEDECIN_IN_LIST);
 				}
 			}
 
@@ -167,7 +168,7 @@ public abstract class Hopital {
 
 				LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);
 
-				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date);
+				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date, strings[4]);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -176,27 +177,27 @@ public abstract class Hopital {
 
 	/*
 	 * Lis le fichier patients puis ajoute les patients du fichier
-	 * dans une arryalist 
+	 * dans une arryalist
 	 */
-   public static void loadingPatientLogger() {
-	   try {
-		   readerPatients = new BufferedReader(getPatientsReaderFile());
-		   String line = null;
-		   String string = null;
-		   String[] strings = null;
+	public static void loadingPatientLogger() {
+		try {
+			readerPatients = new BufferedReader(getPatientsReaderFile());
+			String line = null;
+			String string = null;
+			String[] strings = null;
 
-		   while ((line = readerPatients.readLine()) != null) {
-			   string = line;
-			   strings = string.split("&");
+			while ((line = readerPatients.readLine()) != null) {
+				string = line;
+				strings = string.split("&");
 
-			   LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);
+				LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);
 
-			   new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date);
-		   }
-	   } catch (Exception e) {
-		   e.printStackTrace();
-	   }
-   }
+				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date, strings[4]);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Charge les ordonnances d'un patients
