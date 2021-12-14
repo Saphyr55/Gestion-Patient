@@ -1,10 +1,10 @@
 import console.Logger;
-import windows.FrameConnexion;
+import windows.FrameConnection;
 
 public class Launch {
 
 	public static void main(String[] args) {
-		new FrameConnexion();
+		new FrameConnection();
 		Logger.logCommand();
 	}
 }

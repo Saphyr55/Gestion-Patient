@@ -30,14 +30,14 @@ import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
 import hopital.personnels.Medecin;
-import windows.FrameConnexion;
+import windows.FrameConnection;
 
 public class FrameAddPatientWithMedecin extends JFrame {
 
-    private static LoadingDimens loadingDimens = FrameConnexion.getLoadingDimens();
-    private static LoadingLanguage loadingLanguage = FrameConnexion.getLoadingLanguage();
+    private static LoadingDimens loadingDimens = FrameConnection.getLoadingDimens();
+    private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
 
-    private static Medecin currentMedecin = FrameConnexion.getCurrentMedecin();
+    private static Medecin currentMedecin = FrameConnection.getCurrentMedecin();
     private static Patient currentPatient;
     private static String lastnameCurrentPatient = "";
     private static String firstnameCurrentPatient = "";
@@ -163,7 +163,6 @@ public class FrameAddPatientWithMedecin extends JFrame {
                         birthdayCurrentPatient = currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE);
                         secuNumberCurrentPatient = currentPatient.getSecuNumber().
                                                 replaceAll("(.{" + "3" + "})", "$1 ").trim();
-
                         break;
                     }
                 }

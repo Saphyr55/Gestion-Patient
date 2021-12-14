@@ -37,6 +37,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.MouseInputListener;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
@@ -45,7 +46,7 @@ import hopital.Hopital;
 import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
 import hopital.personnels.Medecin;
-import windows.FrameConnexion;
+import windows.FrameConnection;
 
 /**
  * @author Andy
@@ -62,7 +63,7 @@ public class FrameMedecin extends JFrame {
 	 * Charge de quoi charger les differents textes dans strings.json
 	 */
 	// private static Language language = FrameConnexion.getLanguage();
-	private static LoadingLanguage loadingLanguage = FrameConnexion.getLoadingLanguage();
+	private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
 
 	/**
 	 * Variables d'options pour la fenetre de gestion
@@ -133,7 +134,7 @@ public class FrameMedecin extends JFrame {
 	/**
 	 * Gestion donn§e frame
 	 */
-	private static Medecin currentMedecin = FrameConnexion.getCurrentMedecin();
+	private static Medecin currentMedecin = FrameConnection.getCurrentMedecin();
 	private static Patient currentPatient;
 
 	/**
@@ -304,32 +305,7 @@ public class FrameMedecin extends JFrame {
 		/**
 		 * Trouve le patient ecrit
 		 */
-		foundPatientField.getDocument().addDocumentListener(new DocumentListener() {
-
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				filter();
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				filter();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				filter();
-			}
-
-			/**
-			 * Recupere l'entrée dans le text field
-			 * Et applique filtre model dans notre liste de patient
-			 */
-			private void filter() {
-				String filter = foundPatientField.getText();
-				filterModel((DefaultListModel<String>) listPatient.getModel(), filter);
-			}
-		});
+		foundPatientField.getDocument().addDocumentListener(new DocumentListenerPatientField());
 
 		/**
 		 * Affichage de la frame pour ajouter un patient lors du clique du bouton '+'
@@ -663,11 +639,37 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return currentPatient
 	 */
 	public static Patient getSelectedPatient() {
 		return currentPatient;
+	}
+
+	public class DocumentListenerPatientField implements DocumentListener{
+
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			filter();
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			filter();
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			filter();
+		}
+
+		/**
+		 * Recupere l'entrée dans le text field
+		 * Et applique filtre model dans notre liste de patient
+		 */
+		private void filter() {
+			String filter = foundPatientField.getText();
+			filterModel((DefaultListModel<String>) listPatient.getModel(), filter);
+		}
 	}
 
 }
