@@ -44,6 +44,9 @@ public abstract class Hopital {
 	public static final String pathMedecins = (String) loadingPath.getJsonObject().get("path_medecins");
 	public static final String pathAdmins = (String) loadingPath.getJsonObject().get("path_admin");
 	public static final String pathFolderMedecin = (String) loadingPath.getJsonObject().get("path_folder");
+	public static final String pathRememberme = (String) loadingPath.getJsonObject().get("path_lastconnection");
+
+	public static File fileRememberme = new File(pathRememberme);
 
 	/**
 	 * Les files Writers
@@ -51,6 +54,7 @@ public abstract class Hopital {
 	private static FileWriter patientsWriterFile;
 	private static FileWriter medecinWriterFile;
 	private static FileWriter adminsWriterFile;
+	private static FileWriter remembermeFileWriter;
 
 	/**
 	 * Les files readers
@@ -58,6 +62,7 @@ public abstract class Hopital {
 	private static FileReader patientsReaderFile;
 	private static FileReader medecinReaderFile;
 	private static FileReader adminsReaderFile;
+	private static FileReader remembermeFileReader;
 
 	/**
 	 * Les bufferedReader
@@ -73,6 +78,20 @@ public abstract class Hopital {
 	public static final String FORMAT_DATE = "dd/MM/yyyy";
 	public static final SimpleDateFormat FORMATEUR_DATE = new SimpleDateFormat(FORMAT_DATE);
 	public static final DateTimeFormatter FORMATEUR_LOCALDATE = DateTimeFormatter.ofPattern(FORMAT_DATE);
+
+	/**
+	 * Crée le fichier remember me
+	 */
+	public static void createFileRememberme() {
+		try {
+			File fileRememberme = new File(pathRememberme);
+			if (fileRememberme.createNewFile()) {
+				Hopital.fileRememberme = fileRememberme;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 
 	/*
 	 * Lis le fichier admins puis ajoute les administrateur du fichier
@@ -309,4 +328,29 @@ public abstract class Hopital {
 	public static ArrayList<Patient> getPatients() {
 		return patients;
 	}
+
+	/**
+	 * @return remembermeFileWriter
+	 */
+	public static FileWriter getRemembermeFileWriter() {
+		try {
+			remembermeFileWriter = new FileWriter(pathRememberme, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return remembermeFileWriter;
+	}
+
+	/**
+	 * @return remembermeFileReader
+	 */
+	public static FileReader getRemembermeReaderFile() {
+		try {
+			remembermeFileReader = new FileReader(pathRememberme);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return remembermeFileReader;
+	}
+
 }

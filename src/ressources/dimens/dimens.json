@@ -6,7 +6,7 @@
     "frame_medecin_height":720,
 
     "frame_medecin_create_consultation_width":700,
-    "frame_medecin_create_consultation_height":700,
+    "frame_medecin_create_consultation_height":450,
 
     "frame_medecin_add_patient_width":430,
     "frame_medecin_add_patient_height":300,

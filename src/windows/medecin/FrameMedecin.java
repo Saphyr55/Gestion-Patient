@@ -37,7 +37,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.MouseInputListener;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
@@ -128,7 +127,7 @@ public class FrameMedecin extends JFrame {
 	/**
 	 * Frame generer
 	 */
-	private static FrameCreateConsultation frameCreateConsultation;
+	private static FrameConsultation frameConsultation;
 	private static FrameAddPatientWithMedecin frameAddPatientWithMedecin;
 
 	/**
@@ -290,7 +289,7 @@ public class FrameMedecin extends JFrame {
 							menuItemAddConsultation.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-									setFrameCreateConsultation();
+									setFrameConsultation();
 								}
 							});
 
@@ -325,14 +324,14 @@ public class FrameMedecin extends JFrame {
 	 * Affiche la frame pour ajouter des consultations
 	 * Ne peut etre afficher plusieur fois
 	 */
-	private void setFrameCreateConsultation() {
-		if (frameCreateConsultation == null)
-			frameCreateConsultation = new FrameCreateConsultation();
+	private void setFrameConsultation() {
+		if (frameConsultation == null)
+			frameConsultation = new FrameConsultation();
 
-		frameCreateConsultation.addWindowListener(new WindowAdapter() {
+		frameConsultation.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
-				frameCreateConsultation = null;
+				frameConsultation = null;
 			}
 		});
 	}
@@ -538,7 +537,7 @@ public class FrameMedecin extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (currentPatient != null)
-					setFrameCreateConsultation();
+					setFrameConsultation();
 			}
 		});
 

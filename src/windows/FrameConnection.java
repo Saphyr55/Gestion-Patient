@@ -10,12 +10,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -28,11 +32,15 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
+import org.json.simple.JSONObject;
+
 import hopital.Hopital;
 import hopital.expections.ConnexionExeption;
+import hopital.loading.LoadingRememberMe;
 import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.Language;
 import hopital.loading.language.LoadingLanguage;
+import hopital.loading.paths.LoadingPath;
 import hopital.personnels.Administrator;
 import hopital.personnels.Medecin;
 import windows.admin.FrameAdmin;
@@ -53,6 +61,8 @@ public class FrameConnection extends JFrame {
 	 */
 	private static Language language;
 	private static LoadingLanguage loadingLanguage = new LoadingLanguage(language);
+	private static LoadingRememberMe loadingRememberMe = new LoadingRememberMe();
+	private static LoadingPath loadingPath = new LoadingPath();
 
 	/**
 	 * Charchegement des dimensions
@@ -66,10 +76,12 @@ public class FrameConnection extends JFrame {
 	private final static int width = (int) ((long) loadingDimens.getJsonObject().get("frame_connection_width"));
 	private final static String title = (String) loadingLanguage.getJsonObject().get("frame_connection_title");
 	private boolean isVisible = true;
+	private boolean isSelectedRemember = (Boolean) loadingRememberMe.getJsonObject().get("remember_me");
 
 	/**
 	 * Containers
 	 */
+	private JPanel panelTop;
 	private JPanel contentPane = (JPanel) getContentPane();
 	private JPanel connexionPanel;
 	private JTextField identifiantField;
@@ -79,11 +91,14 @@ public class FrameConnection extends JFrame {
 	private JButton passwordForgot;
 	private JPanel connexion;
 	private JLabel passwordLabel;
-	private JPanel password;
+	private JPanel passwordPanel;
 	private JPanel identifiant;
 	private JLabel identifiantLabel;
 	private JPanel panelSelectLanguage;
 	private JComboBox<String> languageSelection;
+	private JPanel rememberMePanel;
+	private JLabel rememberMeLabel;
+	private JCheckBox rememberMeCheckBox;
 
 	/*
 	 * Gestion
@@ -94,9 +109,15 @@ public class FrameConnection extends JFrame {
 	/*
 	 * List de langue en string, et l'enum Language
 	 */
-	private String[] languagesString = { "English", "French", "Español" };
-	private String[] languagesStringForJComboBox = { "Select Languages", "English", "French", "Español" };
+	private String[] languagesString = { "English", "Francais" };
+	private String[] languagesStringForJComboBox = { "Select Languages", "English", "Francais" };
 	private ArrayList<Language> languages = new ArrayList<>();
+
+	/**
+	 * 
+	 */
+	private String password = "";
+	private String identifiantText = "";
 
 	public FrameConnection() {
 		super(title);
@@ -111,7 +132,7 @@ public class FrameConnection extends JFrame {
 		FrameConnection.language = language;
 		FrameConnection.loadingLanguage = new LoadingLanguage(language);
 		setOptionFrame();
-		contentPane.add(formulaireConnexion());
+		contentPane.add(formulaireConnexion(), BorderLayout.CENTER);
 		contentPane.add(panelSelectLanguage, BorderLayout.SOUTH);
 		setVisible(isVisible);
 	}
@@ -128,11 +149,35 @@ public class FrameConnection extends JFrame {
 		for (Language language : Language.values()) {
 			languages.add(language);
 		}
-		this.pack();
 		this.setSize(width, height);
 		this.setResizable(false);
 		this.setLocationRelativeTo(this);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		String line;
+		String string;
+		String[] strings;
+		if (Hopital.fileRememberme.exists() && isSelectedRemember == true) {
+			BufferedReader reader = new BufferedReader(Hopital.getRemembermeReaderFile());
+			try {
+				while ((line = reader.readLine()) != null) {
+					string = line;
+					strings = string.split("&");
+					identifiantText = strings[0];
+					password = strings[1];
+				}
+				reader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private JPanel setTopPanel() {
+		panelTop = new JPanel();
+
+		panelTop.add(rememberMePanel);
+
+		return panelTop;
 	}
 
 	/**
@@ -148,6 +193,7 @@ public class FrameConnection extends JFrame {
 		identifiantLabel = new JLabel((String) loadingLanguage.getJsonObject().get("frame_connection_id"));
 		identifiantField = new JTextField();
 		identifiantField.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
+		identifiantField.setText(identifiantText);
 		identifiantField.setPreferredSize(new Dimension(300, 50));
 		identifiantLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 30));
 		identifiant.add(identifiantLabel);
@@ -156,14 +202,15 @@ public class FrameConnection extends JFrame {
 		/*
 		 * Partie du mot de passe
 		 */
-		password = new JPanel(new GridLayout(2, 1));
+		passwordPanel = new JPanel(new GridLayout(2, 1));
 		passwordLabel = new JLabel((String) loadingLanguage.getJsonObject().get("frame_connection_password"));
 		passwordFeild = new JPasswordField();
 		passwordFeild.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
+		passwordFeild.setText(password);
 		passwordLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 30));
-		password.setPreferredSize(new Dimension(300, 100));
-		password.add(passwordLabel);
-		password.add(passwordFeild);
+		passwordPanel.setPreferredSize(new Dimension(300, 100));
+		passwordPanel.add(passwordLabel);
+		passwordPanel.add(passwordFeild);
 
 		/*
 		 * Partie de connexion
@@ -173,7 +220,7 @@ public class FrameConnection extends JFrame {
 		connexionButton.setPreferredSize(new Dimension(200, 40));
 
 		/*
-		 * Partie du mot de passe oubli§ et affichage d'un message erreur en rouge
+		 * Partie du mot de passe oublié et affichage d'un message erreur en rouge
 		 * disant mauvais mot de passe ou identifiant
 		 */
 		passwordForgot = new JButton((String) loadingLanguage.getJsonObject().get("frame_connection_password_forgot"));
@@ -182,22 +229,37 @@ public class FrameConnection extends JFrame {
 		passwordForgot.setContentAreaFilled(false);
 		wrongConnexion.setPreferredSize(new Dimension(100, 20));
 		wrongConnexion.setFont(new Font("Sans-Serif", Font.PLAIN, 15));
+
+		/**
+		 * Ajouter du button de connexion,
+		 * du button mot ou oublié et
+		 * message du mauvais mot de passe
+		 */
 		connexion.add(connexionButton);
 		connexion.add(passwordForgot);
 		connexion.add(wrongConnexion);
-
+		/**
+		 * Panel se souvenir de moi
+		 */
+		rememberMePanel = new JPanel(new FlowLayout());
+		rememberMeCheckBox = new JCheckBox();
+		rememberMeLabel = new JLabel("Remember Me");
+		rememberMePanel.add(rememberMeCheckBox);
+		rememberMePanel.add(rememberMeLabel);
+		rememberMeCheckBox.setSelected(isSelectedRemember);
 		/*
 		 * Le panel de selection langue
 		 */
-		panelSelectLanguage = new JPanel();
+		panelSelectLanguage = new JPanel(new FlowLayout());
 		languageSelection = new JComboBox<>(languagesStringForJComboBox);
 		panelSelectLanguage.add(languageSelection);
+		panelSelectLanguage.add(rememberMePanel);
 
 		/*
 		 * Ajout des panels au panel de connexion
 		 */
 		connexionPanel.add(identifiant);
-		connexionPanel.add(password);
+		connexionPanel.add(passwordPanel);
 		connexionPanel.add(connexion);
 
 		/*
@@ -226,8 +288,8 @@ public class FrameConnection extends JFrame {
 			/*
 			 * Variables
 			 */
-			String password = String.valueOf(passwordFeild.getPassword());
-			String identifiantText = identifiantField.getText();
+			identifiantText = identifiantField.getText();
+			password = String.valueOf(passwordFeild.getPassword());
 			String line;
 			String string;
 			String[] strings;
@@ -260,6 +322,7 @@ public class FrameConnection extends JFrame {
 								currentAdmin = Hopital.getAdmins().get(i);
 							}
 						}
+						setRemembermeFile();
 						new FrameAdmin();
 						dispose();
 					} else
@@ -286,6 +349,7 @@ public class FrameConnection extends JFrame {
 								currentMedecin = Hopital.getMedecins().get(i);
 							}
 						}
+						setRemembermeFile();
 						new FrameMedecin();
 						dispose();
 					} else
@@ -322,35 +386,84 @@ public class FrameConnection extends JFrame {
 		}
 	}
 
-    /**
+	/**
+	 * Stock le mot de passe et l'indentifiant dans un fichier
+	 * quand la case se souvenir est cocher
+	 * Et enregistre la case se se souvenir au prochain lancement
+	 * 
+	 */
+	private void setRemembermeFile() {
+		if (rememberMeCheckBox.isSelected()) {
+			try {
+				Hopital.fileRememberme.exists();
+				Hopital.fileRememberme.delete();
+				Hopital.createFileRememberme();
+				JSONObject rememberSelected = new JSONObject();
+				rememberSelected.put("remember_me", true);
+				try (FileWriter fileJson = new FileWriter(
+						(String) loadingPath.getJsonObject().get("path_rememberme"))) {
+					fileJson.write(rememberSelected.toJSONString());
+				}
+				BufferedWriter writerRememberme = new BufferedWriter(Hopital.getRemembermeFileWriter());
+				writerRememberme.write(identifiantText + "&" + password);
+				writerRememberme.newLine();
+				writerRememberme.close();
+				rememberSelected.clear();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} else {
+			try {
+				Hopital.fileRememberme.exists();
+				Hopital.fileRememberme.delete();
+				Hopital.fileRememberme.deleteOnExit();
+				JSONObject rememberSelected = new JSONObject();
+				rememberSelected.put("remember_me", false);
+				try (FileWriter fileJson = new FileWriter(
+						(String) loadingPath.getJsonObject().get("path_rememberme"))) {
+					fileJson.write(rememberSelected.toJSONString());
+				}
+				rememberSelected.clear();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
 	 * Applique la langue selectionner
 	 */
-	public class ItemListenerLanguageSelection implements ItemListener{
+	public class ItemListenerLanguageSelection implements ItemListener {
 		@Override
-			public void itemStateChanged(ItemEvent event) {
-				if (event.getStateChange() == ItemEvent.SELECTED) {
-					String item = (String) event.getItem();
-					int index = 0;
-					for (int i = 0; i < languagesString.length; i++) {
-						if (languagesString[i].equals(item)) {
-							index = i;
-							break;
-						}
+		public void itemStateChanged(ItemEvent event) {
+			if (event.getStateChange() == ItemEvent.SELECTED) {
+				String item = (String) event.getItem();
+				int index = 0;
+				for (int i = 0; i < languagesString.length; i++) {
+					if (languagesString[i].equals(item)) {
+						index = i;
+						break;
 					}
+				}
 
-					for (int i = 0; i < languages.size(); i++) {
-						if (i == index) {
+				for (int i = 0; i < languages.size(); i++) {
+					if (i == index) {
+						if (passwordFeild.getPassword() != null && identifiantField.getText() != null) {
+							password = String.valueOf(passwordFeild.getPassword());
+							identifiantText = identifiantField.getText();
 							language = languages.get(index);
-							System.out.println(language);
-							dispose();
-							new FrameConnection(language);
-							break;
 						}
+						dispose();
+						FrameConnection frame = new FrameConnection(language);
+						frame.identifiantField.setText(identifiantText);
+						frame.passwordFeild.setText(password);
+						break;
 					}
 				}
 			}
+		}
 	}
-	
+
 	/**
 	 * @return the currentMedecin
 	 */

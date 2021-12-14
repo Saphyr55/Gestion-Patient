@@ -23,6 +23,18 @@
     "frame_medecin_new_consultation_firstname_medecin":"Doctor's Firstname",
     "frame_medecin_new_consultation_lastname_patient":"Patient's Lastname",
     "frame_medecin_new_consultation_firstname_patient":"Patient's Firstname",
+    "frame_medecin_new_consultation_medical_advice":"Medical advice",
+    "frame_medecin_new_consultation_your_prescriptions":"Your prescriptions",
+    "frame_medecin_new_consultation_your_medical_divices_requests":"Your medical divices requests",
+    "frame_medecin_new_consultation_prescription":"Prescription",
+    "frame_medecin_new_consultation_medical_device":"Medical Device",
+    "frame_medecin_new_consultation_magnetic_resonance_imaging":"MRI",
+    "frame_medecin_new_consultation_radiology":"Radiology",
+    "frame_medecin_new_consultation_surgery":"Surgery",
+    "frame_medecin_new_consultation_diagnostics":"Diagnostics",
+    "frame_medecin_new_consultation_sign":"Sign",
+    "frame_medecin_new_consultation_cancel":"Cancel",
+    "frame_medecin_new_consultation_confirm":"Add",
 
     "frame_medecin_add_patient_title":"Add patient - Univ Tours",
     "frame_medecin_add_patient_lastname_patient":"Patient's lastname",
@@ -32,5 +44,18 @@
     "frame_medecin_add_patient_add":"Add",
     "frame_medecin_add_patient_cancel":"Cancel",
     
+    "appariel_medical": [
+        "Splint",
+        "Insufflation balloon",
+        "Oxygen cylinder",
+        "Sterile swabs",
+        "Nasal oxygen catheter",
+        "Blood pressure monitor",
+        "Electrocardiography",
+        "Cuff",
+        "Vascular doppler",
+        "Radiographer"
+     ],
+
     "":""
 }

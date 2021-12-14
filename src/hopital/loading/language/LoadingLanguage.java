@@ -16,7 +16,7 @@ public class LoadingLanguage {
 	private static final String encoding = "UTF-8";
 	
 	public LoadingLanguage(Language language) {
-		if(language == null) language = Language.EN;
+		if(language == null) language = Language.FR;
         parser = new JSONParser();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
