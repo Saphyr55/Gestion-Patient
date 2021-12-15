@@ -1,6 +1,3 @@
-/**
- * 
- */
 package windows.medecin;
 
 import javax.swing.BorderFactory;
@@ -17,12 +14,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 
 import org.json.simple.JSONArray;
 
@@ -32,6 +27,7 @@ import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
 import hopital.personnels.Medecin;
 import windows.FrameConnection;
+import windows.medecin.FrameMedecin.ActionListenerCancelButton;
 
 import java.awt.GridLayout;
 import java.awt.CardLayout;
@@ -41,31 +37,32 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 /**
+ * Classe du medecin qui permet de creer une consultation avec plusieur option
+ * 
  * @author Andy
- *
  */
 public class FrameConsultation extends JFrame {
 
 	/**
-	 *
+	 * Langue et dimensions de la fenetre
 	 */
 	private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
 	private static LoadingDimens loadingDimens = FrameConnection.getLoadingDimens();
-
-	private static boolean isVisible = true;
 	private final static int width = (int) ((long) loadingDimens.getJsonObject()
 			.get("frame_medecin_create_consultation_width"));
 	private final static int height = (int) ((long) loadingDimens.getJsonObject()
 			.get("frame_medecin_create_consultation_height"));
+
+	/**
+	 * Option generale
+	 */
+	private static boolean isVisible = true;
 
 	/**
 	 * Textes a charger
@@ -94,6 +91,7 @@ public class FrameConsultation extends JFrame {
 	 * 
 	 */
 	private JPanel contentPane = (JPanel) this.getContentPane();
+	private JFrame frameConsultation = FrameMedecin.getFrameConsultation();
 
 	/**
 	 * 
@@ -107,13 +105,9 @@ public class FrameConsultation extends JFrame {
 			(String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation_radiology"),
 			(String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation_surgery"),
 			(String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation_diagnostics") };
-	private JList<String> optionCanAddList;
+	private JList<String> panelSwitchList;
 	private JScrollPane optionCanAddScrollPane;
 	private DefaultListModel<String> optionCanAddModel = new DefaultListModel<>();
-	private JPanel optionAlreadyAddPanel;
-	private JList<String> optionAlreadyAddList;
-	private JScrollPane optionAlreadyAddScrollPane;
-	private DefaultListModel<String> optionAlreadyAddModel = new DefaultListModel<>();
 
 	/**
 	 * 
@@ -161,6 +155,7 @@ public class FrameConsultation extends JFrame {
 	private JButton appariellageToAddButton;
 	private JList<String> appariellageToAddList;
 	private DefaultListModel<String> appariellageToAddModel = new DefaultListModel<>();
+	private String[] appariellageToAddTab;
 	private JScrollPane appariellageToAddScrollPane;
 	private JSONArray appariellagesJsonArray = (JSONArray) loadingLanguage.getJsonObject().get("appariel_medical");
 	private Iterator<?> appariellages = appariellagesJsonArray.iterator();
@@ -193,10 +188,9 @@ public class FrameConsultation extends JFrame {
 	}
 
 	/**
-	 *
+	 * Option generale de la fenetre
 	 */
 	private void setOptionWindow() {
-
 		try {
 			UIManager.setLookAndFeel(FrameConnection.getModel());
 		} catch (Exception ex) {
@@ -215,6 +209,8 @@ public class FrameConsultation extends JFrame {
 	}
 
 	/**
+	 * Creer le panel ouest
+	 * Contient la liste de swicht panel
 	 * 
 	 * @return panel du west
 	 */
@@ -227,8 +223,8 @@ public class FrameConsultation extends JFrame {
 			optionCanAddModel.addElement(optionAddListStrings[i]);
 		}
 
-		optionCanAddList = new JList<>(optionCanAddModel);
-		optionCanAddScrollPane = new JScrollPane(optionCanAddList);
+		panelSwitchList = new JList<>(optionCanAddModel);
+		optionCanAddScrollPane = new JScrollPane(panelSwitchList);
 		optionCanAddScrollPane.setPreferredSize(new Dimension(200, height));
 		optionCanAddPanel.add(optionCanAddScrollPane);
 
@@ -237,11 +233,17 @@ public class FrameConsultation extends JFrame {
 		panelWest.add(optionCanAddPanel);
 		panelWest.setLayout(new BoxLayout(panelWest, BoxLayout.Y_AXIS));
 
-		optionCanAddList.addListSelectionListener(new OptionCanAddListSelectionListener());
+		panelSwitchList.addListSelectionListener(new panelSwitchListSelectionListener());
 
 		return panelWest;
 	}
 
+	/**
+	 * Creer le panel central
+	 * Contient le switch panel et le panel de l'avis medical
+	 * 
+	 * @return panelCenter
+	 */
 	private JPanel setCenterPanel() {
 		panelCenter = new JPanel();
 		panelCenter.setLayout(new BoxLayout(panelCenter, BoxLayout.Y_AXIS));
@@ -253,6 +255,13 @@ public class FrameConsultation extends JFrame {
 		return panelCenter;
 	}
 
+	/**
+	 * Creer le panel de switch
+	 * Ce panel contient plusieurs panel qui sur eux meme
+	 * Selectionne un panel lors du clique de la liste de switch panel
+	 * 
+	 * @return switchPanel
+	 */
 	private JPanel setSwitchPanel() {
 		switchPanel = new JPanel(new CardLayout());
 		switchPanel.add(setPrescriptionPanel());
@@ -260,6 +269,13 @@ public class FrameConsultation extends JFrame {
 		return switchPanel;
 	}
 
+	/**
+	 * Affiche les données du patient courant
+	 * Affiche nom, prenom, age, date de naissance
+	 * et le numero de securité social
+	 * 
+	 * @return dataPatientPanel
+	 */
 	private JPanel setDataPatientPanel() {
 
 		dataPatientPanel = new JPanel(new FlowLayout());
@@ -288,6 +304,12 @@ public class FrameConsultation extends JFrame {
 		return dataPatientPanel;
 	}
 
+	/**
+	 * Creer le panel de avis medical
+	 * Permet au medecin d'écrire son avis medical
+	 * 
+	 * @return avisMedicalPanel
+	 */
 	private JPanel setAvisMedicalPanel() {
 
 		avisMedicalPanel = new JPanel();
@@ -308,6 +330,12 @@ public class FrameConsultation extends JFrame {
 		return avisMedicalPanel;
 	}
 
+	/**
+	 * Creer le panel de prescription
+	 * Permet au medecin d'écrire la prescription
+	 * 
+	 * @return prescriptionPanel
+	 */
 	private JPanel setPrescriptionPanel() {
 		prescriptionPanel = new JPanel();
 		prescriptionLabel = new JLabel(frame_medecin_new_consultation_your_prescriptions);
@@ -327,6 +355,14 @@ public class FrameConsultation extends JFrame {
 		return prescriptionPanel;
 	}
 
+	/**
+	 * Creer le panel de demande de requette d'apperiellage
+	 * Affiche deux liste ; la liste qui contient tout les apperielles
+	 * q'un patient peut avoir et une liste recois l'ajout d'une requette
+	 * d'appariellage
+	 * 
+	 * @return appariellagePanel
+	 */
 	private JPanel setAppariellagePanel() {
 
 		/**
@@ -336,6 +372,10 @@ public class FrameConsultation extends JFrame {
 
 		while (appariellages.hasNext()) {
 			appariellageToAddModel.addElement((String) appariellages.next());
+		}
+		appariellageToAddTab = new String[appariellageToAddModel.size()];
+		for (int i = 0; i < appariellageToAddModel.size(); i++) {
+			appariellageToAddTab[i] = appariellageToAddModel.get(i);
 		}
 
 		//
@@ -348,9 +388,12 @@ public class FrameConsultation extends JFrame {
 		appariellageToAddInputPanel.add(apparielFiltreTextField, BorderLayout.CENTER);
 		appariellageToAddInputPanel.add(appariellageToAddButton, BorderLayout.EAST);
 		appariellageToAddInputPanel.setPreferredSize(new Dimension(200, 30));
+		apparielFiltreTextField.getDocument().addDocumentListener(new ApparielFiltreTextFieldFiltre());
+		appariellageToAddButton.addActionListener(new AppariellageToAddButtonActionListener());
 		//
 		appariellageToAddList = new JList<>(appariellageToAddModel);
 		appariellageToAddScrollPane = new JScrollPane(appariellageToAddList);
+		appariellageToAddList.addListSelectionListener(new AppariellageToAddListListener());
 		//
 		appariellageToAddPanel.add(appariellageToAddInputPanel, BorderLayout.NORTH);
 		appariellageToAddPanel.add(appariellageToAddScrollPane, BorderLayout.CENTER);
@@ -376,6 +419,13 @@ public class FrameConsultation extends JFrame {
 		return appariellagePanel;
 	}
 
+	/**
+	 * Creer le panel de confimation d'une consultation.
+	 * Contient la signature, le bouton de confimation qui s'active
+	 * si le medecin signe. Et contient de bouton annuler
+	 * 
+	 * @return confirmConsultationPanel
+	 */
 	private JPanel setConfirmConsultationPanel() {
 
 		confirmConsultationPanel = new JPanel(new FlowLayout());
@@ -392,17 +442,99 @@ public class FrameConsultation extends JFrame {
 		confirmConsultationPanel.add(Box.createHorizontalStrut(150));
 		confirmConsultationPanel.add(confirmButton);
 		confirmConsultationPanel.add(cancelButton);
-		cancelButton.addActionListener(new ActionListenerCancelButton());
+		cancelButton.addActionListener(new FrameMedecin.ActionListenerCancelButton());
 		signCheckBox.addActionListener(new ActionListenerSignBox());
 
 		return confirmConsultationPanel;
 	}
 
-	private class OptionCanAddListSelectionListener implements ListSelectionListener {
+	/**
+	 * Filtre de menu de recherche d'un appariellage
+	 * 
+	 * @param model
+	 * @param filter
+	 */
+	private void filterModel(DefaultListModel<String> model, String filter) {
+		for (String string : appariellageToAddTab) {
+			if (!string.startsWith(filter)) {
+				if (model.contains(string)) {
+					model.removeElement(string);
+				}
+			} else {
+				if (!model.contains(string)) {
+					model.addElement(string);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Filtre de menu de recherche d'un appariellage
+	 * 
+	 */
+	private class ApparielFiltreTextFieldFiltre implements DocumentListener {
+
+		@Override
+		public void insertUpdate(DocumentEvent e) {
+			filter();
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent e) {
+			filter();
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent e) {
+			filter();
+		}
+
+		/**
+		 * Recupere l'entrée dans le text field
+		 * Et applique filtre model dans notre liste de patient
+		 */
+		private void filter() {
+			String filter = apparielFiltreTextField.getText();
+			filterModel((DefaultListModel<String>) appariellageToAddList.getModel(),
+					filter);
+		}
+
+	}
+
+	/**
+	 * Afficher le appariellage selectionner dans le text field
+	 */
+	private class AppariellageToAddListListener implements ListSelectionListener {
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			String value = appariellageToAddList.getSelectedValue();
+			// apparielFiltreTextField.setText(value);
+		}
+	}
+
+	/**
+	 * Recupere l'appariellage selectionner la dans liste, et
+	 * vérifie si le text field contient un apparielle.
+	 * Si oui l'ajoute a liste de requette d'appariellage
+	 */
+	private class AppariellageToAddButtonActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (appariellageToAddModel.contains(apparielFiltreTextField.getText())) {
+				appariellageAlreadyAddModel.addElement(apparielFiltreTextField.getText());
+			}
+		}
+
+	}
+
+	/**
+	 * Affiche la partie de la fenetre selectionner
+	 */
+	private class panelSwitchListSelectionListener implements ListSelectionListener {
 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			int index = optionCanAddList.getSelectedIndex();
+			int index = panelSwitchList.getSelectedIndex();
 			if (index == 0) {
 				appariellagePanel.setVisible(false);
 				prescriptionPanel.setVisible(true);
@@ -417,6 +549,9 @@ public class FrameConsultation extends JFrame {
 		}
 	}
 
+	/**
+	 * Active le bouton ajouter si le medecin signe
+	 */
 	private class ActionListenerSignBox implements ActionListener {
 
 		@Override
@@ -426,13 +561,6 @@ public class FrameConsultation extends JFrame {
 			} else if (!signCheckBox.isSelected()) {
 				confirmButton.setEnabled(false);
 			}
-		}
-	}
-
-	private class ActionListenerCancelButton implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			dispose();
 		}
 	}
 }

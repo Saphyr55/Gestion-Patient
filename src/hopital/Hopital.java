@@ -89,7 +89,7 @@ public abstract class Hopital {
 				Hopital.fileRememberme = fileRememberme;
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 

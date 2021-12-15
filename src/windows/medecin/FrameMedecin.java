@@ -38,7 +38,6 @@ import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.formdev.flatlaf.FlatIntelliJLaf;
 
 import hopital.Consultation;
 import hopital.Hopital;
@@ -644,6 +643,23 @@ public class FrameMedecin extends JFrame {
 		return currentPatient;
 	}
 
+	/**
+	 * @return frameConsultation
+	 */
+	public static FrameConsultation getFrameConsultation() {
+		return frameConsultation;
+	}
+
+	/**
+	 * @return frameAddPatientWithMedecin
+	 */
+	public static FrameAddPatientWithMedecin getFrameAddPatientWithMedecin() {
+		return frameAddPatientWithMedecin;
+	}
+
+	/**
+	 * Le listener du text field pour chercher un patient
+	 */
 	public class DocumentListenerPatientField implements DocumentListener {
 
 		@Override
@@ -671,4 +687,14 @@ public class FrameMedecin extends JFrame {
 		}
 	}
 
+	/**
+	 * Ferme la fenetre au clique du bouton annuler de la fenetre de consultation
+	 */
+	public static class ActionListenerCancelButton implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			frameConsultation.dispose();
+			frameConsultation = null;
+		}
+	}
 }
