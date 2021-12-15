@@ -1,4 +1,4 @@
-package hopital.test;
+package test;
 
 import hopital.Hopital;
 import windows.medecin.FrameConsultation;

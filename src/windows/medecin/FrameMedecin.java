@@ -152,7 +152,7 @@ public class FrameMedecin extends JFrame {
 	 */
 	private void setOptionFrame() {
 		try {
-			UIManager.setLookAndFeel(new FlatIntelliJLaf());
+			UIManager.setLookAndFeel(FrameConnection.getModel());
 		} catch (Exception ex) {
 			System.err.println("Failed to initialize LaF");
 		}
@@ -644,7 +644,7 @@ public class FrameMedecin extends JFrame {
 		return currentPatient;
 	}
 
-	public class DocumentListenerPatientField implements DocumentListener{
+	public class DocumentListenerPatientField implements DocumentListener {
 
 		@Override
 		public void insertUpdate(DocumentEvent e) {

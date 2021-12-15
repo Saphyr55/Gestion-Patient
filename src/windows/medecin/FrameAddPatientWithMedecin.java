@@ -111,7 +111,7 @@ public class FrameAddPatientWithMedecin extends JFrame {
      */
     private void setOptionFrame() {
         try {
-            UIManager.setLookAndFeel(new FlatIntelliJLaf());
+            UIManager.setLookAndFeel(FrameConnection.getModel());
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }

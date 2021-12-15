@@ -11,7 +11,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,11 +25,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.LookAndFeel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
-import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
-import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatLaf;
 
 import org.json.simple.JSONObject;
 
@@ -75,8 +78,9 @@ public class FrameConnection extends JFrame {
 	private final static int height = (int) ((long) loadingDimens.getJsonObject().get("frame_connection_height"));
 	private final static int width = (int) ((long) loadingDimens.getJsonObject().get("frame_connection_width"));
 	private final static String title = (String) loadingLanguage.getJsonObject().get("frame_connection_title");
-	private boolean isVisible = true;
-	private boolean isSelectedRemember = (Boolean) loadingRememberMe.getJsonObject().get("remember_me");
+	private static boolean isVisible = true;
+	private static boolean isSelectedRemember = (Boolean) loadingRememberMe.getJsonObject().get("remember_me");
+	private static LookAndFeel model = new FlatIntelliJLaf();
 
 	/**
 	 * Containers
@@ -99,6 +103,7 @@ public class FrameConnection extends JFrame {
 	private JPanel rememberMePanel;
 	private JLabel rememberMeLabel;
 	private JCheckBox rememberMeCheckBox;
+	private static JButton switchDarkMode;
 
 	/*
 	 * Gestion
@@ -121,7 +126,7 @@ public class FrameConnection extends JFrame {
 
 	public FrameConnection() {
 		super(title);
-		setOptionFrame();
+		setOptionFrame(model);
 		contentPane.add(formulaireConnexion());
 		contentPane.add(panelSelectLanguage, BorderLayout.SOUTH);
 		setVisible(isVisible);
@@ -131,7 +136,17 @@ public class FrameConnection extends JFrame {
 		super(title);
 		FrameConnection.language = language;
 		FrameConnection.loadingLanguage = new LoadingLanguage(language);
-		setOptionFrame();
+		setOptionFrame(model);
+		contentPane.add(formulaireConnexion(), BorderLayout.CENTER);
+		contentPane.add(panelSelectLanguage, BorderLayout.SOUTH);
+		setVisible(isVisible);
+	}
+
+	public FrameConnection(Language language, LookAndFeel model) {
+		super(title);
+		FrameConnection.language = language;
+		FrameConnection.loadingLanguage = new LoadingLanguage(language);
+		setOptionFrame(model);
 		contentPane.add(formulaireConnexion(), BorderLayout.CENTER);
 		contentPane.add(panelSelectLanguage, BorderLayout.SOUTH);
 		setVisible(isVisible);
@@ -140,9 +155,10 @@ public class FrameConnection extends JFrame {
 	/**
 	 * Option de la frame de connexion
 	 */
-	private void setOptionFrame() {
+	private void setOptionFrame(LookAndFeel model) {
+		this.model = (FlatLaf) model;
 		try {
-			UIManager.setLookAndFeel(new FlatIntelliJLaf());
+			UIManager.setLookAndFeel(model);
 		} catch (Exception ex) {
 			System.err.println("Failed to initialize LaF");
 		}
@@ -170,14 +186,6 @@ public class FrameConnection extends JFrame {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	private JPanel setTopPanel() {
-		panelTop = new JPanel();
-
-		panelTop.add(rememberMePanel);
-
-		return panelTop;
 	}
 
 	/**
@@ -247,6 +255,14 @@ public class FrameConnection extends JFrame {
 		rememberMePanel.add(rememberMeCheckBox);
 		rememberMePanel.add(rememberMeLabel);
 		rememberMeCheckBox.setSelected(isSelectedRemember);
+
+		/**
+		 * Button switch dark mode
+		 */
+		switchDarkMode = new JButton("Dark Mode");
+		switchDarkMode.setPreferredSize(new Dimension(100, 30));
+		switchDarkMode.addActionListener(new SwitchDarkModeButtonActionListener());
+
 		/*
 		 * Le panel de selection langue
 		 */
@@ -254,6 +270,7 @@ public class FrameConnection extends JFrame {
 		languageSelection = new JComboBox<>(languagesStringForJComboBox);
 		panelSelectLanguage.add(languageSelection);
 		panelSelectLanguage.add(rememberMePanel);
+		panelSelectLanguage.add(switchDarkMode);
 
 		/*
 		 * Ajout des panels au panel de connexion
@@ -274,6 +291,26 @@ public class FrameConnection extends JFrame {
 		languageSelection.addItemListener(new ItemListenerLanguageSelection());
 
 		return connexionPanel;
+	}
+
+	/**
+	 * Change en mode dark ou light
+	 */
+	public class SwitchDarkModeButtonActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (switchDarkMode.getText().equals("Dark Mode")) {
+				model = new FlatDarculaLaf();
+				dispose();
+				new FrameConnection(FrameConnection.getLanguage(), model);
+				switchDarkMode.setText("Light Mode");
+			} else if (switchDarkMode.getText().equals("Light Mode")) {
+				model = new FlatIntelliJLaf();
+				dispose();
+				new FrameConnection(FrameConnection.getLanguage(), model);
+				switchDarkMode.setText("Dark Mode");
+			}
+		}
 	}
 
 	/**
@@ -513,6 +550,10 @@ public class FrameConnection extends JFrame {
 	 */
 	public static LoadingDimens getLoadingDimens() {
 		return loadingDimens;
+	}
+
+	public static LookAndFeel getModel() {
+		return model;
 	}
 
 }

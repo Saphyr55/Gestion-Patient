@@ -6,6 +6,8 @@ import javax.swing.UIManager;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 
+import windows.FrameConnection;
+
 public class FrameAdmin extends JFrame {
 
 	/**
@@ -42,7 +44,7 @@ public class FrameAdmin extends JFrame {
 	 */
 	private void setOptionFrame() {
 		try {
-			UIManager.setLookAndFeel( new FlatDarculaLaf() );
+			UIManager.setLookAndFeel(FrameConnection.getModel());
 		} catch( Exception ex ) {
 			System.err.println( "Failed to initialize LaF" );
 		}

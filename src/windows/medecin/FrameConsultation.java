@@ -198,7 +198,7 @@ public class FrameConsultation extends JFrame {
 	private void setOptionWindow() {
 
 		try {
-			UIManager.setLookAndFeel(new FlatIntelliJLaf());
+			UIManager.setLookAndFeel(FrameConnection.getModel());
 		} catch (Exception ex) {
 			System.err.println("Failed to initialize LaF");
 		}
