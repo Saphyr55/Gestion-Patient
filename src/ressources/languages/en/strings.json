@@ -1,4 +1,17 @@
 {
+    "appariel_medical": [
+        "Splint",
+        "Insufflation balloon",
+        "Oxygen cylinder",
+        "Sterile swabs",
+        "Nasal oxygen catheter",
+        "Blood pressure monitor",
+        "Electrocardiography",
+        "Cuff",
+        "Vascular doppler",
+        "Radiographer"
+     ],
+
     "frame_connection_title":"Connection - Univ Tours",
     "frame_connection_id":"Your ID",
     "frame_connection_password":"Your password",
@@ -44,18 +57,18 @@
     "frame_medecin_add_patient_add":"Add",
     "frame_medecin_add_patient_cancel":"Cancel",
     
-    "appariel_medical": [
-        "Splint",
-        "Insufflation balloon",
-        "Oxygen cylinder",
-        "Sterile swabs",
-        "Nasal oxygen catheter",
-        "Blood pressure monitor",
-        "Electrocardiography",
-        "Cuff",
-        "Vascular doppler",
-        "Radiographer"
-     ],
+    "frame_admin_title":"Administrator - Univ Tours",
+    "frame_admin_lastname":"Lastname",
+    "frame_admin_firstname":"Firstname",
+    "frame_admin_birthday":"Birthday",
+    "frame_admin_secu_number":"Social security number",
+    "frame_admin_phone":"Number phone",
+    "frame_admin_adresse":"Address",
+    "frame_admin_switch_mode_modification":"Switch to edit mode",
+    "frame_admin_confirm_modification":"Confirm the modification",
+    "frame_admin_confirm_delete_patient":"Are you sure you want to delete the patient ?",
+    "frame_admin_popup_add":"Add",
+    "frame_admin_popup_delete":"Delete",
 
     "":""
 }

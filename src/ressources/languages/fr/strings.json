@@ -1,4 +1,17 @@
-{
+{   
+    "appariel_medical": [
+        "Attelle",
+        "Ballon d’insufflation",
+        "Bouteille d'oxygène",
+        "Compresses stériles",
+        "Sonde nasale à oxygène",
+        "Tensiomètre",
+        "Électrocardiographie (ECG)",
+        "Brassard",
+        "Doppler vasculaire",
+        "Radiographe"
+    ],
+
     "frame_connection_title" : "Connexion - Univ Tours",
     "frame_connection_id" : "Votre identifiant",
     "frame_connection_password" : "Votre mot de passe",
@@ -44,18 +57,18 @@
     "frame_medecin_add_patient_add":"Ajouter",
     "frame_medecin_add_patient_cancel":"Annuler",
 
-    "appariel_medical": [
-        "Attelle",
-        "Ballon d’insufflation",
-        "Bouteille d'oxygène",
-        "Compresses stériles",
-        "Sonde nasale à oxygène",
-        "Tensiomètre",
-        "Électrocardiographie (ECG)",
-        "Brassard",
-        "Doppler vasculaire",
-        "Radiographe"
-    ],
+    "frame_admin_title":"Administrateur - Univ Tours",
+    "frame_admin_lastname":"Nom",
+    "frame_admin_firstname":"Prénom",
+    "frame_admin_birthday":"Date de naissance",
+    "frame_admin_secu_number":"Numero de securité social",
+    "frame_admin_phone":"Telephone",
+    "frame_admin_adresse":"Adresse",
+    "frame_admin_switch_mode_modification":"Passer en mode modification",
+    "frame_admin_confirm_modification":"Confirmer la modification",
+    "frame_admin_confirm_delete_patient":"Êtes-vous sûr de supprimer le patient",
+    "frame_admin_popup_add":"Ajouter",
+    "frame_admin_popup_delete":"Supprimer",
 
     "":""
 }
