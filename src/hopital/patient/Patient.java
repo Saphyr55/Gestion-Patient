@@ -29,8 +29,14 @@ public class Patient implements IPersonne {
 	private String firstName;
 	private LocalDate birthday;
 	private String secuNumber;
+	private String phoneNumber;
+	private String address;
 
 	private File ordonnanceDirectory;
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
 	private ArrayList<Consultation> ordonnances = new ArrayList<>();
 	private ArrayList<File> ordonnancesFile = new ArrayList<>();
 	private int nLine = 1;
@@ -51,7 +57,8 @@ public class Patient implements IPersonne {
 	 * @param secuNumber
 	 * @param patientTypeCreate
 	 */
-	public Patient(String firstName, String lastName, LocalDate birthday, String secuNumber) {
+	public Patient(String firstName, String lastName, LocalDate birthday, String secuNumber, String phoneNumber,
+			String address) {
 
 		/**
 		 * Toute premiere creation du patient
@@ -68,6 +75,8 @@ public class Patient implements IPersonne {
 			this.firstName = firstName;
 			this.birthday = birthday;
 			this.secuNumber = secuNumber;
+			this.address = address;
+			this.phoneNumber = phoneNumber;
 			ordonnances = new ArrayList<>();
 			if (this.lastName == null) {
 				this.lastName = "None";
@@ -91,20 +100,14 @@ public class Patient implements IPersonne {
 			 * Ecriture dans le dossier patients de l'hopital
 			 */
 			writer = new BufferedWriter(Hopital.getPatientsWriterFile());
-			writer.write(id + "&" + getFirstName() + "&" + getLastName() + "&"
-					+ Hopital.FORMATEUR_DATE.format(getBirthday()) + "&" + this.secuNumber);
+			writer.write(id + Hopital.SEPARATOR + getFirstName() + Hopital.SEPARATOR + getLastName() + Hopital.SEPARATOR
+					+ Hopital.FORMATEUR_DATE.format(getBirthday()) + Hopital.SEPARATOR + this.secuNumber);
 			writer.newLine();
+			reader.close();
+			writer.close();
 			Hopital.getPatients().add(this);
-
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				reader.close();
-				writer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -117,13 +120,18 @@ public class Patient implements IPersonne {
 	 * @param lastName
 	 * @param birthday
 	 * @param secuNumber
+	 * @param phoneNumber
+	 * @param address
 	 */
-	public Patient(int id, String firstName, String lastName, LocalDate birthday, String secuNumber) {
+	public Patient(int id, String firstName, String lastName, LocalDate birthday, String secuNumber, String phoneNumber,
+			String address) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.birthday = birthday;
 		this.secuNumber = secuNumber;
+		this.address = address;
+		this.phoneNumber = phoneNumber;
 		Hopital.getPatients().add(this);
 	}
 
@@ -137,6 +145,8 @@ public class Patient implements IPersonne {
 		this.lastName = "";
 		this.birthday = LocalDate.now();
 		this.secuNumber = "0000000000";
+		this.phoneNumber = "00000000";
+		this.address = "";
 	}
 
 	/**
@@ -151,24 +161,27 @@ public class Patient implements IPersonne {
 	 * @param lastName
 	 * @param birthday
 	 * @param secuNumber
+	 * @param phoneNumber
+	 * @param address
 	 * @param patientTypeCreate
 	 */
 	public Patient(int id, Medecin medecin, String firstName, String lastName, LocalDate birthday, String secuNumber,
-			PatientTypeCreate patientTypeCreate) {
+			String phoneNumber, String address, PatientTypeCreate patientTypeCreate) {
 		if (patientTypeCreate == PatientTypeCreate.CREATE_PATIENT_WITH_MEDECIN) {
 			this.id = id;
 			this.firstName = firstName;
 			this.lastName = lastName;
 			this.birthday = birthday;
 			this.secuNumber = secuNumber;
-
+			this.address = address;
+			this.phoneNumber = phoneNumber;
 			/*
 			 * Ecriture dans le fichier patients du medecin
 			 */
 			try {
 				BufferedWriter writer = new BufferedWriter(new FileWriter(medecin.getPatientsFile(), true));
-				writer.write(nLine + "&" + this.id + "&" + getFirstName() + "&" + getLastName() + "&"
-						+ Hopital.FORMATEUR_DATE.format(getBirthday() + "&" + this.secuNumber));
+				writer.write(nLine + Hopital.SEPARATOR + this.id + Hopital.SEPARATOR + getFirstName() + Hopital.SEPARATOR + getLastName() + Hopital.SEPARATOR
+						+ Hopital.FORMATEUR_DATE.format(getBirthday() + Hopital.SEPARATOR + this.secuNumber+Hopital.SEPARATOR+this.phoneNumber+Hopital.SEPARATOR+this.address));
 				nLine++;
 				writer.newLine();
 				writer.close();
@@ -187,6 +200,8 @@ public class Patient implements IPersonne {
 			this.lastName = lastName;
 			this.birthday = birthday;
 			this.secuNumber = secuNumber;
+			this.address = address;
+			this.phoneNumber = phoneNumber;
 			medecin.getPatients().add(this);
 		}
 	}
@@ -308,5 +323,26 @@ public class Patient implements IPersonne {
 	 */
 	public void setSecuNumber(String secuNumber) {
 		this.secuNumber = secuNumber;
+	}
+
+	/**
+	 * @param phoneNumber
+	 */
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+	
+	/**
+	 * @return address
+	 */
+	public String getAddress() {
+		return address;
+	}
+
+	/**
+	 * @param address
+	 */
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }

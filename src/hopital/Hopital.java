@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -77,6 +76,7 @@ public abstract class Hopital {
 	public static final String FORMAT_DATE = "dd/MM/yyyy";
 	public static final SimpleDateFormat FORMATEUR_DATE = new SimpleDateFormat(FORMAT_DATE);
 	public static final DateTimeFormatter FORMATEUR_LOCALDATE = DateTimeFormatter.ofPattern(FORMAT_DATE);
+	public static final String SEPARATOR = "&";
 
 	/**
 	 * Crée le fichier remember me
@@ -105,7 +105,7 @@ public abstract class Hopital {
 
 			while ((line = readerAdmins.readLine()) != null) {
 				string = line;
-				strings = string.split("&");
+				strings = string.split(SEPARATOR);
 
 				new Administrator(Integer.parseInt(strings[1]), strings[2], strings[3], strings[4], strings[5]);
 			}
@@ -136,7 +136,7 @@ public abstract class Hopital {
 
 			while ((line = readerMedecin.readLine()) != null) {
 				string = line;
-				strings = string.split("&");
+				strings = string.split(SEPARATOR);
 
 				new Medecin(Integer.parseInt(strings[1]), strings[2], strings[3], strings[4], strings[5]);
 			}
@@ -150,9 +150,9 @@ public abstract class Hopital {
 				strings = null;
 				while ((line = readerMedecinPatients.readLine()) != null) {
 					string = line;
-					strings = string.split("&");
+					strings = string.split(SEPARATOR);
 					LocalDate date = LocalDate.parse(strings[4], FORMATEUR_LOCALDATE);
-					new Patient(Integer.parseInt(strings[1]), medecin, strings[2], strings[3], date, strings[5],
+					new Patient(Integer.parseInt(strings[1]), medecin, strings[2], strings[3], date, strings[5], strings[6], strings[7],
 							Patient.PatientTypeCreate.LOADING_PATIENT_WITH_MEDECIN_IN_LIST);
 				}
 			}
@@ -182,35 +182,11 @@ public abstract class Hopital {
 
 			while ((line = readerPatients.readLine()) != null) {
 				string = line;
-				strings = string.split("&");
-
+				strings = string.split(SEPARATOR);
+				
 				LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);
 
-				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date, strings[4]);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/*
-	 * Lis le fichier patients puis ajoute les patients du fichier
-	 * dans une arryalist
-	 */
-	public static void loadingPatientLogger() {
-		try {
-			readerPatients = new BufferedReader(getPatientsReaderFile());
-			String line = null;
-			String string = null;
-			String[] strings = null;
-
-			while ((line = readerPatients.readLine()) != null) {
-				string = line;
-				strings = string.split("&");
-
-				LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);
-
-				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date, strings[4]);
+				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date, strings[4], strings[5], strings[6]);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

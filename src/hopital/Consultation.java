@@ -104,10 +104,9 @@ public class Consultation {
      * @param medicaments
      */
 	private void formatageOrdonnance(File ordonnance, Medecin medecin, Patient patient, ArrayList<String> medicaments) {
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");     
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(ordonnance, true));
-			writer.write("Ordonnance du "+formatter.format(this.getDateOrdonnance()));
+			writer.write("Ordonnance du "+Hopital.FORMATEUR_DATE.format(this.getDateOrdonnance()));
 			writer.newLine();
 			writer.newLine();
 			writer.write("Nom du patient : "+patient.getLastName());
