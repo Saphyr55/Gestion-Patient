@@ -147,7 +147,7 @@ public class FrameConsultation extends JFrame {
 	private JList<String> appariellageAlreadyAddList;
 	private DefaultListModel<String> appariellageAlreadyAddModel = new DefaultListModel<>();
 	private JScrollPane appariellageAlreadyAddScrollPane;
-	private ArrayList<String> appariellageAlreadyAddArrayList;
+	private ArrayList<String> appariellageAlreadyAddArrayList = new ArrayList<>();
 
 	private JPanel appariellageToAddPanel;
 	private JPanel appariellageToAddListPanel, appariellageToAddInputPanel;
@@ -174,6 +174,7 @@ public class FrameConsultation extends JFrame {
 	private Medecin currentMedecin = FrameConnection.getCurrentMedecin();
 	private Patient currentPatient = FrameMedecin.getSelectedPatient();
 	private LocalDate today = LocalDate.now();
+	private String value;
 
 	/**
 	 * Constructeur de la fenetre de la creation d'ordonnance
@@ -388,7 +389,6 @@ public class FrameConsultation extends JFrame {
 		appariellageToAddInputPanel.add(apparielFiltreTextField, BorderLayout.CENTER);
 		appariellageToAddInputPanel.add(appariellageToAddButton, BorderLayout.EAST);
 		appariellageToAddInputPanel.setPreferredSize(new Dimension(200, 30));
-		apparielFiltreTextField.getDocument().addDocumentListener(new ApparielFiltreTextFieldFiltre());
 		appariellageToAddButton.addActionListener(new AppariellageToAddButtonActionListener());
 		//
 		appariellageToAddList = new JList<>(appariellageToAddModel);
@@ -449,79 +449,28 @@ public class FrameConsultation extends JFrame {
 	}
 
 	/**
-	 * Filtre de menu de recherche d'un appariellage
-	 * 
-	 * @param model
-	 * @param filter
-	 */
-	private void filterModel(DefaultListModel<String> model, String filter) {
-		for (String string : appariellageToAddTab) {
-			if (!string.startsWith(filter)) {
-				if (model.contains(string)) {
-					model.removeElement(string);
-				}
-			} else {
-				if (!model.contains(string)) {
-					model.addElement(string);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Filtre de menu de recherche d'un appariellage
-	 * 
-	 */
-	private class ApparielFiltreTextFieldFiltre implements DocumentListener {
-
-		@Override
-		public void insertUpdate(DocumentEvent e) {
-			filter();
-		}
-
-		@Override
-		public void removeUpdate(DocumentEvent e) {
-			filter();
-		}
-
-		@Override
-		public void changedUpdate(DocumentEvent e) {
-			filter();
-		}
-
-		/**
-		 * Recupere l'entrée dans le text field
-		 * Et applique filtre model dans notre liste de patient
-		 */
-		private void filter() {
-			String filter = apparielFiltreTextField.getText();
-			filterModel((DefaultListModel<String>) appariellageToAddList.getModel(),
-					filter);
-		}
-
-	}
-
-	/**
 	 * Afficher le appariellage selectionner dans le text field
 	 */
 	private class AppariellageToAddListListener implements ListSelectionListener {
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			String value = appariellageToAddList.getSelectedValue();
-			// apparielFiltreTextField.setText(value);
+			value = appariellageToAddList.getSelectedValue();
+			apparielFiltreTextField.setText(value);
 		}
 	}
 
 	/**
 	 * Recupere l'appariellage selectionner la dans liste, et
 	 * vérifie si le text field contient un apparielle.
-	 * Si oui l'ajoute a liste de requette d'appariellage
+	 * Si oui l'ajoute a liste de requette d'appariellage q"une seul fois
 	 */
 	private class AppariellageToAddButtonActionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (appariellageToAddModel.contains(apparielFiltreTextField.getText())) {
+			if (appariellageToAddModel.contains(apparielFiltreTextField.getText())
+					&& !appariellageAlreadyAddArrayList.contains(apparielFiltreTextField.getText())) {
 				appariellageAlreadyAddModel.addElement(apparielFiltreTextField.getText());
+				appariellageAlreadyAddArrayList.add(apparielFiltreTextField.getText());
 			}
 		}
 

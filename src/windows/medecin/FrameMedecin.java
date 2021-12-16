@@ -113,7 +113,7 @@ public class FrameMedecin extends JFrame {
 	private ArrayList<String> listNamePatient = new ArrayList<>();
 
 	/**
-	 * Composant des donn§es
+	 * Composant des données
 	 */
 	private JPanel panelPatient, panelTop, panelBottom, panelData, panelConsultation;
 	private JLabel lastNamePatient, firstNamePatient, birthdayPatient, agePatient;
@@ -130,7 +130,7 @@ public class FrameMedecin extends JFrame {
 	private static FrameAddPatientWithMedecin frameAddPatientWithMedecin;
 
 	/**
-	 * Gestion donn§e frame
+	 * Gestion donnée frame
 	 */
 	private static Medecin currentMedecin = FrameConnection.getCurrentMedecin();
 	private static Patient currentPatient;
@@ -156,7 +156,7 @@ public class FrameMedecin extends JFrame {
 			System.err.println("Failed to initialize LaF");
 		}
 		this.setSize(width, height);
-		this.setLocationRelativeTo(this);
+		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 

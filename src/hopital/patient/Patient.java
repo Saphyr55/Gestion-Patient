@@ -42,8 +42,8 @@ public class Patient implements IPersonne {
 
 	/**
 	 * Construteur de Patient
-	 * Permet de créer un patient pour la premier ou de charger le fichier patient
-	 * dans une liste
+	 * Permet de créer un patient pour la premiere fois dans les fichiers
+	 * et le charge dans la liste de patient
 	 * 
 	 * @param firstName
 	 * @param lastName

@@ -25,15 +25,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.JToggleButton;
 import javax.swing.LookAndFeel;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
-import com.formdev.flatlaf.FlatLaf;
 
 import org.json.simple.JSONObject;
 
@@ -51,8 +46,9 @@ import windows.medecin.FrameMedecin;
 
 /**
  * Frame de connexion
- * Permet au personnel de l'hopital de ce connecter
- * avec leur identifiant et mot de passe
+ * Permet au personnel de l'hopital de se connecter
+ * avec leur identifiant et mot de passe pour pouvoir
+ * acceder à le fenetre respective
  * 
  * @author Andy
  *
@@ -156,9 +152,9 @@ public class FrameConnection extends JFrame {
 	 * Option de la frame de connexion
 	 */
 	private void setOptionFrame(LookAndFeel model) {
-		this.model = (FlatLaf) model;
+		FrameConnection.model = model;
 		try {
-			UIManager.setLookAndFeel(model);
+			UIManager.setLookAndFeel(FrameConnection.model);
 		} catch (Exception ex) {
 			System.err.println("Failed to initialize LaF");
 		}
@@ -167,7 +163,7 @@ public class FrameConnection extends JFrame {
 		}
 		this.setSize(width, height);
 		this.setResizable(false);
-		this.setLocationRelativeTo(this);
+		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		String line;
 		String string;
@@ -552,6 +548,10 @@ public class FrameConnection extends JFrame {
 		return loadingDimens;
 	}
 
+	/**
+	 * 
+	 * @return model
+	 */
 	public static LookAndFeel getModel() {
 		return model;
 	}
