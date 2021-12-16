@@ -1,4 +1,5 @@
 import console.Logger;
+import test.TestAddPersonnelAndMedecin;
 import windows.FrameConnection;
 
 public class Launch {
