@@ -70,5 +70,18 @@
     "frame_admin_popup_add":"Ajouter",
     "frame_admin_popup_delete":"Supprimer",
 
+    "frame_admin_add_patient_title":"Gestion Admin - ajouter patient - Univ-Tours",
+    "frame_admin_add_patient_lastname":"Nom",
+    "frame_admin_add_patient_firstname":"Prénom",
+    "frame_admin_add_patient_birthday":"Date de naissance",
+    "frame_admin_add_patient_secu_number":"Numero de securité social",
+    "frame_admin_add_patient_phone":"Telephone",
+    "frame_admin_add_patient_adresse":"Adresse",
+    "frame_admin_add_patient_loading_by_card_vital":"Chargement par carte vital",
+    "frame_admin_add_patient_sign":"Signature",
+    "frame_admin_add_patient_cancel":"Annuler",
+    "frame_admin_add_patient_confirm":"Ajouter",
+
+
     "":""
 }

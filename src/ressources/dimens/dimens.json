@@ -11,5 +11,11 @@
     "frame_medecin_add_patient_width":430,
     "frame_medecin_add_patient_height":300,
 
+    "frame_admin_width":720,
+    "frame_admin_height":520,
+
+    "frame_admin_add_patient_width":700,
+    "frame_admin_add_patient_height":450,
+
     "":""
 }

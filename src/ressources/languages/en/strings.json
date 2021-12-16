@@ -70,5 +70,18 @@
     "frame_admin_popup_add":"Add",
     "frame_admin_popup_delete":"Delete",
 
+    "frame_admin_add_patient_title":"Gestion Admin - add patient - Univ-Tours",
+    "frame_admin_add_patient_lastname":"Lastname",
+    "frame_admin_add_patient_firstname":"Firstname",
+    "frame_admin_add_patient_birthday":"Birthday",
+    "frame_admin_add_patient_secu_number":"Social security number",
+    "frame_admin_add_patient_phone":"Number phone",
+    "frame_admin_add_patient_adresse":"Address",
+    "frame_admin_add_patient_loading_by_card_vital":"Loading by vital card",
+    "frame_admin_add_patient_sign":"Sign",
+    "frame_admin_add_patient_cancel":"Cancel",
+    "frame_admin_add_patient_confirm":"Add",
+
+     
     "":""
 }
