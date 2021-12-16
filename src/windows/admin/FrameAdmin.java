@@ -35,6 +35,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.MaskFormatter;
 
 import hopital.Hopital;
+import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
 import windows.FrameConnection;
@@ -45,13 +46,14 @@ import windows.FrameConnection;
 public class FrameAdmin extends JFrame {
 
 	private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
+	private static LoadingDimens loadingDimens = FrameConnection.getLoadingDimens();
 
 	/**
 	 * 
 	 */
-	private static final int width = 720;
-	private static final int height = 520;
-	private static final String title = "Admin Gestion";
+	private static final int width = (int) ((long) loadingDimens.getJsonObject().get("frame_admin_width"));
+	private static final int height =(int) ((long) loadingDimens.getJsonObject().get("frame_admin_height"));
+	private static final String title = (String) loadingLanguage.getJsonObject().get("frame_admin_title");
 	private static boolean isVisible = true;
 
 	/**

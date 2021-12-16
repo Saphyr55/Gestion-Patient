@@ -21,7 +21,11 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.text.MaskFormatter;
 
+import org.json.simple.JSONObject;
+
 import hopital.Hopital;
+import hopital.loading.dimens.LoadingDimens;
+import hopital.loading.language.LoadingLanguage;
 import windows.FrameConnection;
 
 /**
@@ -29,16 +33,24 @@ import windows.FrameConnection;
  */
 public class FrameAdminAddPatient extends JFrame {
 
-    public static final int width = 700;
-    public static final int height = 450;
-    public static final String title = "Gestion Admin - ajouter patient - Univ-Tours";
+    private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
+    private static JSONObject lang = loadingLanguage.getJsonObject();
+    private static LoadingDimens dimens = new LoadingDimens();
+
+    private static final int width = (int) ((long) dimens.getJsonObject().get("frame_admin_add_patient_width"));
+	private static final int height =(int) ((long) dimens.getJsonObject().get("frame_admin_add_patient_height"));
+    public static final String title = (String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_title");
 
     private JPanel contentPane = (JPanel) getContentPane();
 
     private JPanel formPanel, confirmPanel;
     private JPanel stringsTextFieldsPanel, patientInputPanel;
-    private String[] namesStringsForTextFields = { "Nom", "Prénom", "Date de naissance", "Numero de securité social",
-            "Telephone", "Addresse" };
+	private String[] namesStringsForTextFields = { (String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_lastname"),
+			(String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_firstname"),
+			(String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_birthday"),
+			(String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_secu_number"),
+			(String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_phone"),
+			(String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_adresse") };
     private JTextField[] stringsTextFields;
     private JTextField patientLastnameInputTextField;
     private JTextField patientFirstnameInpuTextField;
