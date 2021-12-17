@@ -65,6 +65,7 @@
     "frame_admin_phone":"Telephone",
     "frame_admin_adresse":"Adresse",
     "frame_admin_switch_mode_modification":"Passer en mode modification",
+    "frame_admin_switch_mode_read":"Passer en mode lecture",
     "frame_admin_confirm_modification":"Confirmer la modification",
     "frame_admin_confirm_delete_patient":"Êtes-vous sûr de supprimer le patient",
     "frame_admin_popup_add":"Ajouter",
