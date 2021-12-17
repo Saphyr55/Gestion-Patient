@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -46,7 +47,7 @@ public class FrameAdmin extends JFrame {
 	private static LoadingDimens loadingDimens = FrameConnection.getLoadingDimens();
 
 	/**
-	 * 
+	 * Données de la frame
 	 */
 	private static final int width = (int) ((long) loadingDimens.getJsonObject().get("frame_admin_width"));
 	private static final int height = (int) ((long) loadingDimens.getJsonObject().get("frame_admin_height"));
@@ -54,7 +55,7 @@ public class FrameAdmin extends JFrame {
 	private static boolean isVisible = true;
 
 	/**
-	 * 
+	 * Le panel principal
 	 */
 	private JPanel contentPanel = (JPanel) getContentPane();
 
@@ -222,7 +223,7 @@ public class FrameAdmin extends JFrame {
 								.setText(currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE));
 						patientAddressInputTextField.setText(currentPatient.getAddress());
 						patientSecuNumberInputFormattedTextField.setText(currentPatient.getSecuNumber());
-						patientNumberPhoneInputFormFormattedTextField.setText(currentPatient.getSecuNumber());
+						patientNumberPhoneInputFormFormattedTextField.setText(currentPatient.getPhoneNumber());
 					}
 
 					/**
@@ -292,6 +293,17 @@ public class FrameAdmin extends JFrame {
 	 * @return dataPatientPanel
 	 */
 	private JPanel setDataPatient() {
+		/**
+		 * Charge les mask formatteur
+		 */
+        try {
+            dateFormatter = new MaskFormatter("##/##/####");
+            secuNumbeFormatter = new MaskFormatter("### ### ### ### ###");
+            phoneNumberFormatter = new MaskFormatter("## ## ## ## ##");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 		dataPatientPanel = new JPanel(new BorderLayout());
 		panelTop = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		switchLectureModifDataPatient = new JButton(
