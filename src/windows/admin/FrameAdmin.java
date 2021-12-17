@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -472,6 +473,7 @@ public class FrameAdmin extends JFrame {
 			if (frameAdminAddPatient == null) {
 				setFrameAddPatient();
 			}
+			frameAdminAddPatient.getConfirmButton().addActionListener(new ConfimButtonListener());
 		}
 	}
 
@@ -532,6 +534,47 @@ public class FrameAdmin extends JFrame {
 
 			}
 
+		}
+	}
+
+	/**
+	 * Creer le patient en appuyant sur le bouton confirmer
+	 */
+	private class ConfimButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String getLastnamePatient = frameAdminAddPatient.getPatientLastnameInputTextField().getText();
+			String getFirstnamePatient = frameAdminAddPatient.getPatientFirstnameInpuTextField().getText();
+			LocalDate getBirthdayPatient = LocalDate.parse(
+					frameAdminAddPatient.getPatientDateInputFormattedTextField().getText(),
+					Hopital.FORMATEUR_LOCALDATE);
+			String getSecuNumberPatient = frameAdminAddPatient.getPatientSecuNumberInputFormattedTextField().getText()
+					.replace(" ", "");
+			String getPhoneNumberPatient = frameAdminAddPatient.getPatientNumberPhoneInputFormFormattedTextField()
+					.getText().replace(" ", "");
+			String getAdressePatient = frameAdminAddPatient.getPatientAddressInputTextField().getText();
+
+			if (!getLastnamePatient.equals("") && !getLastnamePatient.contains(" ") && getLastnamePatient != null &&
+					!getFirstnamePatient.equals("") && !getFirstnamePatient.contains(" ")
+					&& getFirstnamePatient != null) {
+				new Patient(getFirstnamePatient, getLastnamePatient,
+						getBirthdayPatient, getSecuNumberPatient,
+						getPhoneNumberPatient, getAdressePatient);
+				frameAdminAddPatient.dispose();
+				frameAdminAddPatient = null;
+				namePatients.removeAllElements();
+				for (int i = 0; i < Hopital.getPatients().size(); i++) {
+					namePatients.addElement(Hopital.getPatients().get(i).getLastName() + " " +
+							Hopital.getPatients().get(i).getFirstName());
+				}
+				listPatient = new JList<>(namePatients);
+				contentPanel.revalidate();
+				contentPanel.repaint();
+			} else {
+				JOptionPane.showMessageDialog(frameAdminAddPatient, "La saisie n'est pas correct.", "Input wrong",
+						JOptionPane.WARNING_MESSAGE);
+			}
 		}
 	}
 
