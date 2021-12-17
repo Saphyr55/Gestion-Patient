@@ -1,11 +1,10 @@
 {
     "path_log":"./src/log/",
-    "path_ordonnances":"./src/log/patient/ordonnances/",
+    "path_consultation":"./src/log/patient/",
     "path_patients":"./src/log/patient/patients.txt",
     "path_medecins":"./src/log/medecin/medecins.txt",
     "path_admin":"./src/log/admin/admins.txt",
     "path_folder":"./src/log/medecin/",
     "path_lastconnection":"./src/log/rememberme/lastconnection.txt",
     "path_rememberme":"./src/log/rememberme/rememberme.json"
-
 }
