@@ -293,24 +293,27 @@ public class FrameAdmin extends JFrame {
 	 * @return dataPatientPanel
 	 */
 	private JPanel setDataPatient() {
+
 		/**
 		 * Charge les mask formatteur
 		 */
-        try {
-            dateFormatter = new MaskFormatter("##/##/####");
-            secuNumbeFormatter = new MaskFormatter("### ### ### ### ###");
-            phoneNumberFormatter = new MaskFormatter("## ## ## ## ##");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+		try {
+			dateFormatter = new MaskFormatter("## / ## / ####");
+			secuNumbeFormatter = new MaskFormatter("### ### ### ### ###");
+			phoneNumberFormatter = new MaskFormatter("## ## ## ## ##");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
+		/**
+		 * panel data patient
+		 */
 		dataPatientPanel = new JPanel(new BorderLayout());
 		panelTop = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		switchLectureModifDataPatient = new JButton(
 				(String) loadingLanguage.getJsonObject().get("frame_admin_switch_mode_modification"));
 		switchLectureModifDataPatient.addActionListener(new SwicthModeListener());
 		panelTop.add(switchLectureModifDataPatient);
-
 		panelCenter = new JPanel(new BorderLayout());
 		JPanel stringsTextFieldsPanel = new JPanel();
 		JPanel dataPatientTextFieldsPanel = new JPanel();
@@ -322,6 +325,9 @@ public class FrameAdmin extends JFrame {
 			stringsTextFieldsPanel.add(dataPatientTextFields[i]);
 		}
 
+		/**
+		 * Text feilds input
+		 */
 		patientLastnameInputTextField = new JTextField();
 		patientLastnameInputTextField.setEditable(false);
 		patientLastnameInputTextField.setFont(font1);
@@ -354,21 +360,28 @@ public class FrameAdmin extends JFrame {
 		panelCenter.add(stringsTextFieldsPanel, BorderLayout.WEST);
 		panelCenter.add(dataPatientTextFieldsPanel, BorderLayout.CENTER);
 
+		/**
+		 * Panel de confirmation
+		 */
 		panelBottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		confirmModifButton = new JButton(
 				(String) loadingLanguage.getJsonObject().get("frame_admin_confirm_modification"));
 		confirmModifButton.setEnabled(false);
 		panelBottom.add(confirmModifButton);
 
+		/**
+		 * 
+		 */
 		dataPatientPanel.add(panelTop, BorderLayout.NORTH);
 		dataPatientPanel.add(panelCenter, BorderLayout.CENTER);
 		dataPatientPanel.add(panelBottom, BorderLayout.SOUTH);
+
 		return dataPatientPanel;
 	}
 
 	/**
 	 * Affiche la frame pour ajouter des patients
-	 * Ne peut etre afficher plusieur fois
+	 * Ne peut etre afficher qu'une seul fois
 	 */
 	private void setFrameAddPatient() {
 		if (frameAdminAddPatient == null)
@@ -499,11 +512,11 @@ public class FrameAdmin extends JFrame {
 				confirmModifButton.setEnabled(true);
 				contentPanel.revalidate();
 				contentPanel.repaint();
-					
+
 			} else if (switchLectureModifDataPatient.getText()
 					.equals((String) loadingLanguage.getJsonObject()
 							.get("frame_admin_switch_mode_read"))) {
-				
+
 				switchLectureModifDataPatient
 						.setText((String) loadingLanguage.getJsonObject()
 								.get("frame_admin_switch_mode_modification"));
@@ -516,7 +529,7 @@ public class FrameAdmin extends JFrame {
 				confirmModifButton.setEnabled(false);
 				contentPanel.revalidate();
 				contentPanel.repaint();
-				
+
 			}
 
 		}
