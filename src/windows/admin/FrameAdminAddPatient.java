@@ -1,15 +1,12 @@
 package windows.admin;
 
-import java.awt.Font;
-import java.awt.FlowLayout;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Date;
 import java.text.ParseException;
 
-import javax.swing.Action;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,9 +18,6 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.text.MaskFormatter;
 
-import org.json.simple.JSONObject;
-
-import hopital.Hopital;
 import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
 import windows.FrameConnection;
@@ -34,7 +28,6 @@ import windows.FrameConnection;
 public class FrameAdminAddPatient extends JFrame {
 
     private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
-    private static JSONObject lang = loadingLanguage.getJsonObject();
     private static LoadingDimens dimens = new LoadingDimens();
 
     private static final int width = (int) ((long) dimens.getJsonObject().get("frame_admin_add_patient_width"));

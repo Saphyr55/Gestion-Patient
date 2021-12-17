@@ -10,7 +10,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -30,8 +29,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.text.MaskFormatter;
 
 import hopital.Hopital;
@@ -52,7 +49,7 @@ public class FrameAdmin extends JFrame {
 	 * 
 	 */
 	private static final int width = (int) ((long) loadingDimens.getJsonObject().get("frame_admin_width"));
-	private static final int height =(int) ((long) loadingDimens.getJsonObject().get("frame_admin_height"));
+	private static final int height = (int) ((long) loadingDimens.getJsonObject().get("frame_admin_height"));
 	private static final String title = (String) loadingLanguage.getJsonObject().get("frame_admin_title");
 	private static boolean isVisible = true;
 
@@ -72,14 +69,6 @@ public class FrameAdmin extends JFrame {
 	private DefaultListModel<String> namePatients = new DefaultListModel<>();
 	private JPopupMenu popupMenuListPatient;
 	private JMenuItem menuItemAddPatient, menuItemSupprPatient;
-	private ArrayList<String> listNamePatient = new ArrayList<>();
-
-	private String[] namesStringsForTextFields = { (String) loadingLanguage.getJsonObject().get("frame_admin_lastname"),
-			(String) loadingLanguage.getJsonObject().get("frame_admin_firstname"),
-			(String) loadingLanguage.getJsonObject().get("frame_admin_birthday"),
-			(String) loadingLanguage.getJsonObject().get("frame_admin_secu_number"),
-			(String) loadingLanguage.getJsonObject().get("frame_admin_phone"),
-			(String) loadingLanguage.getJsonObject().get("frame_admin_adresse") };
 	private JPanel dataPatientPanel, panelTop, panelCenter, panelBottom;
 	private JTextField[] dataPatientTextFields;
 	private JTextField patientLastnameInputTextField;
@@ -91,8 +80,16 @@ public class FrameAdmin extends JFrame {
 	private JButton switchLectureModifDataPatient;
 	private JButton confirmModifButton;
 
-	private static FrameAdminAddPatient frameAdminAddPatient;
-
+	/**
+	 * Données de certains composant
+	 */
+	private String[] namesStringsForTextFields = { (String) loadingLanguage.getJsonObject().get("frame_admin_lastname"),
+			(String) loadingLanguage.getJsonObject().get("frame_admin_firstname"),
+			(String) loadingLanguage.getJsonObject().get("frame_admin_birthday"),
+			(String) loadingLanguage.getJsonObject().get("frame_admin_secu_number"),
+			(String) loadingLanguage.getJsonObject().get("frame_admin_phone"),
+			(String) loadingLanguage.getJsonObject().get("frame_admin_adresse") };
+	private ArrayList<String> listNamePatient = new ArrayList<>();
 	private static MaskFormatter dateFormatter;
 	private static MaskFormatter secuNumbeFormatter;
 	private static MaskFormatter phoneNumberFormatter;
@@ -100,12 +97,17 @@ public class FrameAdmin extends JFrame {
 	private static Font font2 = new Font("SansSerif", Font.BOLD, 14);
 
 	/**
-	 * 
+	 * Frame d'ajout de patient
+	 */
+	private static FrameAdminAddPatient frameAdminAddPatient;
+
+	/**
+	 * Patient courant a la selection de la liste
 	 */
 	private Patient currentPatient;
 
 	/**
-	 * 
+	 * Constructeur de la frenetre de l'admin
 	 */
 	public FrameAdmin() {
 		super(title);
@@ -116,7 +118,7 @@ public class FrameAdmin extends JFrame {
 	}
 
 	/**
-	 *
+	 * Option de la frame
 	 */
 	private void setOptionFrame() {
 		Hopital.loadingPatient();
@@ -155,7 +157,7 @@ public class FrameAdmin extends JFrame {
 		addPatient.addActionListener(new AddButtonListener());
 
 		/**
-		 * 
+		 * Liste de patient
 		 */
 		for (int i = 0; i < Hopital.getPatients().size(); i++) {
 			String namePatientString = Hopital.getPatients().get(i).getLastName() + " "
@@ -262,7 +264,7 @@ public class FrameAdmin extends JFrame {
 							menuItemAddPatient.addActionListener(new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
-
+									setFrameAddPatient();
 								}
 							});
 
@@ -283,6 +285,9 @@ public class FrameAdmin extends JFrame {
 	}
 
 	/**
+	 * Panel des données du patient courant
+	 * Affiche ces données sous forme de text field
+	 * non editable, sauf appuyant sur le bouton de switch
 	 * 
 	 * @return dataPatientPanel
 	 */
@@ -291,6 +296,7 @@ public class FrameAdmin extends JFrame {
 		panelTop = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		switchLectureModifDataPatient = new JButton(
 				(String) loadingLanguage.getJsonObject().get("frame_admin_switch_mode_modification"));
+		switchLectureModifDataPatient.addActionListener(new SwicthModeListener());
 		panelTop.add(switchLectureModifDataPatient);
 
 		panelCenter = new JPanel(new BorderLayout());
@@ -339,6 +345,7 @@ public class FrameAdmin extends JFrame {
 		panelBottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		confirmModifButton = new JButton(
 				(String) loadingLanguage.getJsonObject().get("frame_admin_confirm_modification"));
+		confirmModifButton.setEnabled(false);
 		panelBottom.add(confirmModifButton);
 
 		dataPatientPanel.add(panelTop, BorderLayout.NORTH);
@@ -430,7 +437,8 @@ public class FrameAdmin extends JFrame {
 	}
 
 	/**
-	 * 
+	 * Le listener du bouton ajouter qui affiche la fenetre
+	 * ajouter un patient qu'une seul fois
 	 */
 	private class AddButtonListener implements ActionListener {
 
@@ -443,7 +451,8 @@ public class FrameAdmin extends JFrame {
 	}
 
 	/**
-	 * 
+	 * Le listener du bouton annuler qui la ferme fenetre
+	 * d'ajout de patient
 	 */
 	public static class CancelButtonFrameAddPatientListener implements ActionListener {
 
@@ -451,6 +460,53 @@ public class FrameAdmin extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			frameAdminAddPatient.dispose();
 			frameAdminAddPatient = null;
+		}
+	}
+
+	/**
+	 * Listener du bouton switch mode
+	 * Permet de switch en mode lecture ou modication
+	 */
+	private class SwicthModeListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			if (switchLectureModifDataPatient.getText()
+					.equals((String) loadingLanguage.getJsonObject().get("frame_admin_switch_mode_modification"))) {
+
+				switchLectureModifDataPatient
+						.setText((String) loadingLanguage.getJsonObject()
+								.get("frame_admin_switch_mode_read"));
+				patientLastnameInputTextField.setEditable(true);
+				patientFirstnameInpuTextField.setEditable(true);
+				patientDateInputFormattedTextField.setEditable(true);
+				patientSecuNumberInputFormattedTextField.setEditable(true);
+				patientNumberPhoneInputFormFormattedTextField.setEditable(true);
+				patientAddressInputTextField.setEditable(true);
+				confirmModifButton.setEnabled(true);
+				contentPanel.revalidate();
+				contentPanel.repaint();
+					
+			} else if (switchLectureModifDataPatient.getText()
+					.equals((String) loadingLanguage.getJsonObject()
+							.get("frame_admin_switch_mode_read"))) {
+				
+				switchLectureModifDataPatient
+						.setText((String) loadingLanguage.getJsonObject()
+								.get("frame_admin_switch_mode_modification"));
+				patientLastnameInputTextField.setEditable(false);
+				patientFirstnameInpuTextField.setEditable(false);
+				patientDateInputFormattedTextField.setEditable(false);
+				patientSecuNumberInputFormattedTextField.setEditable(false);
+				patientNumberPhoneInputFormFormattedTextField.setEditable(false);
+				patientAddressInputTextField.setEditable(false);
+				confirmModifButton.setEnabled(false);
+				contentPanel.revalidate();
+				contentPanel.repaint();
+				
+			}
+
 		}
 	}
 

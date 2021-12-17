@@ -27,6 +27,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
+
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
@@ -81,7 +82,6 @@ public class FrameConnection extends JFrame {
 	/**
 	 * Containers
 	 */
-	private JPanel panelTop;
 	private JPanel contentPane = (JPanel) getContentPane();
 	private JPanel connexionPanel;
 	private JTextField identifiantField;
