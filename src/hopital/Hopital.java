@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import hopital.loading.paths.LoadingPath;
 import hopital.patient.Patient;
@@ -37,7 +38,6 @@ public abstract class Hopital {
 	 * Paths
 	 */
 	public static final String pathFolderLog = (String) loadingPath.getJsonObject().get("path_log");
-	public static final String pathOrdonnances = (String) loadingPath.getJsonObject().get("path_ordonnances");
 	public static final String pathPatients = (String) loadingPath.getJsonObject().get("path_patients");
 	public static final String pathMedecins = (String) loadingPath.getJsonObject().get("path_medecins");
 	public static final String pathAdmins = (String) loadingPath.getJsonObject().get("path_admin");
@@ -73,9 +73,9 @@ public abstract class Hopital {
 	/**
 	 * Format
 	 */
-	public static final String FORMAT_DATE = "dd/MM/yyyy";
+	public static final String FORMAT_DATE = "dd-MM-yyyy";
 	public static final SimpleDateFormat FORMATEUR_DATE = new SimpleDateFormat(FORMAT_DATE);
-	public static final DateTimeFormatter FORMATEUR_LOCALDATE = DateTimeFormatter.ofPattern(FORMAT_DATE);
+	public static final DateTimeFormatter FORMATEUR_LOCALDATE = DateTimeFormatter.ofPattern(FORMAT_DATE, Locale.US);
 	public static final String SEPARATOR = "&";
 
 	/**
@@ -152,7 +152,8 @@ public abstract class Hopital {
 					string = line;
 					strings = string.split(SEPARATOR);
 					LocalDate date = LocalDate.parse(strings[4], FORMATEUR_LOCALDATE);
-					new Patient(Integer.parseInt(strings[1]), medecin, strings[2], strings[3], date, strings[5], strings[6], strings[7],
+					new Patient(Integer.parseInt(strings[1]), medecin, strings[2], strings[3], date, strings[5],
+							strings[6], strings[7],
 							Patient.PatientTypeCreate.LOADING_PATIENT_WITH_MEDECIN_IN_LIST);
 				}
 			}
@@ -183,10 +184,11 @@ public abstract class Hopital {
 			while ((line = readerPatients.readLine()) != null) {
 				string = line;
 				strings = string.split(SEPARATOR);
-				
+
 				LocalDate date = LocalDate.parse(strings[3], FORMATEUR_LOCALDATE);
 
-				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date, strings[4], strings[5], strings[6]);
+				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date, strings[4], strings[5],
+						strings[6]);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -194,19 +196,20 @@ public abstract class Hopital {
 	}
 
 	/**
-	 * Charge les ordonnances d'un patients
+	 * Charge les consultation d'un patients
 	 * Cette methode est utilisé lors du clique sur d'un
-	 * patient pour afficher sa liste d'ordonnances
+	 * patient pour afficher sa liste de consultation
 	 * 
 	 * @param patient
 	 */
-	public static void loadingOrdonnancesPatient(Patient patient) {
-		File[] ordonnancesPatientFile = new File(pathOrdonnances + patient.getFirstName() + patient.getLastName() + "/")
-				.listFiles();
-		if (ordonnancesPatientFile != null) {
-			for (int i = 0; i < ordonnancesPatientFile.length; i++) {
-				if (!patient.getOrdonnancesFile().contains(ordonnancesPatientFile[i]))
-					patient.getOrdonnancesFile().add(ordonnancesPatientFile[i]);
+	public static void loadingConsultationPatient(Patient patient) {
+		File[] consultationPatientFile = new File(
+				"./src/log/patient/" + patient.getFirstName() + patient.getLastName() + "/")
+						.listFiles();
+		if (consultationPatientFile != null) {
+			for (int i = 0; i < consultationPatientFile.length; i++) {
+				if (!patient.getConsultationFile().contains(consultationPatientFile[i]))
+					patient.getConsultationFile().add(consultationPatientFile[i]);
 			}
 		}
 	}

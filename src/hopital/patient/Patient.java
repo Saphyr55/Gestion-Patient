@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import hopital.Consultation;
@@ -32,13 +33,14 @@ public class Patient implements IPersonne {
 	private String phoneNumber;
 	private String address;
 
-	private File ordonnanceDirectory;
+	private File consultationDirectory;
+
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	private ArrayList<Consultation> ordonnances = new ArrayList<>();
-	private ArrayList<File> ordonnancesFile = new ArrayList<>();
+	private ArrayList<Consultation> consultation = new ArrayList<>();
+	private ArrayList<File> consultationFile = new ArrayList<>();
 	private int nLine = 1;
 	private int id;
 	private String nameFolder;
@@ -77,7 +79,7 @@ public class Patient implements IPersonne {
 			this.secuNumber = secuNumber;
 			this.address = address;
 			this.phoneNumber = phoneNumber;
-			ordonnances = new ArrayList<>();
+			consultation = new ArrayList<>();
 			if (this.lastName == null) {
 				this.lastName = "None";
 			}
@@ -88,20 +90,23 @@ public class Patient implements IPersonne {
 			/*
 			 * Creation du dossier du patient
 			 */
-			this.nameFolder = this.getFirstName().toLowerCase() + this.getLastName().toLowerCase() + "/";
+			this.nameFolder = this.getFirstName().toLowerCase() + this.getLastName().toLowerCase();
 			nameFolder.replace(" ", "");
-			ordonnanceDirectory = new File(Hopital.pathOrdonnances + nameFolder);
-			if (!ordonnanceDirectory.exists()) {
-				ordonnanceDirectory.mkdir();
-				System.out.println("Creation du dossier pour " + this.getLastName());
+			consultationDirectory = new File("./src/log/patient/" + nameFolder + "/");
+			if (!consultationDirectory.exists()) {
+				consultationDirectory.mkdir();
+				System.out.println("Creation du dossier pour " + this.getLastName() + " " + this.getFirstName());
 			}
 
 			/*
 			 * Ecriture dans le dossier patients de l'hopital
 			 */
 			writer = new BufferedWriter(Hopital.getPatientsWriterFile());
-			writer.write(id + Hopital.SEPARATOR + getFirstName() + Hopital.SEPARATOR + getLastName() + Hopital.SEPARATOR
-					+ Hopital.FORMATEUR_DATE.format(getBirthday()) + Hopital.SEPARATOR + this.secuNumber);
+			writer.write(id +
+					Hopital.SEPARATOR + this.firstName + Hopital.SEPARATOR + this.lastName +
+					Hopital.SEPARATOR + this.birthday.format(Hopital.FORMATEUR_LOCALDATE) + Hopital.SEPARATOR
+					+ this.secuNumber +
+					Hopital.SEPARATOR + this.phoneNumber + Hopital.SEPARATOR + this.address);
 			writer.newLine();
 			reader.close();
 			writer.close();
@@ -179,9 +184,14 @@ public class Patient implements IPersonne {
 			 * Ecriture dans le fichier patients du medecin
 			 */
 			try {
-				BufferedWriter writer = new BufferedWriter(new FileWriter(medecin.getPatientsFile(), true));
-				writer.write(nLine + Hopital.SEPARATOR + this.id + Hopital.SEPARATOR + getFirstName() + Hopital.SEPARATOR + getLastName() + Hopital.SEPARATOR
-						+ Hopital.FORMATEUR_DATE.format(getBirthday() + Hopital.SEPARATOR + this.secuNumber+Hopital.SEPARATOR+this.phoneNumber+Hopital.SEPARATOR+this.address));
+				BufferedWriter writer = new BufferedWriter(new FileWriter(
+						"./src/log/medecin/" + medecin.getFirstName().toLowerCase()
+								+ medecin.getLastName().toLowerCase() + "/patients.txt",
+						true));
+				writer.write(nLine + Hopital.SEPARATOR + this.id + Hopital.SEPARATOR + getFirstName()
+						+ Hopital.SEPARATOR + getLastName() + Hopital.SEPARATOR
+						+ this.birthday.format(Hopital.FORMATEUR_LOCALDATE) + Hopital.SEPARATOR + this.secuNumber
+						+ Hopital.SEPARATOR + this.phoneNumber + Hopital.SEPARATOR + this.address);
 				nLine++;
 				writer.newLine();
 				writer.close();
@@ -237,29 +247,29 @@ public class Patient implements IPersonne {
 	/**
 	 * @return the ordonnances
 	 */
-	public ArrayList<Consultation> getOrdonnances() {
-		return ordonnances;
+	public ArrayList<Consultation> getConsultation() {
+		return consultation;
 	}
 
 	/**
-	 * @param ordonnances the ordonnances to set
+	 * @param consultation
 	 */
-	public void setOrdonnances(ArrayList<Consultation> ordonnances) {
-		this.ordonnances = ordonnances;
+	public void setConsultation(ArrayList<Consultation> consultation) {
+		this.consultation = consultation;
 	}
 
 	/**
 	 * @return the dataPatient
 	 */
-	public File getOrdonnanceDirectory() {
-		return ordonnanceDirectory;
+	public File getConsultationDirectory() {
+		return consultationDirectory;
 	}
 
 	/**
 	 * @param dataPatient the dataPatient to set
 	 */
-	public void setOrdonnanceDirectory(File ordonnanceDirectory) {
-		this.ordonnanceDirectory = ordonnanceDirectory;
+	public void setConsultationDirectory(File consultationDirectory) {
+		this.consultationDirectory = consultationDirectory;
 	}
 
 	/**
@@ -300,15 +310,15 @@ public class Patient implements IPersonne {
 	/**
 	 * @return the ordonnancesFile
 	 */
-	public ArrayList<File> getOrdonnancesFile() {
-		return ordonnancesFile;
+	public ArrayList<File> getConsultationFile() {
+		return consultationFile;
 	}
 
 	/**
 	 * @param ordonnancesFile the ordonnancesFile to set
 	 */
-	public void setOrdonnancesFile(ArrayList<File> ordonnancesFile) {
-		this.ordonnancesFile = ordonnancesFile;
+	public void setOrdonnancesFile(ArrayList<File> consultationFile) {
+		this.consultationFile = consultationFile;
 	}
 
 	/**
@@ -331,7 +341,7 @@ public class Patient implements IPersonne {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	
+
 	/**
 	 * @return address
 	 */
