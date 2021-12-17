@@ -1,7 +1,5 @@
 package hopital.personnels;
 
-import hopital.IPersonne;
-
 /**
  * 
  * @author Andy

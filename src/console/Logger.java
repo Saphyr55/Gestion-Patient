@@ -8,10 +8,10 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import hopital.Hopital;
-import hopital.IPersonne;
 import hopital.expections.ConsoleExeption;
 import hopital.patient.Patient;
 import hopital.personnels.Administrator;
+import hopital.personnels.IPersonne;
 import hopital.personnels.Medecin;
 import hopital.personnels.Personnel;
 

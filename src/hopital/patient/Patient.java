@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import hopital.Consultation;
 import hopital.Hopital;
-import hopital.IPersonne;
+import hopital.personnels.IPersonne;
 import hopital.personnels.Medecin;
 
 /**
