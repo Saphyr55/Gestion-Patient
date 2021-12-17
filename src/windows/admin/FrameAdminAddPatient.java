@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import java.time.LocalDate;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -18,8 +19,10 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.text.MaskFormatter;
 
+import hopital.Hopital;
 import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
+import hopital.patient.Patient;
 import windows.FrameConnection;
 
 /**
@@ -31,19 +34,20 @@ public class FrameAdminAddPatient extends JFrame {
     private static LoadingDimens dimens = new LoadingDimens();
 
     private static final int width = (int) ((long) dimens.getJsonObject().get("frame_admin_add_patient_width"));
-	private static final int height =(int) ((long) dimens.getJsonObject().get("frame_admin_add_patient_height"));
+    private static final int height = (int) ((long) dimens.getJsonObject().get("frame_admin_add_patient_height"));
     public static final String title = (String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_title");
 
     private JPanel contentPane = (JPanel) getContentPane();
 
     private JPanel formPanel, confirmPanel;
     private JPanel stringsTextFieldsPanel, patientInputPanel;
-	private String[] namesStringsForTextFields = { (String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_lastname"),
-			(String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_firstname"),
-			(String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_birthday"),
-			(String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_secu_number"),
-			(String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_phone"),
-			(String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_adresse") };
+    private String[] namesStringsForTextFields = {
+            (String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_lastname"),
+            (String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_firstname"),
+            (String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_birthday"),
+            (String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_secu_number"),
+            (String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_phone"),
+            (String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_adresse") };
     private JTextField[] stringsTextFields;
     private JTextField patientLastnameInputTextField;
     private JTextField patientFirstnameInpuTextField;
@@ -87,7 +91,6 @@ public class FrameAdminAddPatient extends JFrame {
     }
 
     /**
-     * 
      * @return formPanel
      */
     private JPanel setFormPanel() {
@@ -135,24 +138,25 @@ public class FrameAdminAddPatient extends JFrame {
 
         formPanel.add(stringsTextFieldsPanel, BorderLayout.WEST);
         formPanel.add(patientInputPanel, BorderLayout.CENTER);
-        
+
         return formPanel;
     }
 
     /**
-     * 
      * @return confirmPanel
      */
     private JPanel setConfirmPanel() {
         confirmPanel = new JPanel(new BorderLayout());
-        recupDataCarteVital = new JButton("Chargement par carte vital");
+        recupDataCarteVital = new JButton(
+                (String) loadingLanguage.getJsonObject()
+                        .get("frame_admin_add_patient_loading_by_card_vital"));
         JPanel panelLeft = new JPanel(new FlowLayout());
         JPanel panelRight = new JPanel(new FlowLayout());
-        signLabel = new JLabel("Signature");
+        signLabel = new JLabel((String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_sign"));
         signCheckBox = new JCheckBox();
-        confirmButton = new JButton("Ajouter");
+        confirmButton = new JButton((String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_confirm"));
         confirmButton.setEnabled(false);
-        cancelButton = new JButton("Annuler");
+        cancelButton = new JButton((String) loadingLanguage.getJsonObject().get("frame_admin_add_patient_cancel"));
 
         panelLeft.add(recupDataCarteVital);
         panelRight.add(signLabel);
@@ -185,4 +189,103 @@ public class FrameAdminAddPatient extends JFrame {
         }
     }
 
+    /**
+     * @return patientLastnameInputTextField
+     */
+    public JTextField getPatientLastnameInputTextField() {
+        return patientLastnameInputTextField;
+    }
+
+    /**
+     * @param patientLastnameInputTextField
+     */
+    public void setPatientLastnameInputTextField(JTextField patientLastnameInputTextField) {
+        this.patientLastnameInputTextField = patientLastnameInputTextField;
+    }
+
+    /**
+     * @return patientFirstnameInpuTextField
+     */
+    public JTextField getPatientFirstnameInpuTextField() {
+        return patientFirstnameInpuTextField;
+    }
+
+    /**
+     * @param patientFirstnameInpuTextField
+     */
+    public void setPatientFirstnameInpuTextField(JTextField patientFirstnameInpuTextField) {
+        this.patientFirstnameInpuTextField = patientFirstnameInpuTextField;
+    }
+
+    /**
+     * @return patientDateInputFormattedTextField
+     */
+    public JFormattedTextField getPatientDateInputFormattedTextField() {
+        return patientDateInputFormattedTextField;
+    }
+
+    /**
+     * @param patientDateInputFormattedTextField
+     */
+    public void setPatientDateInputFormattedTextField(JFormattedTextField patientDateInputFormattedTextField) {
+        this.patientDateInputFormattedTextField = patientDateInputFormattedTextField;
+    }
+
+    /**
+     * @return patientSecuNumberInputFormattedTextField
+     */
+    public JFormattedTextField getPatientSecuNumberInputFormattedTextField() {
+        return patientSecuNumberInputFormattedTextField;
+    }
+
+    /**
+     * @param patientSecuNumberInputFormattedTextField
+     */
+    public void setPatientSecuNumberInputFormattedTextField(
+            JFormattedTextField patientSecuNumberInputFormattedTextField) {
+        this.patientSecuNumberInputFormattedTextField = patientSecuNumberInputFormattedTextField;
+    }
+
+    /**
+     * @return patientNumberPhoneInputFormFormattedTextField
+     */
+    public JFormattedTextField getPatientNumberPhoneInputFormFormattedTextField() {
+        return patientNumberPhoneInputFormFormattedTextField;
+    }
+
+    /**
+     * @param patientNumberPhoneInputFormFormattedTextField
+     */
+    public void setPatientNumberPhoneInputFormFormattedTextField(
+            JFormattedTextField patientNumberPhoneInputFormFormattedTextField) {
+        this.patientNumberPhoneInputFormFormattedTextField = patientNumberPhoneInputFormFormattedTextField;
+    }
+
+    /**
+     * @return patientAddressInputTextField
+     */
+    public JTextField getPatientAddressInputTextField() {
+        return patientAddressInputTextField;
+    }
+
+    /**
+     * @param patientAddressInputTextField
+     */
+    public void setPatientAddressInputTextField(JTextField patientAddressInputTextField) {
+        this.patientAddressInputTextField = patientAddressInputTextField;
+    }
+
+    /**
+     * @return confirmButton
+     */
+    public JButton getConfirmButton() {
+        return confirmButton;
+    }
+
+    /**
+     * @param confirmButton
+     */
+    public void setConfirmButton(JButton confirmButton) {
+        this.confirmButton = confirmButton;
+    }
 }
