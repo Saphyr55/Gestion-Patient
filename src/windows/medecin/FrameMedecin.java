@@ -3,6 +3,7 @@
  */
 package windows.medecin;
 
+import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -21,8 +22,10 @@ import java.time.Period;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -38,9 +41,9 @@ import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-
 import hopital.Consultation;
 import hopital.Hopital;
+import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
 import hopital.personnels.Medecin;
@@ -62,12 +65,13 @@ public class FrameMedecin extends JFrame {
 	 */
 	// private static Language language = FrameConnexion.getLanguage();
 	private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
+	private static LoadingDimens dimens = new LoadingDimens();
 
 	/**
 	 * Variables d'options pour la fenetre de gestion
 	 */
-	private static final int width = 1080;
-	private static final int height = 720;
+	private static final int width = (int) ((long) dimens.getJsonObject().get("frame_medecin_width"));
+	private static final int height = (int) ((long) dimens.getJsonObject().get("frame_medecin_height"));
 	private static final String title = (String) loadingLanguage.getJsonObject().get("frame_medecin_title");
 	private static boolean isVisible = true;
 
@@ -113,15 +117,39 @@ public class FrameMedecin extends JFrame {
 	private ArrayList<String> listNamePatient = new ArrayList<>();
 
 	/**
-	 * Composant des données
+	 * Composant des données du patient
 	 */
-	private JPanel panelPatient, panelTop, panelBottom, panelData, panelConsultation;
+	private JPanel panelPatient, panelTop, panelBottom, panelData;
 	private JLabel lastNamePatient, firstNamePatient, birthdayPatient, agePatient;
+
+	private JTextArea consultationText;
+	private JButton suppr;
+
+	/**
+	 * Le panel central avec les données dus patient
+	 */
+	private JPanel dataPatientPanel;
+	private JPanel patientStringDataPanel, switchTypeConsultationPanel;
+	private JTextField lastnameStringTextField, lastnamePatientTextField;
+	private JTextField firstnameStringTextField, firstnamePatientTextField;
+	private JTextField birthdayStringTextField;
+	private JFormattedTextField birthdayPatientTextField;
+	private JTextField secuNumberStringTextField;
+	private JFormattedTextField secuNumberPatientTextField;
+	private JTextField phoneStringTextField;
+	private JFormattedTextField phonePatientTextField;
+	private JTextField addressStringTextField, addressPatientTextField;
+	private JButton testButtonForSwitch;
+
+	/**
+	 * 
+	 */
+	private JPanel consultationPanel;
 	private JList<String> listConsultationJList;
 	private DefaultListModel<String> nameListConsultationDefaultModel = new DefaultListModel<>();
 	private JScrollPane listConsultationScrollPane = new JScrollPane();
-	private JTextArea consultationText;
-	private JButton suppr, ajoutConsultation;
+	private JTextField foundConsultationField;
+	private JButton addConsultationButton;
 
 	/**
 	 * Frame generer
@@ -142,7 +170,8 @@ public class FrameMedecin extends JFrame {
 		super(title);
 		setOptionFrame();
 		panelPrincipal.add(setListPatient(), BorderLayout.WEST);
-		panelPrincipal.add(setPatient(new Patient()), BorderLayout.CENTER);
+		panelPrincipal.add(setPanelDataPatient(), BorderLayout.CENTER);
+		panelPrincipal.add(setListConsultion(), BorderLayout.EAST);
 		setVisible(isVisible);
 	}
 
@@ -156,6 +185,8 @@ public class FrameMedecin extends JFrame {
 			System.err.println("Failed to initialize LaF");
 		}
 		this.setSize(width, height);
+		// this.setMinimumSize(new Dimension(width, height));
+		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
@@ -320,6 +351,128 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
+	 * 
+	 * @return dataPatientPanel
+	 */
+	private JPanel setPanelDataPatient() {
+		dataPatientPanel = new JPanel(new GridLayout(1, 2));
+
+		setPanelDataString();
+		switchTypeConsultationPanel = new JPanel();
+		testButtonForSwitch = new JButton("+");
+		switchTypeConsultationPanel.add(testButtonForSwitch);
+		switchTypeConsultationPanel.setPreferredSize(new Dimension(width / 3, height - 50));
+
+		dataPatientPanel.add(patientStringDataPanel);
+		dataPatientPanel.add(switchTypeConsultationPanel);
+
+		return dataPatientPanel;
+	}
+
+	private void setPanelDataString() {
+		/**
+		 * 
+		 */
+		patientStringDataPanel = new JPanel();
+		// nom
+		lastnameStringTextField = new JTextField(frame_medecin_lastname);
+		lastnamePatientTextField = new JTextField();
+		// prenom
+		firstnameStringTextField = new JTextField(frame_medecin_firstname);
+		firstnamePatientTextField = new JTextField();
+		// birthday
+		birthdayStringTextField = new JTextField(frame_medecin_birthday);
+		birthdayPatientTextField = new JFormattedTextField();
+		// numero de securité social
+		secuNumberStringTextField = new JTextField("Secu number");
+		secuNumberPatientTextField = new JFormattedTextField();
+		// numero de telephone
+		phoneStringTextField = new JTextField("Phone number");
+		phonePatientTextField = new JFormattedTextField();
+		// adresse
+		addressStringTextField = new JTextField("Address");
+		addressPatientTextField = new JTextField();
+
+		lastnameStringTextField.setEditable(false);
+		lastnamePatientTextField.setEditable(false);
+		firstnameStringTextField.setEditable(false);
+		firstnamePatientTextField.setEditable(false);
+		birthdayStringTextField.setEditable(false);
+		birthdayPatientTextField.setEditable(false);
+		secuNumberStringTextField.setEditable(false);
+		secuNumberPatientTextField.setEditable(false);
+		phoneStringTextField.setEditable(false);
+		phonePatientTextField.setEditable(false);
+		addressStringTextField.setEditable(false);
+		addressPatientTextField.setEditable(false);
+
+		patientStringDataPanel.add(lastnameStringTextField);
+		patientStringDataPanel.add(lastnamePatientTextField);
+		patientStringDataPanel.add(firstnameStringTextField);
+		patientStringDataPanel.add(firstnamePatientTextField);
+		patientStringDataPanel.add(birthdayStringTextField);
+		patientStringDataPanel.add(birthdayPatientTextField);
+		patientStringDataPanel.add(secuNumberStringTextField);
+		patientStringDataPanel.add(secuNumberPatientTextField);
+		patientStringDataPanel.add(phoneStringTextField);
+		patientStringDataPanel.add(phonePatientTextField);
+		patientStringDataPanel.add(addressStringTextField);
+		patientStringDataPanel.add(addressPatientTextField);
+		patientStringDataPanel.setLayout(new BoxLayout(patientStringDataPanel, BoxLayout.PAGE_AXIS));
+		patientStringDataPanel.setPreferredSize(new Dimension(width / 3, height - 50));
+	}
+
+	/**
+	 * Affiche la liste de consultation, le texte pour rechercher une consultation.
+	 * Et un button pour ajouter une consultation
+	 * 
+	 * @return consultationPanel
+	 */
+	private JPanel setListConsultion() {
+
+		/**
+		 * Inititalisation des attribus pour la liste de patient
+		 */
+		consultationPanel = new JPanel(new BorderLayout());
+		consultationPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
+
+		JPanel panelTop = new JPanel(new BorderLayout());
+		addConsultationButton = new JButton("+");
+		foundConsultationField = new JTextField();
+
+		listConsultationJList = new JList<>();
+		listConsultationScrollPane = new JScrollPane(listConsultationJList);
+
+		/**
+		 * Option text sur le button et autre
+		 */
+		addConsultationButton.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
+		foundConsultationField.setPreferredSize(new Dimension(0, 20));
+
+		/**
+		 * Dimensions
+		 */
+		consultationPanel.setPreferredSize(new Dimension(200, height));
+		consultationPanel.setPreferredSize(new Dimension(200, height));
+		consultationPanel.setMinimumSize(new Dimension(200, height));
+		consultationPanel.setMaximumSize(new Dimension(200, height));
+		panelTop.setPreferredSize(new Dimension(0, 40));
+		foundConsultationField.setPreferredSize(new Dimension(0, 100));
+
+		/**
+		 * Ajout du button d'ajout de patient et de recherche de patient dans le
+		 * panelTop
+		 * Et ajout du panelTop et de la listPatient dans le panelListPatient
+		 */
+		panelTop.add(addConsultationButton, BorderLayout.WEST);
+		panelTop.add(foundConsultationField, BorderLayout.CENTER);
+		consultationPanel.add(panelTop, BorderLayout.NORTH);
+		consultationPanel.add(listConsultationScrollPane, BorderLayout.CENTER);
+
+		return consultationPanel;
+	}
+
+	/**
 	 * Affiche la frame pour ajouter des consultations
 	 * Ne peut etre afficher plusieur fois
 	 */
@@ -380,28 +533,30 @@ public class FrameMedecin extends JFrame {
 	private void loadingListConsultation(Patient patient) {
 
 		/**
-		 * Recuperation de toutes les ordonnances du patient
+		 * Recuperation de toutes les consultations du patient
 		 */
-		Hopital.loadingOrdonnancesPatient(patient);
+		Hopital.loadingConsultationPatient(patient);
 
 		/**
 		 * Si la liste est vide on la remplie
 		 */
 		if (nameListConsultationDefaultModel.isEmpty()) {
-			for (int i = 0; i < patient.getOrdonnancesFile().size(); i++) {
+			for (int i = 0; i < patient.getConsultationFile().size(); i++) {
 
 				/**
-				 * Ajout de tous les elements pour la JList dans nameListOrdonnanceDefaultModel
-				 * si nameListOrdonnanceDefaultModel ne containt pas deja l'élement
+				 * Ajout de tous les elements pour la JList dans
+				 * nameListConsultationDefaultModel
+				 * si model de la liste de onsultation ne containt pas deja l'élement
 				 */
 				if (!nameListConsultationDefaultModel.contains(
-						patient.getOrdonnancesFile().get(i).getName()
+						patient.getConsultationFile().get(i).getName()
 								.replace("&", " ").replace(".txt", ""))) {
 					nameListConsultationDefaultModel.addElement(
-							patient.getOrdonnancesFile().get(i).getName()
+							patient.getConsultationFile().get(i).getName()
 									.replace("&", " ").replace(".txt", ""));
 				}
 			}
+
 			/**
 			 * Initiatlisation de la JList et le JScrollPane
 			 */
@@ -428,9 +583,10 @@ public class FrameMedecin extends JFrame {
 	 * selectionne lors de la liste de patient
 	 * 
 	 * @param patient
-	 * @return panel patient avec data
+	 * @return panelPatient
 	 */
 	private JPanel setPatient(Patient patient) {
+
 		/*
 		 * Initialisation des composants
 		 */
@@ -452,14 +608,12 @@ public class FrameMedecin extends JFrame {
 		birthdayPatient = new JLabel(frame_medecin_birthday + " : " + patient.getBirthday());
 		agePatient = new JLabel(frame_medecin_age + " : " + agePatientInteger);
 		suppr = new JButton(frame_medecin_delete);
-		ajoutConsultation = new JButton(frame_medecin_new_consultation);
+		// ajoutConsultation = new JButton(frame_medecin_new_consultation);
 
 		/*
 		 * panel bottom
 		 */
 		panelBottom = new JPanel(new BorderLayout());
-		panelConsultation = new JPanel(new BorderLayout());
-		panelConsultation.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		consultationText = new JTextArea();
 		panelData = new JPanel();
 
@@ -470,7 +624,7 @@ public class FrameMedecin extends JFrame {
 		 */
 		consultationText.setEditable(false);
 		listConsultationScrollPane.setPreferredSize(new Dimension(200, 0));
-		ajoutConsultation.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
+		// ajoutConsultation.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
 		lastNamePatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
 		firstNamePatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
 		birthdayPatient.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 20));
@@ -489,11 +643,8 @@ public class FrameMedecin extends JFrame {
 		/*
 		 * Ajout des composants du panel du bas
 		 */
-		panelConsultation.add(ajoutConsultation, BorderLayout.NORTH);
-		panelConsultation.add(listConsultationScrollPane, BorderLayout.CENTER);
 		panelBottom.add(consultationText, BorderLayout.CENTER);
 		panelBottom.add(panelData, BorderLayout.WEST);
-		panelBottom.add(panelConsultation, BorderLayout.EAST);
 
 		/*
 		 * Ajout JPanel top et bottom au JPanel panelPatient
@@ -515,7 +666,7 @@ public class FrameMedecin extends JFrame {
 
 						if (SwingUtilities.isLeftMouseButton(event)) {
 							int index = list.locationToIndex(event.getPoint());
-							ordonnance = patient.getOrdonnancesFile().get(index);
+							ordonnance = patient.getConsultationFile().get(index);
 							consultationText.setText("");
 							readOrdonnance(ordonnance);
 							panelPrincipal.revalidate();
@@ -531,15 +682,16 @@ public class FrameMedecin extends JFrame {
 		 * Lors du clique du button nouvelle consultation
 		 * Affiche une fenetre avec les options de creation de consultation
 		 */
-		ajoutConsultation.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (currentPatient != null)
-					setFrameConsultation();
-			}
-		});
-
+		/*
+		 * ajoutConsultation.addActionListener(new ActionListener() {
+		 * 
+		 * @Override
+		 * public void actionPerformed(ActionEvent e) {
+		 * if (currentPatient != null)
+		 * setFrameConsultation();
+		 * }
+		 * });
+		 */
 		return panelPatient;
 	}
 
@@ -572,7 +724,7 @@ public class FrameMedecin extends JFrame {
 		try {
 			if (ordonnance == null) {
 				ordo = new Consultation();
-				in = new FileReader(Hopital.pathOrdonnances + ordo.getName() + ".txt");
+				in = new FileReader("");
 			} else {
 				in = new FileReader(ordonnance.getAbsolutePath());
 			}
@@ -697,4 +849,5 @@ public class FrameMedecin extends JFrame {
 			frameConsultation = null;
 		}
 	}
+
 }
