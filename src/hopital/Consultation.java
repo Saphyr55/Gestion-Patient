@@ -77,8 +77,6 @@ public class Consultation {
 		DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss");
 		nameConsultation = formatter.format(dateConsultation) + "&" + nameMedecin + "&" + namePatient;
 		nameConsultation = nameConsultation.replace(" ", "");
-		pathConsultation = "./scr/log/patient/" + patient.getFirstName().toLowerCase() +
-				patient.getLastName().toLowerCase() + "/" + nameConsultation + "/";
 
 		/**
 		 * Creation d'un dossier du patient et ajout
@@ -210,15 +208,16 @@ public class Consultation {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-				}
-				patient.getConsultation().add(this);
-				patient.getConsultationFile().add(this.consultation);
+				} else
+					throw new IOException("Une consultation doit avoir un avis medical");
+				patient.getConsultations().add(this);
+				patient.getConsultationsFile().add(this.consultation);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else {
-			patient.getConsultation().add(this);
-			patient.getConsultationFile().add(this.consultation);
+			patient.getConsultations().add(this);
+			patient.getConsultationsFile().add(this.consultation);
 		}
 	}
 

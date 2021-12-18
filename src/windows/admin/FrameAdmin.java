@@ -296,7 +296,7 @@ public class FrameAdmin extends JFrame {
 	private JPanel setDataPatient() {
 
 		/**
-		 * Charge les mask formatteur
+		 * Charge les masks formatteur
 		 */
 		try {
 			dateFormatter = new MaskFormatter("## / ## / ####");

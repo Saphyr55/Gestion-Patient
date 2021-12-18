@@ -253,14 +253,14 @@ public class Patient implements IPersonne {
 	/**
 	 * @return the ordonnances
 	 */
-	public ArrayList<Consultation> getConsultation() {
+	public ArrayList<Consultation> getConsultations() {
 		return consultation;
 	}
 
 	/**
 	 * @param consultation
 	 */
-	public void setConsultation(ArrayList<Consultation> consultation) {
+	public void setConsultations(ArrayList<Consultation> consultation) {
 		this.consultation = consultation;
 	}
 
@@ -316,7 +316,7 @@ public class Patient implements IPersonne {
 	/**
 	 * @return the ordonnancesFile
 	 */
-	public ArrayList<File> getConsultationFile() {
+	public ArrayList<File> getConsultationsFile() {
 		return consultationFile;
 	}
 

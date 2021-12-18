@@ -5,6 +5,7 @@ package windows.medecin;
 
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -16,7 +17,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -41,7 +45,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.text.MaskFormatter;
 
+import hopital.Consultation;
 import hopital.Hopital;
 import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
@@ -56,14 +64,15 @@ import windows.FrameConnection;
 public class FrameMedecin extends JFrame {
 
 	/**
-	 * ID
+	 * -------------------------------------------------------
+	 * Données generales pour la frame
+	 * -------------------------------------------------------
 	 */
-	private static final long serialVersionUID = -257774359093762865L;
 
 	/*
-	 * Charge de quoi charger les differents textes dans strings.json
+	 * Charge de quoi charger les differents textes en differente langue dans
+	 * strings.json
 	 */
-	// private static Language language = FrameConnexion.getLanguage();
 	private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
 	private static LoadingDimens dimens = new LoadingDimens();
 
@@ -80,10 +89,6 @@ public class FrameMedecin extends JFrame {
 	 */
 	private static final String frame_medecin_confirm_delete_patient = (String) loadingLanguage.getJsonObject()
 			.get("frame_medecin_confirm_delete_patient");
-	private static final String frame_medecin_delete = (String) loadingLanguage.getJsonObject()
-			.get("frame_medecin_delete");
-	private static final String frame_medecin_new_consultation = (String) loadingLanguage.getJsonObject()
-			.get("frame_medecin_new_consultation");
 	private static final String frame_medecin_popup_add = (String) loadingLanguage.getJsonObject()
 			.get("frame_medecin_popup_add");
 	private static final String frame_medecin_popup_delete = (String) loadingLanguage.getJsonObject()
@@ -99,7 +104,14 @@ public class FrameMedecin extends JFrame {
 	private static final String frame_medecin_age = (String) loadingLanguage.getJsonObject().get("frame_medecin_age");
 
 	/**
-	 * Composant de la frame
+	 * Fonts
+	 */
+	private static Font font1 = new Font("SansSerif", Font.BOLD, 20);
+
+	/**
+	 * --------------------------------------------------------------
+	 * Tous les composant de la frame
+	 * --------------------------------------------------------------
 	 */
 	private JPanel panelPrincipal = (JPanel) this.getContentPane();
 
@@ -119,7 +131,6 @@ public class FrameMedecin extends JFrame {
 	/**
 	 * Composant des données du patient
 	 */
-	private PanelDataPatient panelDataPatient;
 	private JPanel panelPatient, panelTop, panelBottom, panelData;
 	private JLabel lastNamePatient, firstNamePatient, birthdayPatient, agePatient;
 
@@ -146,31 +157,79 @@ public class FrameMedecin extends JFrame {
 			displayDiagnosticsMenuItem, displaySurgeryMenuItem, addConsultationMenuItem, deleteConsultationMenuItem;
 
 	/**
-	 * Frame generer
+	 * 
+	 */
+	private JPanel dataPatientPanel;
+	private JPanel patientStringDataPanel;
+	private JTextField lastnameStringTextField, lastnamePatientTextField;
+	private JTextField firstnameStringTextField, firstnamePatientTextField;
+	private JTextField birthdayStringTextField;
+	private JFormattedTextField birthdayPatientTextField;
+	private JTextField secuNumberStringTextField;
+	private JFormattedTextField secuNumberPatientTextField;
+	private JTextField phoneStringTextField;
+	private JFormattedTextField phonePatientTextField;
+	private JTextField addressStringTextField, addressPatientTextField;
+	private JButton testButtonForSwitch;
+
+	/**
+	 * Ordonnance
+	 */
+	private JPanel ordonnancePanel;
+	private JLabel ordonnanceStringLabel;
+	private JTextArea ordonnanceTextArea;
+	private JScrollPane ordonnanceTextAreaPane;
+	private BufferedReader readerOrdonnance;
+
+	/**
+	 * 
+	 */
+	private JPanel avisMedicalPanel;
+	private JLabel avisMedicalLabel;
+	private JTextArea avisMedicalTextArea;
+	private JScrollPane avisMedicalTextAreaPane;
+	private BufferedReader readerAvisMedical;
+
+	/**
+	 * --------------------------------------
+	 * Frame generer par la Frame du medecin
+	 * --------------------------------------
 	 */
 	private static FrameConsultation frameConsultation;
 	private static FrameAddPatientWithMedecin frameAddPatientWithMedecin;
 
 	/**
-	 * Gestion donnée frame
+	 * -------------------------------------
+	 * Donnée de l'hopital
+	 * -------------------------------------
 	 */
 	private static Medecin currentMedecin = FrameConnection.getCurrentMedecin();
 	private static Patient currentPatient;
+	private static int indexConsultationList;
+	private static File consultationSwitchFileCurrentPatient;
+	private static File avismedicalFileCurrentPatient;
+	private static File consultationFileCurrentPatient;
+	private static MaskFormatter dateFormatter;
+	private static MaskFormatter secuNumbeFormatter;
+	private static MaskFormatter phoneNumberFormatter;
 
 	/**
-	 * Fonts
+	 * --------------------
+	 * Panel personnalisé
+	 * --------------------
 	 */
-	private static Font font1 = new Font("SansSerif", Font.BOLD, 20);
+	private JPanel switchTypeConsultationPanel;
 
 	/**
+	 * --------------
 	 * Constructeur
+	 * --------------
 	 */
 	public FrameMedecin() {
 		super(title);
 		setOptionFrame();
-		panelDataPatient = new PanelDataPatient();
 		panelPrincipal.add(setListPatient(), BorderLayout.WEST);
-		panelPrincipal.add(panelDataPatient, BorderLayout.CENTER);
+		panelPrincipal.add(setPanelDataPatient(), BorderLayout.CENTER);
 		panelPrincipal.add(setListConsultion(), BorderLayout.EAST);
 		setVisible(isVisible);
 	}
@@ -361,13 +420,13 @@ public class FrameMedecin extends JFrame {
 		/**
 		 * Affichie les données du patient
 		 */
-		panelDataPatient.getLastnamePatientTextField().setText(currentPatient.getLastName());
-		panelDataPatient.getFirstnamePatientTextField().setText(currentPatient.getFirstName());
-		panelDataPatient.getBirthdayPatientTextField()
-				.setText(currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE));
-		panelDataPatient.getSecuNumberPatientTextField().setText(currentPatient.getSecuNumber());
-		panelDataPatient.getPhonePatientTextField().setText(currentPatient.getPhoneNumber());
-		panelDataPatient.getAddressPatientTextField().setText(currentPatient.getAddress());
+		lastnamePatientTextField.setText(currentPatient.getLastName());
+		firstnamePatientTextField.setText(currentPatient.getFirstName());
+		birthdayPatientTextField
+				.setText(currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE).replace("-", ""));
+		secuNumberPatientTextField.setText(currentPatient.getSecuNumber());
+		phonePatientTextField.setText(currentPatient.getPhoneNumber());
+		addressPatientTextField.setText(currentPatient.getAddress());
 
 		/**
 		 * Charge la liste de consultation
@@ -390,6 +449,7 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
+	 * 
 	 * 
 	 * @return
 	 */
@@ -473,10 +533,11 @@ public class FrameMedecin extends JFrame {
 			listConsultationJList.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mousePressed(MouseEvent event) {
-
+					JList<String> list = (JList<String>) event.getSource();
+					indexConsultationList = list.locationToIndex(event.getPoint());
 					if (event.getClickCount() == 1) {
 						if (SwingUtilities.isLeftMouseButton(event)) {
-
+							setActionOnLeftClickOnListConsultation();
 						} else if (SwingUtilities.isRightMouseButton(event)) {
 							setActionOnRightClickOnListConsultation(event);
 						}
@@ -514,7 +575,18 @@ public class FrameMedecin extends JFrame {
 	 * Permet d'afficher le panel de l'ordonnance
 	 */
 	private void setActionOnLeftClickOnListConsultation() {
-		
+		if (!currentPatient.getConsultationsFile().isEmpty()) {
+			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+			avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
+					+ consultationFileCurrentPatient.getName() + ".txt");
+
+			switchTypeConsultationPanel = setAvisMedicalPanel(avismedicalFileCurrentPatient);
+
+			panelPrincipal.remove(dataPatientPanel);
+			panelPrincipal.add(dataPatientPanel);
+			panelPrincipal.revalidate();
+			panelPrincipal.repaint();
+		}
 	}
 
 	/**
@@ -586,12 +658,12 @@ public class FrameMedecin extends JFrame {
 		 * Si la liste est vide on la remplie
 		 */
 		if (nameListConsultationDefaultModel.isEmpty()) {
-			for (int i = 0; i < patient.getConsultationFile().size(); i++) {
+			for (int i = 0; i < patient.getConsultationsFile().size(); i++) {
 
 				/**
 				 * Formate le nom du fichier de le consultation
 				 */
-				String nameConsultation = patient.getConsultationFile().get(i).getName()
+				String nameConsultation = patient.getConsultationsFile().get(i).getName()
 						.replace("&", " ").replace(".txt", "");
 				/**
 				 * Ajout de tous les elements pour la JList dans
@@ -647,29 +719,187 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
-	 * Lis une ordonnance et l'affiche au clique de la consultation
 	 * 
-	 * @param ordonnance
+	 * @return dataPatientPanel
 	 */
-	private void readOrdonnance(File ordonnance) {
-		BufferedReader reader;
-		FileReader in;
-		String line;
+	private JPanel setPanelDataPatient() {
+		dataPatientPanel = new JPanel(new GridLayout(1, 2));
+
+		setPanelDataString();
+		setSwitchTypeConsultationPanel();
+
+		dataPatientPanel.add(patientStringDataPanel);
+		dataPatientPanel.add(switchTypeConsultationPanel);
+
+		return dataPatientPanel;
+	}
+
+	/**
+	 * 
+	 */
+	private void setSwitchTypeConsultationPanel() {
+		switchTypeConsultationPanel = new JPanel();
+		switchTypeConsultationPanel.setPreferredSize(new Dimension(width / 3, height - 50));
+	}
+
+	/**
+	 * 
+	 */
+	private void setPanelDataString() {
+		/**
+		 * Charge les masks formatteur
+		 */
 		try {
-			if (ordonnance == null) {
-				in = new FileReader("");
-			} else {
-				in = new FileReader(ordonnance.getAbsolutePath());
-			}
-			reader = new BufferedReader(in);
-			do {
-				line = reader.readLine();
-				if (line != null)
-					this.consultationText.setText(this.consultationText.getText() + line + "\n");
-			} while (line != null);
-		} catch (Exception e) {
+			dateFormatter = new MaskFormatter("## / ## / ####");
+			secuNumbeFormatter = new MaskFormatter("### ### ### ### ###");
+			phoneNumberFormatter = new MaskFormatter("## ## ## ## ##");
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+
+		patientStringDataPanel = new JPanel();
+		// nom
+		lastnameStringTextField = new JTextField(frame_medecin_lastname);
+		lastnamePatientTextField = new JTextField();
+		lastnameStringTextField.setFont(font1);
+		lastnamePatientTextField.setFont(font1);
+
+		// prenom
+		firstnameStringTextField = new JTextField(frame_medecin_firstname);
+		firstnamePatientTextField = new JTextField();
+		firstnameStringTextField.setFont(font1);
+		firstnamePatientTextField.setFont(font1);
+
+		// birthday
+		birthdayStringTextField = new JTextField(frame_medecin_birthday);
+		birthdayPatientTextField = new JFormattedTextField(dateFormatter);
+		birthdayStringTextField.setFont(font1);
+		birthdayPatientTextField.setFont(font1);
+
+		// numero de securité social
+		secuNumberStringTextField = new JTextField("Secu number");
+		secuNumberPatientTextField = new JFormattedTextField(secuNumbeFormatter);
+		secuNumberStringTextField.setFont(font1);
+		secuNumberPatientTextField.setFont(font1);
+
+		// numero de telephone
+		phoneStringTextField = new JTextField("Phone number");
+		phonePatientTextField = new JFormattedTextField(phoneNumberFormatter);
+		phoneStringTextField.setFont(font1);
+		phonePatientTextField.setFont(font1);
+
+		// adresse
+		addressStringTextField = new JTextField("Address");
+		addressPatientTextField = new JTextField();
+		addressStringTextField.setFont(font1);
+		addressPatientTextField.setFont(font1);
+
+		lastnameStringTextField.setEditable(false);
+		lastnamePatientTextField.setEditable(false);
+
+		firstnameStringTextField.setEditable(false);
+		firstnamePatientTextField.setEditable(false);
+
+		birthdayStringTextField.setEditable(false);
+		birthdayPatientTextField.setEditable(false);
+
+		secuNumberStringTextField.setEditable(false);
+		secuNumberPatientTextField.setEditable(false);
+
+		phoneStringTextField.setEditable(false);
+		phonePatientTextField.setEditable(false);
+
+		addressStringTextField.setEditable(false);
+		addressPatientTextField.setEditable(false);
+
+		patientStringDataPanel.add(lastnameStringTextField);
+		patientStringDataPanel.add(lastnamePatientTextField);
+
+		patientStringDataPanel.add(firstnameStringTextField);
+		patientStringDataPanel.add(firstnamePatientTextField);
+
+		patientStringDataPanel.add(birthdayStringTextField);
+		patientStringDataPanel.add(birthdayPatientTextField);
+
+		patientStringDataPanel.add(secuNumberStringTextField);
+		patientStringDataPanel.add(secuNumberPatientTextField);
+
+		patientStringDataPanel.add(phoneStringTextField);
+		patientStringDataPanel.add(phonePatientTextField);
+
+		patientStringDataPanel.add(addressStringTextField);
+		patientStringDataPanel.add(addressPatientTextField);
+
+		patientStringDataPanel.setLayout(new BoxLayout(patientStringDataPanel, BoxLayout.PAGE_AXIS));
+		patientStringDataPanel.setPreferredSize(new Dimension(width / 3, height - 50));
+	}
+
+	/**
+	 * Methode pour creer le panel de l'ordonnance
+	 * 
+	 * @return ordonnancePanel
+	 */
+	private JPanel setOrdonnancePanel(File file) {
+		ordonnancePanel = new JPanel(new BorderLayout());
+		ordonnanceStringLabel = new JLabel("Ordonnance");
+		ordonnanceTextArea = new JTextArea();
+		ordonnanceTextAreaPane = new JScrollPane();
+
+		if (file != null) {
+			try {
+				String line;
+				readerOrdonnance = new BufferedReader(new FileReader(file));
+
+				while ((line = readerOrdonnance.readLine()) != null) {
+					ordonnanceTextArea.append(line + "n");
+					System.out.println("line");
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		ordonnancePanel.add(ordonnanceStringLabel, BorderLayout.NORTH);
+		ordonnancePanel.add(ordonnanceTextAreaPane, BorderLayout.CENTER);
+
+		return ordonnancePanel;
+	}
+
+	/**
+	 * Methode pour creer le panel de l'avis medical
+	 * 
+	 * @return avisMedicalPanel
+	 */
+	private JPanel setAvisMedicalPanel(File file) {
+
+		avisMedicalPanel = new JPanel(new BorderLayout());
+		avisMedicalLabel = new JLabel("Avis medical");
+		avisMedicalTextArea = new JTextArea();
+		avisMedicalTextAreaPane = new JScrollPane(avisMedicalTextArea);
+
+		if (file != null) {
+			try {
+				String line;
+				readerAvisMedical = new BufferedReader(new FileReader(file));
+
+				while ((line = readerAvisMedical.readLine()) != null) {
+					avisMedicalTextArea.append(line + "n");
+					System.out.println(line);
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		avisMedicalTextArea.setFont(new Font("SansSerif", Font.BOLD, 16));
+		avisMedicalPanel.add(avisMedicalLabel, BorderLayout.NORTH);
+		avisMedicalPanel.add(avisMedicalTextAreaPane, BorderLayout.CENTER);
+
+		return avisMedicalPanel;
 	}
 
 	/**
@@ -745,9 +975,9 @@ public class FrameMedecin extends JFrame {
 		}
 	}
 
-	/*
+	/**
 	 * -----------------------------------------------
-	 * Getters end setters
+	 * Getters and setters
 	 * -----------------------------------------------
 	 */
 
@@ -819,6 +1049,30 @@ public class FrameMedecin extends JFrame {
 	 */
 	public static FrameAddPatientWithMedecin getFrameAddPatientWithMedecin() {
 		return frameAddPatientWithMedecin;
+	}
+
+	public static Medecin getCurrentMedecin() {
+		return currentMedecin;
+	}
+
+	public static void setCurrentMedecin(Medecin currentMedecin) {
+		FrameMedecin.currentMedecin = currentMedecin;
+	}
+
+	public static Patient getCurrentPatient() {
+		return currentPatient;
+	}
+
+	public static void setCurrentPatient(Patient currentPatient) {
+		FrameMedecin.currentPatient = currentPatient;
+	}
+
+	public static File getConsultationSwitchFileCurrentPatient() {
+		return consultationSwitchFileCurrentPatient;
+	}
+
+	public static void setConsultationSwitchFileCurrentPatient(File consultationSwitchFileCurrentPatient) {
+		FrameMedecin.consultationSwitchFileCurrentPatient = consultationSwitchFileCurrentPatient;
 	}
 
 }

@@ -208,8 +208,8 @@ public abstract class Hopital {
 						.listFiles();
 		if (consultationPatientFile != null) {
 			for (int i = 0; i < consultationPatientFile.length; i++) {
-				if (!patient.getConsultationFile().contains(consultationPatientFile[i]))
-					patient.getConsultationFile().add(consultationPatientFile[i]);
+				if (!patient.getConsultationsFile().contains(consultationPatientFile[i]))
+					patient.getConsultationsFile().add(consultationPatientFile[i]);
 			}
 		}
 	}
