@@ -85,25 +85,6 @@ public class FrameMedecin extends JFrame {
 	private static boolean isVisible = true;
 
 	/**
-	 * Tous les textes a charger
-	 */
-	private static final String frame_medecin_confirm_delete_patient = (String) loadingLanguage.getJsonObject()
-			.get("frame_medecin_confirm_delete_patient");
-	private static final String frame_medecin_popup_add = (String) loadingLanguage.getJsonObject()
-			.get("frame_medecin_popup_add");
-	private static final String frame_medecin_popup_delete = (String) loadingLanguage.getJsonObject()
-			.get("frame_medecin_popup_delete");
-	private static final String frame_medecin_popup_add_consultation = (String) loadingLanguage.getJsonObject()
-			.get("frame_medecin_popup_add_consultation");
-	private static final String frame_medecin_lastname = (String) loadingLanguage.getJsonObject()
-			.get("frame_medecin_lastname");
-	private static final String frame_medecin_firstname = (String) loadingLanguage.getJsonObject()
-			.get("frame_medecin_firstname");
-	private static final String frame_medecin_birthday = (String) loadingLanguage.getJsonObject()
-			.get("frame_medecin_birthday");
-	private static final String frame_medecin_age = (String) loadingLanguage.getJsonObject().get("frame_medecin_age");
-
-	/**
 	 * Fonts
 	 */
 	private static Font font1 = new Font("SansSerif", Font.BOLD, 20);
@@ -173,7 +154,7 @@ public class FrameMedecin extends JFrame {
 	private JButton testButtonForSwitch;
 
 	/**
-	 * Ordonnance
+	 * Ordonnance panel
 	 */
 	private JPanel ordonnancePanel;
 	private JLabel ordonnanceStringLabel;
@@ -182,7 +163,7 @@ public class FrameMedecin extends JFrame {
 	private BufferedReader readerOrdonnance;
 
 	/**
-	 * 
+	 * Avis medical panel
 	 */
 	private JPanel avisMedicalPanel;
 	private JLabel avisMedicalLabel;
@@ -229,9 +210,15 @@ public class FrameMedecin extends JFrame {
 		super(title);
 		setOptionFrame();
 		panelPrincipal.add(setListPatient(), BorderLayout.WEST);
-		panelPrincipal.add(setPanelDataPatient(), BorderLayout.CENTER);
+		panelPrincipal.add(setPanelDataPatient(null), BorderLayout.CENTER);
 		panelPrincipal.add(setListConsultion(), BorderLayout.EAST);
 		setVisible(isVisible);
+		while (true) {
+			if (!frameConsultation.isDisplayable()) {
+				panelPrincipal.revalidate();
+				panelPrincipal.repaint();
+			}
+		}
 	}
 
 	/**
@@ -375,20 +362,7 @@ public class FrameMedecin extends JFrame {
 			 * Si la selection est supprimer alors lance showConfimDialog
 			 * pour pouvoir confirmer l'acte de suppression
 			 */
-			menuItemSupprPatient.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					int input = JOptionPane.showConfirmDialog(null,
-							frame_medecin_confirm_delete_patient);
-
-					/*
-					 * 
-					 */
-					if (input == JOptionPane.YES_OPTION) {
-						System.out.println(currentPatient.getLastName() + " a ete supprimer");
-					}
-				}
-			});
+			menuItemSupprPatient.addActionListener(new MenuItemSupprPatientListener());
 
 			/**
 			 * Si la selection est d'ajouter un patient
@@ -398,13 +372,6 @@ public class FrameMedecin extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					setFrameAddPatientWithMedecin();
-				}
-			});
-
-			menuItemAddConsultation.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					setFrameConsultation();
 				}
 			});
 
@@ -444,12 +411,18 @@ public class FrameMedecin extends JFrame {
 	private JPopupMenu setPopupMenuOnRightClickListConsultationWithNoConsultation() {
 		consultationPopupMenu = new JPopupMenu();
 		addConsultationMenuItem = new JMenuItem("Ajouter consultation");
+		addConsultationButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setFrameConsultation();
+				System.out.println("Frame de consultation ouvert");
+			}
+		});
 		consultationPopupMenu.add(addConsultationMenuItem);
 		return consultationPopupMenu;
 	}
 
 	/**
-	 * 
 	 * 
 	 * @return
 	 */
@@ -473,6 +446,13 @@ public class FrameMedecin extends JFrame {
 		consultationPopupMenu.add(displayIRMMenuItem);
 		consultationPopupMenu.add(displayRadiologyMenuItem);
 		consultationPopupMenu.add(displaySurgeryMenuItem);
+
+		addConsultationButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setFrameConsultation();
+			}
+		});
 
 		return consultationPopupMenu;
 	}
@@ -526,7 +506,7 @@ public class FrameMedecin extends JFrame {
 		consultationPanel.add(panelTop, BorderLayout.NORTH);
 		consultationPanel.add(listConsultationScrollPane, BorderLayout.CENTER);
 
-		/*
+		/**
 		 * Action sur la liste d'ordonnance
 		 */
 		if (listConsultationJList != null) {
@@ -547,6 +527,16 @@ public class FrameMedecin extends JFrame {
 				}
 			});
 		}
+
+		/**
+		 * Lance la frame d'ajout de consultation lors du clique du boutton ajouter
+		 */
+		addConsultationButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setFrameConsultation();
+			}
+		});
 
 		return consultationPanel;
 	}
@@ -580,10 +570,10 @@ public class FrameMedecin extends JFrame {
 			avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
 					+ consultationFileCurrentPatient.getName() + ".txt");
 
-			switchTypeConsultationPanel = setAvisMedicalPanel(avismedicalFileCurrentPatient);
-
-			panelPrincipal.remove(dataPatientPanel);
-			panelPrincipal.add(dataPatientPanel);
+			dataPatientPanel.remove(switchTypeConsultationPanel);
+			switchTypeConsultationPanel = setSwitchTypeConsultationPanel(
+					setAvisMedicalPanel(avismedicalFileCurrentPatient));
+			dataPatientPanel.add(switchTypeConsultationPanel);
 			panelPrincipal.revalidate();
 			panelPrincipal.repaint();
 		}
@@ -591,7 +581,7 @@ public class FrameMedecin extends JFrame {
 
 	/**
 	 * Affiche la frame pour ajouter des consultations
-	 * Ne peut etre afficher plusieur fois
+	 * Ne peut pas etre afficher plusieur fois
 	 */
 	private void setFrameConsultation() {
 		if (frameConsultation == null)
@@ -607,7 +597,7 @@ public class FrameMedecin extends JFrame {
 
 	/**
 	 * Affiche la frame pour ajouter des patient
-	 * Ne peut etre afficher plusieur fois
+	 * Ne peut pas etre afficher plusieur fois
 	 */
 	private void setFrameAddPatientWithMedecin() {
 		if (frameAddPatientWithMedecin == null)
@@ -709,9 +699,12 @@ public class FrameMedecin extends JFrame {
 	 */
 	private JPopupMenu setPopupMenuOnRigthClickListPatient() {
 		popupMenuListPatient = new JPopupMenu();
-		menuItemAddPatient = new JMenuItem(frame_medecin_popup_add);
-		menuItemSupprPatient = new JMenuItem(frame_medecin_popup_delete);
-		menuItemAddConsultation = new JMenuItem(frame_medecin_popup_add_consultation);
+		menuItemAddPatient = new JMenuItem((String) loadingLanguage.getJsonObject()
+				.get("frame_medecin_popup_add"));
+		menuItemSupprPatient = new JMenuItem((String) loadingLanguage.getJsonObject()
+				.get("frame_medecin_popup_delete"));
+		menuItemAddConsultation = new JMenuItem((String) loadingLanguage.getJsonObject()
+				.get("frame_medecin_popup_add_consultation"));
 		popupMenuListPatient.add(menuItemAddPatient);
 		popupMenuListPatient.add(menuItemSupprPatient);
 		popupMenuListPatient.add(menuItemAddConsultation);
@@ -722,30 +715,33 @@ public class FrameMedecin extends JFrame {
 	 * 
 	 * @return dataPatientPanel
 	 */
-	private JPanel setPanelDataPatient() {
+	private JPanel setPanelDataPatient(JPanel panel) {
 		dataPatientPanel = new JPanel(new GridLayout(1, 2));
 
-		setPanelDataString();
-		setSwitchTypeConsultationPanel();
-
-		dataPatientPanel.add(patientStringDataPanel);
-		dataPatientPanel.add(switchTypeConsultationPanel);
+		dataPatientPanel.add(setPanelDataString());
+		dataPatientPanel.add(setSwitchTypeConsultationPanel(panel));
 
 		return dataPatientPanel;
 	}
 
 	/**
+	 * @return
 	 * 
 	 */
-	private void setSwitchTypeConsultationPanel() {
-		switchTypeConsultationPanel = new JPanel();
+	private JPanel setSwitchTypeConsultationPanel(JPanel panel) {
+		if (panel != null) {
+			switchTypeConsultationPanel = panel;
+		} else {
+			switchTypeConsultationPanel = new JPanel();
+		}
 		switchTypeConsultationPanel.setPreferredSize(new Dimension(width / 3, height - 50));
+		return switchTypeConsultationPanel;
 	}
 
 	/**
 	 * 
 	 */
-	private void setPanelDataString() {
+	private JPanel setPanelDataString() {
 		/**
 		 * Charge les masks formatteur
 		 */
@@ -759,19 +755,22 @@ public class FrameMedecin extends JFrame {
 
 		patientStringDataPanel = new JPanel();
 		// nom
-		lastnameStringTextField = new JTextField(frame_medecin_lastname);
+		lastnameStringTextField = new JTextField((String) loadingLanguage.getJsonObject()
+				.get("frame_medecin_lastname"));
 		lastnamePatientTextField = new JTextField();
 		lastnameStringTextField.setFont(font1);
 		lastnamePatientTextField.setFont(font1);
 
 		// prenom
-		firstnameStringTextField = new JTextField(frame_medecin_firstname);
+		firstnameStringTextField = new JTextField((String) loadingLanguage.getJsonObject()
+				.get("frame_medecin_firstname"));
 		firstnamePatientTextField = new JTextField();
 		firstnameStringTextField.setFont(font1);
 		firstnamePatientTextField.setFont(font1);
 
 		// birthday
-		birthdayStringTextField = new JTextField(frame_medecin_birthday);
+		birthdayStringTextField = new JTextField((String) loadingLanguage.getJsonObject()
+				.get("frame_medecin_birthday"));
 		birthdayPatientTextField = new JFormattedTextField(dateFormatter);
 		birthdayStringTextField.setFont(font1);
 		birthdayPatientTextField.setFont(font1);
@@ -832,6 +831,8 @@ public class FrameMedecin extends JFrame {
 
 		patientStringDataPanel.setLayout(new BoxLayout(patientStringDataPanel, BoxLayout.PAGE_AXIS));
 		patientStringDataPanel.setPreferredSize(new Dimension(width / 3, height - 50));
+
+		return patientStringDataPanel;
 	}
 
 	/**
@@ -876,6 +877,7 @@ public class FrameMedecin extends JFrame {
 
 		avisMedicalPanel = new JPanel(new BorderLayout());
 		avisMedicalLabel = new JLabel("Avis medical");
+		avisMedicalLabel.setFont(font1);
 		avisMedicalTextArea = new JTextArea();
 		avisMedicalTextAreaPane = new JScrollPane(avisMedicalTextArea);
 
@@ -903,9 +905,15 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
+	 * -------------------------------------------------------
+	 * Les Principals Listeners
+	 * -------------------------------------------------------
+	 */
+
+	/**
 	 * Le listener du text field pour chercher un patient
 	 */
-	public class DocumentListenerPatientField implements DocumentListener {
+	private class DocumentListenerPatientField implements DocumentListener {
 
 		@Override
 		public void insertUpdate(DocumentEvent e) {
@@ -935,7 +943,7 @@ public class FrameMedecin extends JFrame {
 	/**
 	 * Le listener du text field pour chercher une consultation
 	 */
-	public class DocumentListenerConsultationField implements DocumentListener {
+	private class DocumentListenerConsultationField implements DocumentListener {
 
 		@Override
 		public void insertUpdate(DocumentEvent e) {
@@ -964,6 +972,18 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
+	 * Ferme la fenetre d'ajout de patient au clique du bouton annuler de la fenetre
+	 * d'ajout de patient
+	 */
+	public static class CancelButtonFrameAddPatientListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			frameAddPatientWithMedecin.dispose();
+			frameAddPatientWithMedecin = null;
+		}
+	}
+	
+	/**
 	 * Ferme la fenetre de consultation au clique du bouton annuler de la fenetre de
 	 * consultation
 	 */
@@ -972,6 +992,27 @@ public class FrameMedecin extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			frameConsultation.dispose();
 			frameConsultation = null;
+		}
+	}
+
+	/**
+	 * Listener du button supprimer un patient.
+	 * Lance une frame de confimation de suppression
+	 */
+	private class MenuItemSupprPatientListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int input = JOptionPane.showConfirmDialog(null,
+					(String) loadingLanguage.getJsonObject()
+							.get("frame_medecin_confirm_delete_patient"));
+
+			/*
+			 * 
+			 */
+			if (input == JOptionPane.YES_OPTION) {
+				System.out.println(currentPatient.getLastName() + " a ete supprimer");
+			}
 		}
 	}
 
