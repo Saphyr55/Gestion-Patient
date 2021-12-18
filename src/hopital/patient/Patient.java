@@ -185,9 +185,9 @@ public class Patient implements IPersonne {
 			 * Ecriture dans le fichier patients du medecin
 			 */
 			try {
-				reader = new BufferedReader(new FileReader(new File(".src/log/medecin"
+				reader = new BufferedReader(new FileReader(new File("./src/log/medecin/"
 						+ medecin.getFirstName().toLowerCase() + medecin.getLastName().toLowerCase()
-						+ "patients.txt")));
+						+ "/patients.txt")));
 				while (reader.readLine() != null) {
 					nLine++;
 				}
