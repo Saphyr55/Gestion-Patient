@@ -2,6 +2,9 @@ package windows.medecin;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -11,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -29,6 +33,7 @@ import hopital.Hopital;
 import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
+import hopital.patient.Patient.PatientTypeCreate;
 import hopital.personnels.Medecin;
 import windows.FrameConnection;
 
@@ -161,8 +166,8 @@ public class FrameAddPatientWithMedecin extends JFrame {
                         lastnameCurrentPatient = currentPatient.getLastName();
                         firstnameCurrentPatient = currentPatient.getFirstName();
                         birthdayCurrentPatient = currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE);
-                        secuNumberCurrentPatient = currentPatient.getSecuNumber().
-                                                replaceAll("(.{" + "3" + "})", "$1 ").trim();
+                        secuNumberCurrentPatient = currentPatient.getSecuNumber().replaceAll("(.{" + "3" + "})", "$1 ")
+                                .trim();
                         break;
                     }
                 }
@@ -229,6 +234,12 @@ public class FrameAddPatientWithMedecin extends JFrame {
         }
     }
 
+    /**
+     * Return le panel central de la fenetre
+     * Permet d'afficher certaines données du patient
+     * 
+     * @return centerPanel
+     */
     private JPanel setCenterPanel() {
 
         /**
@@ -291,7 +302,9 @@ public class FrameAddPatientWithMedecin extends JFrame {
         confirmAddPatientPanel = new JPanel();
 
         addButton = new JButton(frame_medecin_add_patient_add);
+        addButton.addActionListener(new AddButtonListener());
         cancelButton = new JButton(frame_medecin_add_patient_cancel);
+        cancelButton.addActionListener(new FrameMedecin.CancelButtonFrameAddPatientListener());
 
         confirmAddPatientPanel.add(addButton);
         confirmAddPatientPanel.add(cancelButton);
@@ -305,6 +318,36 @@ public class FrameAddPatientWithMedecin extends JFrame {
         centerPanel.add(confirmAddPatientPanel, BorderLayout.SOUTH);
 
         return centerPanel;
+    }
+
+    /**
+     * Action lors du clique du button ajouter
+     */
+    private class AddButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int j = 0;
+            for (int i = 0; i < currentMedecin.getPatients().size(); i++) {
+                // condition si le patient n'existe pas dans la liste de medecin
+                if (!currentPatient.getFirstName().equals(currentMedecin.getPatients().get(i).getFirstName()) &&
+                        !currentPatient.getLastName().equals(currentMedecin.getPatients().get(i).getLastName()) &&
+                        currentPatient.getIdentifiant() != currentMedecin.getPatients().get(i).getIdentifiant())
+                    j++; // on incremente j et si j est egale a la taille de liste de patient du medecin
+                         // alors on ajoute le patient
+            }
+            if (j == currentMedecin.getPatients().size()) {
+                new Patient(currentPatient.getIdentifiant(), currentMedecin,
+                        currentPatient.getFirstName(), currentPatient.getLastName(),
+                        currentPatient.getBirthday(), currentPatient.getSecuNumber(),
+                        currentPatient.getPhoneNumber(), currentPatient.getAddress(),
+                        PatientTypeCreate.CREATE_PATIENT_WITH_MEDECIN);
+                JOptionPane.showMessageDialog(contentPane, "Le patient à été bien ajouté");
+            } else
+                JOptionPane.showMessageDialog(contentPane, "Le patient existe déjà dans votre liste");
+
+        }
+
     }
 
 }

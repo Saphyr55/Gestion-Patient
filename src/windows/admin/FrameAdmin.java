@@ -221,7 +221,8 @@ public class FrameAdmin extends JFrame {
 						patientLastnameInputTextField.setText(currentPatient.getLastName());
 						patientFirstnameInpuTextField.setText(currentPatient.getFirstName());
 						patientDateInputFormattedTextField
-								.setText(currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE));
+								.setText(currentPatient.getBirthday()
+										.format(Hopital.FORMATEUR_LOCALDATE).replace("-", ""));
 						patientAddressInputTextField.setText(currentPatient.getAddress());
 						patientSecuNumberInputFormattedTextField.setText(currentPatient.getSecuNumber());
 						patientNumberPhoneInputFormFormattedTextField.setText(currentPatient.getPhoneNumber());
@@ -546,9 +547,10 @@ public class FrameAdmin extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			String getLastnamePatient = frameAdminAddPatient.getPatientLastnameInputTextField().getText();
 			String getFirstnamePatient = frameAdminAddPatient.getPatientFirstnameInpuTextField().getText();
-			LocalDate getBirthdayPatient = LocalDate.parse(
-					frameAdminAddPatient.getPatientDateInputFormattedTextField().getText(),
-					Hopital.FORMATEUR_LOCALDATE);
+
+			LocalDate getBirthdayPatient = LocalDate
+					.parse(frameAdminAddPatient.getPatientDateInputFormattedTextField().getText().replace("/", "-"),
+							Hopital.FORMATEUR_LOCALDATE);
 			String getSecuNumberPatient = frameAdminAddPatient.getPatientSecuNumberInputFormattedTextField().getText()
 					.replace(" ", "");
 			String getPhoneNumberPatient = frameAdminAddPatient.getPatientNumberPhoneInputFormFormattedTextField()
