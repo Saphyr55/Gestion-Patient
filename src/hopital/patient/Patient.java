@@ -3,6 +3,7 @@ package hopital.patient;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -68,8 +69,7 @@ public class Patient implements IPersonne {
 		 */
 		try {
 			reader = new BufferedReader(Hopital.getPatientsReaderFile());
-			String line;
-			while ((line = reader.readLine()) != null) {
+			while ((reader.readLine()) != null) {
 				nLine++;
 			}
 			this.id = nLine;
@@ -79,7 +79,7 @@ public class Patient implements IPersonne {
 			this.secuNumber = secuNumber;
 			this.address = address;
 			this.phoneNumber = phoneNumber;
-			consultation = new ArrayList<>();
+			this.consultation = new ArrayList<>();
 			if (this.lastName == null) {
 				this.lastName = "None";
 			}
@@ -180,10 +180,17 @@ public class Patient implements IPersonne {
 			this.secuNumber = secuNumber;
 			this.address = address;
 			this.phoneNumber = phoneNumber;
+
 			/*
 			 * Ecriture dans le fichier patients du medecin
 			 */
 			try {
+				reader = new BufferedReader(new FileReader(new File(".src/log/medecin"
+						+ medecin.getFirstName().toLowerCase() + medecin.getLastName().toLowerCase()
+						+ "patients.txt")));
+				while (reader.readLine() != null) {
+					nLine++;
+				}
 				BufferedWriter writer = new BufferedWriter(new FileWriter(
 						"./src/log/medecin/" + medecin.getFirstName().toLowerCase()
 								+ medecin.getLastName().toLowerCase() + "/patients.txt",
@@ -192,7 +199,6 @@ public class Patient implements IPersonne {
 						+ Hopital.SEPARATOR + getLastName() + Hopital.SEPARATOR
 						+ this.birthday.format(Hopital.FORMATEUR_LOCALDATE) + Hopital.SEPARATOR + this.secuNumber
 						+ Hopital.SEPARATOR + this.phoneNumber + Hopital.SEPARATOR + this.address);
-				nLine++;
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {

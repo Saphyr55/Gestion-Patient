@@ -20,7 +20,6 @@ public class TestConsultation {
         appareillageList.add("Attelle");
 
         String medicaments = "2 doliprane ";
-        String avisMedical = "";
         Hopital.loadingMedecin();
         Hopital.loadingPatient();
 
@@ -39,9 +38,9 @@ public class TestConsultation {
                 patient.getAddress(), PatientTypeCreate.CREATE_PATIENT_WITH_MEDECIN);
         */
 
-        Patient patient2 = medecin.getPatients().get(8);
+        Patient patient2 = medecin.getPatients().get(7);
 
-        Consultation consultation = new Consultation(medecin, patient2, medicaments, avisMedical,
+        new Consultation(medecin, patient2, medicaments, null,
                 appareillageList,
                 Consultation.WriteType.WRITE_IN_ORDONNANCE);
 

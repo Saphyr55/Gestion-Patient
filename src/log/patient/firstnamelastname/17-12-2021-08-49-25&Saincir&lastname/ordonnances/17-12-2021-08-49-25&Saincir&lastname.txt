@@ -1,0 +1,11 @@
+Ordonnance du 17-12-2021
+
+Nom du patient : lastname
+Prenom du patient: firstname
+
+Nom du medecin : Andy
+Prenom du medecin : Andy
+
+Medicaments prescrits : 2 doliprane 
+
+Signature : Saincir
