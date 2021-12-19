@@ -122,6 +122,14 @@ public class FrameConsultation extends JFrame {
 	private JScrollPane prescriptionScrollPane;
 
 	/**
+	* 
+	*/
+	private JPanel diagnosticPanel;
+	private JLabel diagnosticLabel;
+	private JTextArea diagnosticTextArea;
+	private JScrollPane diagnosticScrollPane;
+
+	/**
 	 * 
 	 */
 	private JPanel appariellagePanel;
@@ -251,6 +259,7 @@ public class FrameConsultation extends JFrame {
 		switchPanel = new JPanel(new CardLayout());
 		switchPanel.add(setPrescriptionPanel());
 		switchPanel.add(setAppariellagePanel());
+		switchPanel.add(setDiagnosticPanel());
 		return switchPanel;
 	}
 
@@ -315,6 +324,34 @@ public class FrameConsultation extends JFrame {
 		avisMedicalPanel.setPreferredSize(new Dimension(0, 100));
 
 		return avisMedicalPanel;
+	}
+
+	/**
+	 * Creer le panel de diagnostique
+	 * Qui permet au medecin d'écrire son diagnostique
+	 * au niveau de la consultation
+	 * 
+	 * @return diagnosticPanel
+	 */
+	private JPanel setDiagnosticPanel() {
+		diagnosticPanel = new JPanel();
+		diagnosticLabel = new JLabel((String) loadingLanguage
+				.getJsonObject()
+				.get("frame_medecin_new_consultation_medical_advice"));
+		diagnosticLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
+		diagnosticTextArea = new JTextArea();
+		diagnosticTextArea.setLineWrap(true);
+		diagnosticTextArea.setWrapStyleWord(true);
+		diagnosticScrollPane = new JScrollPane(diagnosticTextArea);
+		diagnosticScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		diagnosticScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+		diagnosticPanel.setLayout(new BoxLayout(diagnosticPanel, BoxLayout.Y_AXIS));
+		diagnosticPanel.add(diagnosticLabel);
+		diagnosticPanel.add(diagnosticScrollPane);
+		diagnosticPanel.setPreferredSize(new Dimension(0, 100));
+
+		return diagnosticPanel;
 	}
 
 	/**
@@ -526,14 +563,19 @@ public class FrameConsultation extends JFrame {
 			if (index == 0) {
 				appariellagePanel.setVisible(false);
 				prescriptionPanel.setVisible(true);
-				contentPane.revalidate();
-				contentPane.repaint();
+				diagnosticPanel.setVisible(false);
 			} else if (index == 1) {
+				diagnosticPanel.setVisible(false);
 				prescriptionPanel.setVisible(false);
 				appariellagePanel.setVisible(true);
-				contentPane.revalidate();
-				contentPane.repaint();
+
+			} else if (index == 5) {
+				diagnosticPanel.setVisible(true);
+				prescriptionPanel.setVisible(false);
+				appariellagePanel.setVisible(false);
 			}
+			contentPane.revalidate();
+			contentPane.repaint();
 		}
 	}
 
