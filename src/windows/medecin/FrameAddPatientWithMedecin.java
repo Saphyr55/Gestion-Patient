@@ -44,10 +44,10 @@ public class FrameAddPatientWithMedecin extends JFrame {
 
     private static Medecin currentMedecin = FrameConnection.getCurrentMedecin();
     private static Patient currentPatient;
-    private static String lastnameCurrentPatient = "";
-    private static String firstnameCurrentPatient = "";
-    private static String birthdayCurrentPatient = "00/00/0000";
-    private static String secuNumberCurrentPatient = "000 000 000 000 000 000";
+    private static String lastnameCurrentPatient;
+    private static String firstnameCurrentPatient;
+    private static String birthdayCurrentPatient;
+    private static String secuNumberCurrentPatient;
 
     private JPanel contentPane = (JPanel) getContentPane();
 
@@ -297,14 +297,13 @@ public class FrameAddPatientWithMedecin extends JFrame {
         dataPatientPanel.setBorder(BorderFactory.createEmptyBorder(50, 10, 10, 10));
 
         /**
-         * panel to confirm or to cancel
+         * panel to confirm or to cancel0
          */
         confirmAddPatientPanel = new JPanel();
 
         addButton = new JButton(frame_medecin_add_patient_add);
         addButton.addActionListener(new AddButtonListener());
         cancelButton = new JButton(frame_medecin_add_patient_cancel);
-        cancelButton.addActionListener(new FrameMedecin.CancelButtonFrameAddPatientListener());
 
         confirmAddPatientPanel.add(addButton);
         confirmAddPatientPanel.add(cancelButton);
@@ -350,4 +349,13 @@ public class FrameAddPatientWithMedecin extends JFrame {
 
     }
 
+    public JButton getCancelButton() {
+        return cancelButton;
+    }
+
+    public void setCancelButton(JButton cancelButton) {
+        this.cancelButton = cancelButton;
+    }
+
+    
 }

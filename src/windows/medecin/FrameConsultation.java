@@ -439,7 +439,6 @@ public class FrameConsultation extends JFrame {
 		confirmConsultationPanel.add(Box.createHorizontalStrut(150));
 		confirmConsultationPanel.add(confirmButton);
 		confirmConsultationPanel.add(cancelButton);
-		cancelButton.addActionListener(new FrameMedecin.ActionListenerCancelButton());
 		signCheckBox.addActionListener(new ActionListenerSignBox());
 
 		return confirmConsultationPanel;
@@ -509,4 +508,13 @@ public class FrameConsultation extends JFrame {
 			}
 		}
 	}
+
+	public JButton getCancelButton() {
+		return cancelButton;
+	}
+
+	public void setCancelButton(JButton cancelButton) {
+		this.cancelButton = cancelButton;
+	}
+
 }

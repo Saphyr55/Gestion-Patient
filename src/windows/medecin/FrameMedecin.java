@@ -9,6 +9,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -213,12 +214,6 @@ public class FrameMedecin extends JFrame {
 		panelPrincipal.add(setPanelDataPatient(null), BorderLayout.CENTER);
 		panelPrincipal.add(setListConsultion(), BorderLayout.EAST);
 		setVisible(isVisible);
-		while (true) {
-			if (!frameConsultation.isDisplayable()) {
-				panelPrincipal.revalidate();
-				panelPrincipal.repaint();
-			}
-		}
 	}
 
 	/**
@@ -584,13 +579,16 @@ public class FrameMedecin extends JFrame {
 	 * Ne peut pas etre afficher plusieur fois
 	 */
 	private void setFrameConsultation() {
-		if (frameConsultation == null)
+		if (frameConsultation == null) {
 			frameConsultation = new FrameConsultation();
-
+			frameConsultation.getCancelButton().addActionListener(new CancelButtonFrameConsultationListener());
+		}
 		frameConsultation.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
 				frameConsultation = null;
+				panelPrincipal.revalidate();
+				panelPrincipal.repaint();
 			}
 		});
 	}
@@ -600,13 +598,16 @@ public class FrameMedecin extends JFrame {
 	 * Ne peut pas etre afficher plusieur fois
 	 */
 	private void setFrameAddPatientWithMedecin() {
-		if (frameAddPatientWithMedecin == null)
+		if (frameAddPatientWithMedecin == null) {
 			frameAddPatientWithMedecin = new FrameAddPatientWithMedecin();
-
+			frameAddPatientWithMedecin.getCancelButton().addActionListener(new CancelButtonFrameAddPatientListener());
+		}
 		frameAddPatientWithMedecin.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
 				frameAddPatientWithMedecin = null;
+				panelPrincipal.revalidate();
+				panelPrincipal.repaint();
 			}
 		});
 	}
@@ -972,30 +973,6 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
-	 * Ferme la fenetre d'ajout de patient au clique du bouton annuler de la fenetre
-	 * d'ajout de patient
-	 */
-	public static class CancelButtonFrameAddPatientListener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			frameAddPatientWithMedecin.dispose();
-			frameAddPatientWithMedecin = null;
-		}
-	}
-	
-	/**
-	 * Ferme la fenetre de consultation au clique du bouton annuler de la fenetre de
-	 * consultation
-	 */
-	public static class ActionListenerCancelButton implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			frameConsultation.dispose();
-			frameConsultation = null;
-		}
-	}
-
-	/**
 	 * Listener du button supprimer un patient.
 	 * Lance une frame de confimation de suppression
 	 */
@@ -1013,6 +990,70 @@ public class FrameMedecin extends JFrame {
 			if (input == JOptionPane.YES_OPTION) {
 				System.out.println(currentPatient.getLastName() + " a ete supprimer");
 			}
+		}
+	}
+
+	/**
+	 * Ferme la fenetre de consultation au clique du bouton annuler de la fenetre de
+	 * consultation puis recharge la liste de consultation du patient courant
+	 */
+	private class CancelButtonFrameConsultationListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			FrameMedecin.getFrameConsultation().dispose();
+			FrameMedecin.setFrameConsultation(null);
+
+			/**
+			 * Enleve tous les consultations du model de la jlist
+			 * Puis la recharge
+			 */
+			nameListConsultationDefaultModel.removeAllElements();
+			nameConsultationList.removeAll(nameConsultationList);
+			for (int i = 0; i < currentPatient.getConsultationsFile().size(); i++) {
+
+				/**
+				 * Formate le nom du fichier de le consultation
+				 */
+				String nameConsultation = currentPatient.getConsultationsFile().get(i).getName()
+						.replace("&", " ").replace(".txt", "");
+				/**
+				 * Ajout de tous les elements pour la JList dans
+				 * nameListConsultationDefaultModel
+				 * si model de la liste de onsultation ne containt pas deja l'élement
+				 */
+				if (!nameListConsultationDefaultModel.contains(nameConsultation)) {
+					/**
+					 * Met tous les noms des consultation dans le model et dans la liste
+					 */
+					nameListConsultationDefaultModel.addElement(nameConsultation);
+					nameConsultationList.add(nameConsultation);
+				}
+			}
+			panelPrincipal.revalidate();
+			panelPrincipal.repaint();
+		}
+	}
+
+	/**
+	 * Ferme la fenetre d'ajout de patient au clique du bouton annuler de la fenetre
+	 * d'ajout de patient puis refresh la liste des patients du medecin
+	 */
+	private class CancelButtonFrameAddPatientListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			FrameMedecin.getFrameAddPatientWithMedecin().dispose();
+			FrameMedecin.setFrameAddPatientWithMedecin(null);
+			namePatients.removeAllElements();
+			listNamePatient.removeAll(listNamePatient);
+			for (int i = 0; i < currentMedecin.getPatients().size(); i++) {
+				String namePatientString = currentMedecin.getPatients().get(i).getLastName().toUpperCase() + " "
+						+ currentMedecin.getPatients().get(i).getFirstName();
+				namePatients.addElement(namePatientString);
+				listNamePatient.add(namePatientString);
+			}
+			listPatient = new JList<>(namePatients);
+			panelPrincipal.revalidate();
+			panelPrincipal.repaint();
 		}
 	}
 
@@ -1114,6 +1155,14 @@ public class FrameMedecin extends JFrame {
 
 	public static void setConsultationSwitchFileCurrentPatient(File consultationSwitchFileCurrentPatient) {
 		FrameMedecin.consultationSwitchFileCurrentPatient = consultationSwitchFileCurrentPatient;
+	}
+
+	public static void setFrameConsultation(FrameConsultation frameConsultation) {
+		FrameMedecin.frameConsultation = frameConsultation;
+	}
+
+	public static void setFrameAddPatientWithMedecin(FrameAddPatientWithMedecin frameAddPatientWithMedecin) {
+		FrameMedecin.frameAddPatientWithMedecin = frameAddPatientWithMedecin;
 	}
 
 }
