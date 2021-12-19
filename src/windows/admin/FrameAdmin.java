@@ -162,8 +162,8 @@ public class FrameAdmin extends JFrame {
 		 * Liste de patient
 		 */
 		for (int i = 0; i < Hopital.getPatients().size(); i++) {
-			String namePatientString = Hopital.getPatients().get(i).getLastName() + " "
-					+ Hopital.getPatients().get(i).getLastName();
+			String namePatientString = Hopital.getPatients().get(i).getLastName().toUpperCase() + " "
+					+ Hopital.getPatients().get(i).getFirstName();
 			namePatients.addElement(namePatientString);
 			listNamePatient.add(namePatientString);
 		}
@@ -545,9 +545,12 @@ public class FrameAdmin extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			/**
+			 * Recupere les données du rentrée dans les textes : nom, prenom, date, secu
+			 * number, phone number, et adresse
+			 */
 			String getLastnamePatient = frameAdminAddPatient.getPatientLastnameInputTextField().getText();
 			String getFirstnamePatient = frameAdminAddPatient.getPatientFirstnameInpuTextField().getText();
-
 			LocalDate getBirthdayPatient = LocalDate
 					.parse(frameAdminAddPatient.getPatientDateInputFormattedTextField().getText().replace("/", "-"),
 							Hopital.FORMATEUR_LOCALDATE);
@@ -557,14 +560,25 @@ public class FrameAdmin extends JFrame {
 					.getText().replace(" ", "");
 			String getAdressePatient = frameAdminAddPatient.getPatientAddressInputTextField().getText();
 
+			/**
+			 * Rerifie si les inputs de nom, prenoms et secu number sont valides
+			 */
 			if (!getLastnamePatient.equals("") && !getLastnamePatient.contains(" ") && getLastnamePatient != null &&
 					!getFirstnamePatient.equals("") && !getFirstnamePatient.contains(" ")
-					&& getFirstnamePatient != null) {
+					&& getFirstnamePatient != null && getSecuNumberPatient.length() == 15) {
+
 				new Patient(getFirstnamePatient, getLastnamePatient,
 						getBirthdayPatient, getSecuNumberPatient,
 						getPhoneNumberPatient, getAdressePatient);
+				/**
+				 * Fermeture de la fenetre d'ajout de patient
+				 */
 				frameAdminAddPatient.dispose();
 				frameAdminAddPatient = null;
+
+				/**
+				 * Recharge tous les patients
+				 */
 				namePatients.removeAllElements();
 				for (int i = 0; i < Hopital.getPatients().size(); i++) {
 					namePatients.addElement(Hopital.getPatients().get(i).getLastName() + " " +
@@ -573,7 +587,12 @@ public class FrameAdmin extends JFrame {
 				listPatient = new JList<>(namePatients);
 				contentPanel.revalidate();
 				contentPanel.repaint();
-			} else {
+			}
+
+			/**
+			 * Affiche un message d'erreur si les inputs sont mauvais
+			 */
+			else {
 				JOptionPane.showMessageDialog(frameAdminAddPatient, "La saisie n'est pas correct.", "Input wrong",
 						JOptionPane.WARNING_MESSAGE);
 			}

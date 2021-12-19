@@ -2,9 +2,12 @@ package hopital;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -12,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import hopital.loading.language.LoadingLanguage;
 import hopital.loading.paths.LoadingPath;
 import hopital.patient.Patient;
 import hopital.personnels.Administrator;
@@ -49,18 +53,18 @@ public abstract class Hopital {
 	/**
 	 * Les files Writers
 	 */
-	private static FileWriter patientsWriterFile;
-	private static FileWriter medecinWriterFile;
-	private static FileWriter adminsWriterFile;
-	private static FileWriter remembermeFileWriter;
+	private static FileOutputStream patientsWriterFile;
+	private static FileOutputStream medecinWriterFile;
+	private static FileOutputStream adminsWriterFile;
+	private static FileOutputStream remembermeFileWriter;
 
 	/**
 	 * Les files readers
 	 */
-	private static FileReader patientsReaderFile;
-	private static FileReader medecinReaderFile;
-	private static FileReader adminsReaderFile;
-	private static FileReader remembermeFileReader;
+	private static InputStreamReader patientsReaderFile;
+	private static InputStreamReader medecinReaderFile;
+	private static InputStreamReader adminsReaderFile;
+	private static InputStreamReader remembermeFileReader;
 
 	/**
 	 * Les bufferedReader
@@ -217,9 +221,9 @@ public abstract class Hopital {
 	/**
 	 * @return the patientsReaderFile
 	 */
-	public static FileReader getPatientsReaderFile() {
+	public static InputStreamReader getPatientsReaderFile() {
 		try {
-			patientsReaderFile = new FileReader(pathPatients);
+			patientsReaderFile = new InputStreamReader(new FileInputStream(pathPatients), LoadingLanguage.encoding);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -229,9 +233,9 @@ public abstract class Hopital {
 	/**
 	 * @return patientsWriterFile
 	 */
-	public static Writer getPatientsWriterFile() {
+	public static FileOutputStream getPatientsWriterFile() {
 		try {
-			patientsWriterFile = new FileWriter(pathPatients, true);
+			patientsWriterFile = new FileOutputStream(pathPatients, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -241,9 +245,9 @@ public abstract class Hopital {
 	/**
 	 * @return the medecinWriterFile
 	 */
-	public static FileWriter getMedecinWriterFile() {
+	public static FileOutputStream getMedecinWriterFile() {
 		try {
-			medecinWriterFile = new FileWriter(pathMedecins, true);
+			medecinWriterFile = new FileOutputStream(pathMedecins, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -253,9 +257,9 @@ public abstract class Hopital {
 	/**
 	 * @return the medecinReaderFile
 	 */
-	public static FileReader getMedecinReaderFile() {
+	public static InputStreamReader getMedecinReaderFile() {
 		try {
-			medecinReaderFile = new FileReader(pathMedecins);
+			medecinReaderFile = new InputStreamReader(new FileInputStream(pathMedecins), LoadingLanguage.encoding);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -265,9 +269,9 @@ public abstract class Hopital {
 	/**
 	 * @return the adminsWriterFile
 	 */
-	public static FileWriter getAdminsWriterFile() {
+	public static FileOutputStream getAdminsWriterFile() {
 		try {
-			adminsWriterFile = new FileWriter(pathAdmins, true);
+			adminsWriterFile = new FileOutputStream(pathAdmins, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -277,9 +281,9 @@ public abstract class Hopital {
 	/**
 	 * @return the adminsReaderFile
 	 */
-	public static FileReader getAdminsReaderFile() {
+	public static InputStreamReader getAdminsReaderFile() {
 		try {
-			adminsReaderFile = new FileReader(pathAdmins);
+			adminsReaderFile = new InputStreamReader(new FileInputStream(pathAdmins), LoadingLanguage.encoding);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -310,9 +314,9 @@ public abstract class Hopital {
 	/**
 	 * @return remembermeFileWriter
 	 */
-	public static FileWriter getRemembermeFileWriter() {
+	public static FileOutputStream getRemembermeFileWriter() {
 		try {
-			remembermeFileWriter = new FileWriter(pathRememberme, true);
+			remembermeFileWriter = new FileOutputStream(pathRememberme, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -322,9 +326,9 @@ public abstract class Hopital {
 	/**
 	 * @return remembermeFileReader
 	 */
-	public static FileReader getRemembermeReaderFile() {
+	public static InputStreamReader getRemembermeReaderFile() {
 		try {
-			remembermeFileReader = new FileReader(pathRememberme);
+			remembermeFileReader = new InputStreamReader(new FileInputStream(pathRememberme), LoadingLanguage.encoding);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

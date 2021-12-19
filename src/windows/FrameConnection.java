@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -422,7 +423,7 @@ public class FrameConnection extends JFrame {
 	/**
 	 * Stock le mot de passe et l'indentifiant dans un fichier
 	 * quand la case se souvenir est cocher
-	 * Et enregistre la case se se souvenir au prochain lancement
+	 * Et enregistre la case se souvenir au prochain lancement
 	 * 
 	 */
 	private void setRemembermeFile() {
@@ -437,9 +438,8 @@ public class FrameConnection extends JFrame {
 						(String) loadingPath.getJsonObject().get("path_rememberme"))) {
 					fileJson.write(rememberSelected.toJSONString());
 				}
-				BufferedWriter writerRememberme = new BufferedWriter(Hopital.getRemembermeFileWriter());
-				writerRememberme.write(identifiantText + "&" + password);
-				writerRememberme.newLine();
+				OutputStreamWriter writerRememberme = new OutputStreamWriter(Hopital.getRemembermeFileWriter());
+				writerRememberme.write(identifiantText + "&" + password + "\n");
 				writerRememberme.close();
 				rememberSelected.clear();
 			} catch (IOException e1) {

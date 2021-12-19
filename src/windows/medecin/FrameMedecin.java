@@ -18,9 +18,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
@@ -382,20 +384,27 @@ public class FrameMedecin extends JFrame {
 		/**
 		 * Affichie les données du patient
 		 */
-		lastnamePatientTextField.setText(currentPatient.getLastName());
-		firstnamePatientTextField.setText(currentPatient.getFirstName());
-		birthdayPatientTextField
-				.setText(currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE).replace("-", ""));
-		secuNumberPatientTextField.setText(currentPatient.getSecuNumber());
-		phonePatientTextField.setText(currentPatient.getPhoneNumber());
-		addressPatientTextField.setText(currentPatient.getAddress());
+		if (currentPatient != null) {
 
-		/**
-		 * Charge la liste de consultation
-		 */
-		loadingListConsultation(currentPatient);
-		panelPrincipal.revalidate();
-		panelPrincipal.repaint();
+			if (switchTypeConsultationPanel != null) {
+				dataPatientPanel.remove(switchTypeConsultationPanel);
+				dataPatientPanel.add(setSwitchTypeConsultationPanel(new JPanel()));
+			}
+			firstnamePatientTextField.setText(currentPatient.getFirstName());
+			lastnamePatientTextField.setText(currentPatient.getLastName());
+			birthdayPatientTextField
+					.setText(currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE).replace("-", ""));
+			secuNumberPatientTextField.setText(currentPatient.getSecuNumber());
+			phonePatientTextField.setText(currentPatient.getPhoneNumber());
+			addressPatientTextField.setText(currentPatient.getAddress());
+
+			/**
+			 * Charge la liste de consultation
+			 */
+			loadingListConsultation(currentPatient);
+			panelPrincipal.revalidate();
+			panelPrincipal.repaint();
+		}
 	}
 
 	/**
@@ -406,11 +415,12 @@ public class FrameMedecin extends JFrame {
 	private JPopupMenu setPopupMenuOnRightClickListConsultationWithNoConsultation() {
 		consultationPopupMenu = new JPopupMenu();
 		addConsultationMenuItem = new JMenuItem("Ajouter consultation");
-		addConsultationButton.addActionListener(new ActionListener() {
+		addConsultationMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setFrameConsultation();
-				System.out.println("Frame de consultation ouvert");
+				if (currentPatient != null) {
+					setFrameConsultation();
+				}
 			}
 		});
 		consultationPopupMenu.add(addConsultationMenuItem);
@@ -442,10 +452,12 @@ public class FrameMedecin extends JFrame {
 		consultationPopupMenu.add(displayRadiologyMenuItem);
 		consultationPopupMenu.add(displaySurgeryMenuItem);
 
-		addConsultationButton.addActionListener(new ActionListener() {
+		addConsultationMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setFrameConsultation();
+				if (currentPatient != null) {
+					setFrameConsultation();
+				}
 			}
 		});
 
@@ -468,6 +480,14 @@ public class FrameMedecin extends JFrame {
 
 		JPanel panelTop = new JPanel(new BorderLayout());
 		addConsultationButton = new JButton("+");
+		addConsultationButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (currentPatient != null) {
+					setFrameConsultation();
+				}
+			}
+		});
 		foundConsultationField = new JTextField();
 		foundConsultationField.getDocument()
 				.addDocumentListener(new DocumentListenerConsultationField());
@@ -560,7 +580,8 @@ public class FrameMedecin extends JFrame {
 	 * Permet d'afficher le panel de l'ordonnance
 	 */
 	private void setActionOnLeftClickOnListConsultation() {
-		if (!currentPatient.getConsultationsFile().isEmpty()) {
+		if (currentPatient != null && currentPatient.getConsultationsFile() != null &&
+				!currentPatient.getConsultationsFile().isEmpty()) {
 			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
 			avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
 					+ consultationFileCurrentPatient.getName() + ".txt");
@@ -618,7 +639,7 @@ public class FrameMedecin extends JFrame {
 	 * @param model
 	 * @param filter
 	 */
-	void filterModel(DefaultListModel<String> model, String filter, List<String> list) {
+	private void filterModel(DefaultListModel<String> model, String filter, List<String> list) {
 		for (String string : list) {
 			if (!string.startsWith(filter)) {
 				if (model.contains(string)) {
@@ -850,7 +871,8 @@ public class FrameMedecin extends JFrame {
 		if (file != null) {
 			try {
 				String line;
-				readerOrdonnance = new BufferedReader(new FileReader(file));
+				readerOrdonnance = new BufferedReader(new InputStreamReader(new FileInputStream(file),
+						LoadingLanguage.encoding));
 
 				while ((line = readerOrdonnance.readLine()) != null) {
 					ordonnanceTextArea.append(line + "n");
@@ -885,10 +907,11 @@ public class FrameMedecin extends JFrame {
 		if (file != null) {
 			try {
 				String line;
-				readerAvisMedical = new BufferedReader(new FileReader(file));
+				readerAvisMedical = new BufferedReader(
+						new InputStreamReader(new FileInputStream(file), LoadingLanguage.encoding));
 
 				while ((line = readerAvisMedical.readLine()) != null) {
-					avisMedicalTextArea.append(line + "n");
+					avisMedicalTextArea.append(line + "\n");
 					System.out.println(line);
 				}
 			} catch (FileNotFoundException e) {
@@ -907,7 +930,7 @@ public class FrameMedecin extends JFrame {
 
 	/**
 	 * -------------------------------------------------------
-	 * Les Principals Listeners
+	 * Les Principaux Listeners
 	 * -------------------------------------------------------
 	 */
 
@@ -1133,34 +1156,58 @@ public class FrameMedecin extends JFrame {
 		return frameAddPatientWithMedecin;
 	}
 
+	/**
+	 * @return currentMedecin
+	 */
 	public static Medecin getCurrentMedecin() {
 		return currentMedecin;
 	}
 
+	/**
+	 * @param currentMedecin
+	 */
 	public static void setCurrentMedecin(Medecin currentMedecin) {
 		FrameMedecin.currentMedecin = currentMedecin;
 	}
 
+	/**
+	 * @return currentPatient
+	 */
 	public static Patient getCurrentPatient() {
 		return currentPatient;
 	}
 
+	/**
+	 * @param currentPatient
+	 */
 	public static void setCurrentPatient(Patient currentPatient) {
 		FrameMedecin.currentPatient = currentPatient;
 	}
 
+	/**
+	 * @return consultationSwitchFileCurrentPatient
+	 */
 	public static File getConsultationSwitchFileCurrentPatient() {
 		return consultationSwitchFileCurrentPatient;
 	}
 
+	/**
+	 * @param consultationSwitchFileCurrentPatient
+	 */
 	public static void setConsultationSwitchFileCurrentPatient(File consultationSwitchFileCurrentPatient) {
 		FrameMedecin.consultationSwitchFileCurrentPatient = consultationSwitchFileCurrentPatient;
 	}
 
+	/**
+	 * @param frameConsultation
+	 */
 	public static void setFrameConsultation(FrameConsultation frameConsultation) {
 		FrameMedecin.frameConsultation = frameConsultation;
 	}
 
+	/**
+	 * @param frameAddPatientWithMedecin
+	 */
 	public static void setFrameAddPatientWithMedecin(FrameAddPatientWithMedecin frameAddPatientWithMedecin) {
 		FrameMedecin.frameAddPatientWithMedecin = frameAddPatientWithMedecin;
 	}

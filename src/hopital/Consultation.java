@@ -2,8 +2,11 @@ package hopital;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,6 +14,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import hopital.loading.language.Language;
+import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
 import hopital.personnels.Medecin;
 
@@ -36,10 +41,10 @@ public class Consultation {
 	private Medecin medecin;
 	private Patient patient;
 	private String medicaments;
-	private ArrayList<String> avisMedical;
+	private List<String> avisMedical;
 	private File avisMedicalFile;
 	private File avisMedicalFolder;
-	private ArrayList<String> appareillageList;
+	private List<String> appareillageList;
 	private File consultation;
 	private File ordonnanceFolder;
 	private File ordonnance;
@@ -47,7 +52,6 @@ public class Consultation {
 	private File appareillage;
 	private Date dateConsultation;
 	private String nameConsultation;
-	private String pathConsultation;
 	private static String format = ".txt";
 
 	public static final String nameOrdonnanceDebugLoadWindow = "ordonnance0";
@@ -58,8 +62,17 @@ public class Consultation {
 	 * @param medecin
 	 * @param patient
 	 */
-	public Consultation(Medecin medecin, Patient patient, String medicaments, ArrayList<String> avisMedical,
-			ArrayList<String> appareillageList, WriteType writeType) {
+	public Consultation(Medecin medecin, Patient patient, String medicaments, List<String> avisMedical,
+			List<String> appareillageList, WriteType writeType) {
+
+		/**
+		 * Verification : si le dossier du patient n'existe pas on le creer
+		 */
+		File folderPatient = new File("./src/log/patient/" +
+				patient.getFirstName().toLowerCase() +
+				patient.getLastName().toLowerCase() + "/");
+		if (!folderPatient.exists()) // creation du dossier du patient
+			folderPatient.mkdirs();
 
 		this.patient = patient;
 		this.medecin = medecin;
@@ -243,11 +256,11 @@ public class Consultation {
 	 * @param avisMedicalFile
 	 * @param avisMedicaList
 	 */
-	private void formatageAvismedical(File avisMedicalFile, ArrayList<String> avisMedicaList) {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(avisMedicalFile, true))) {
+	private void formatageAvismedical(File avisMedicalFile, List<String> avisMedicaList) {
+		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(avisMedicalFile, true),
+				StandardCharsets.UTF_8)) {
 			for (int i = 0; i < avisMedicaList.size(); i++) {
-				writer.write(avisMedicaList.get(i));
-				writer.newLine();
+				writer.write(avisMedicaList.get(i) + "\n");
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -265,24 +278,21 @@ public class Consultation {
 	 */
 	private void formatageOrdonnance(File ordonnance, Medecin medecin, Patient patient, String medicaments) {
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(ordonnance, true));
+			OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(ordonnance, true),
+					StandardCharsets.UTF_8);
 			writer.write("Ordonnance du " + Hopital.FORMATEUR_DATE.format(this.getDateConsultation()));
-			writer.newLine();
-			writer.newLine();
+			writer.write("\n" + "\n");
 			writer.write("Nom du patient : " + patient.getLastName());
-			writer.newLine();
+			writer.write("\n");
 			writer.write("Prenom du patient: " + patient.getFirstName());
-			writer.newLine();
-			writer.newLine();
+			writer.write("\n" + "\n");
 			writer.write("Nom du medecin : " + medecin.getFirstName());
-			writer.newLine();
+			writer.write("\n");
 			writer.write("Prenom du medecin : " + medecin.getFirstName());
-			writer.newLine();
-			writer.newLine();
+			writer.write("\n" + "\n");
 			writer.write("Medicaments prescrits : ");
 			writer.write(medicaments);
-			writer.newLine();
-			writer.newLine();
+			writer.write("\n" + "\n");
 			writer.write("Signature : " + medecin.getLastName());
 			writer.close();
 		} catch (IOException e) {

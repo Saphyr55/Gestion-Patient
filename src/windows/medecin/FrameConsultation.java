@@ -19,7 +19,9 @@ import javax.swing.event.ListSelectionListener;
 
 import org.json.simple.JSONArray;
 
+import hopital.Consultation;
 import hopital.Hopital;
+import hopital.Consultation.WriteType;
 import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
@@ -37,10 +39,13 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
- * Classe du medecin qui permet de creer une consultation avec plusieur option
+ * Classe qui creer un fenetre pour le medecin qui lui permet de creer une
+ * consultation au patient avec une prescription et un avis medecical au niveau
  * 
  * @author Andy
  */
@@ -51,9 +56,9 @@ public class FrameConsultation extends JFrame {
 	 */
 	private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
 	private static LoadingDimens loadingDimens = FrameConnection.getLoadingDimens();
-	private final static int width = (int) ((long) loadingDimens.getJsonObject()
+	public final static int width = (int) ((long) loadingDimens.getJsonObject()
 			.get("frame_medecin_create_consultation_width"));
-	private final static int height = (int) ((long) loadingDimens.getJsonObject()
+	public final static int height = (int) ((long) loadingDimens.getJsonObject()
 			.get("frame_medecin_create_consultation_height"));
 
 	/**
@@ -64,26 +69,8 @@ public class FrameConsultation extends JFrame {
 	/**
 	 * Textes a charger
 	 */
-	private static final String title = (String) loadingLanguage.getJsonObject()
+	public static final String title = (String) loadingLanguage.getJsonObject()
 			.get("frame_medecin_new_consultation_tile");
-	private static final String frame_medecin_new_consultation_your_prescriptions = (String) loadingLanguage
-			.getJsonObject()
-			.get("frame_medecin_new_consultation_your_prescriptions");
-	private static final String frame_medecin_new_consultation_sign = (String) loadingLanguage
-			.getJsonObject()
-			.get("frame_medecin_new_consultation_sign");
-	private static final String frame_medecin_new_consultation_cancel = (String) loadingLanguage
-			.getJsonObject()
-			.get("frame_medecin_new_consultation_cancel");
-	private static final String frame_medecin_new_consultation_confirm = (String) loadingLanguage
-			.getJsonObject()
-			.get("frame_medecin_new_consultation_confirm");
-	private static final String frame_medecin_new_consultation_medical_advice = (String) loadingLanguage
-			.getJsonObject()
-			.get("frame_medecin_new_consultation_medical_advice");
-	private static final String frame_medecin_new_consultation_your_medical_divices_requests = (String) loadingLanguage
-			.getJsonObject()
-			.get("frame_medecin_new_consultation_your_medical_divices_requests");
 	/**
 	 * 
 	 */
@@ -311,7 +298,9 @@ public class FrameConsultation extends JFrame {
 	private JPanel setAvisMedicalPanel() {
 
 		avisMedicalPanel = new JPanel();
-		avisMedicalLabel = new JLabel(frame_medecin_new_consultation_medical_advice);
+		avisMedicalLabel = new JLabel((String) loadingLanguage
+				.getJsonObject()
+				.get("frame_medecin_new_consultation_medical_advice"));
 		avisMedicalLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
 		avisMedicaltextArea = new JTextArea();
 		avisMedicaltextArea.setLineWrap(true);
@@ -336,7 +325,9 @@ public class FrameConsultation extends JFrame {
 	 */
 	private JPanel setPrescriptionPanel() {
 		prescriptionPanel = new JPanel();
-		prescriptionLabel = new JLabel(frame_medecin_new_consultation_your_prescriptions);
+		prescriptionLabel = new JLabel((String) loadingLanguage
+				.getJsonObject()
+				.get("frame_medecin_new_consultation_your_prescriptions"));
 		prescriptionLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
 		prescriptionTextArea = new JTextArea();
 		prescriptionTextArea.setLineWrap(true);
@@ -356,7 +347,7 @@ public class FrameConsultation extends JFrame {
 	/**
 	 * Creer le panel de demande de requette d'apperiellage
 	 * Affiche deux liste ; la liste qui contient tout les apperielles
-	 * q'un patient peut avoir et une liste recois l'ajout d'une requette
+	 * q'un patient peut avoir et une liste qui contient les requettes
 	 * d'appariellage
 	 * 
 	 * @return appariellagePanel
@@ -398,7 +389,9 @@ public class FrameConsultation extends JFrame {
 		 * 
 		 */
 		appariellageAlreadyAddPanel = new JPanel(new BorderLayout());
-		apparielageRequestLabel = new JLabel(frame_medecin_new_consultation_your_medical_divices_requests);
+		apparielageRequestLabel = new JLabel((String) loadingLanguage
+				.getJsonObject()
+				.get("frame_medecin_new_consultation_your_medical_divices_requests"));
 		apparielageRequestLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
 		appariellageAlreadyAddList = new JList<>(appariellageAlreadyAddModel);
 		appariellageAlreadyAddScrollPane = new JScrollPane(appariellageAlreadyAddList);
@@ -426,12 +419,18 @@ public class FrameConsultation extends JFrame {
 	private JPanel setConfirmConsultationPanel() {
 
 		confirmConsultationPanel = new JPanel(new FlowLayout());
-		signLabel = new JLabel(frame_medecin_new_consultation_sign);
+		signLabel = new JLabel((String) loadingLanguage
+				.getJsonObject()
+				.get("frame_medecin_new_consultation_sign"));
 		signLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
 		signCheckBox = new JCheckBox();
-		confirmButton = new JButton(frame_medecin_new_consultation_confirm);
+		confirmButton = new JButton((String) loadingLanguage
+				.getJsonObject()
+				.get("frame_medecin_new_consultation_confirm"));
 		confirmButton.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
-		cancelButton = new JButton(frame_medecin_new_consultation_cancel);
+		cancelButton = new JButton((String) loadingLanguage
+				.getJsonObject()
+				.get("frame_medecin_new_consultation_cancel"));
 		cancelButton.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
 		confirmButton.setEnabled(false);
 		confirmConsultationPanel.add(signLabel);
@@ -440,9 +439,16 @@ public class FrameConsultation extends JFrame {
 		confirmConsultationPanel.add(confirmButton);
 		confirmConsultationPanel.add(cancelButton);
 		signCheckBox.addActionListener(new ActionListenerSignBox());
+		confirmButton.addActionListener(new ConfirmButtonListener());
 
 		return confirmConsultationPanel;
 	}
+
+	/**
+	 * --------------------------
+	 * Principaux listeners
+	 * --------------------------
+	 */
 
 	/**
 	 * Afficher le appariellage selectionner dans le text field
@@ -470,6 +476,43 @@ public class FrameConsultation extends JFrame {
 			}
 		}
 
+	}
+
+	/**
+	 * Creation de la consultation en recuperant toutes le données saisie lors
+	 * de la frame de creation de consultation
+	 */
+	private class ConfirmButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			List<String> avisMedicalLineList = Arrays.asList(avisMedicaltextArea.getText().split("\n"));
+			String prescriptionLineList = prescriptionTextArea.getText().replace("\n", " ");
+			List<String> appariellagesRequest = appariellageAlreadyAddArrayList;
+
+			/**
+			 * Verification des entrées
+			 */
+			if (avisMedicalLineList.isEmpty())
+				avisMedicalLineList = null;
+
+			if (prescriptionLineList.equals("") ||
+					prescriptionLineList.equals(" "))
+				prescriptionLineList = null;
+
+			if (appariellagesRequest.isEmpty())
+				appariellagesRequest = null;
+
+			/**
+			 * Creation de la consultation
+			 */
+			new Consultation(currentMedecin, currentPatient, prescriptionLineList, avisMedicalLineList,
+					appariellagesRequest, WriteType.WRITE_IN_ORDONNANCE);
+
+			FrameMedecin.getFrameConsultation().dispose();
+			FrameMedecin.setFrameConsultation(null);
+		}
 	}
 
 	/**
@@ -509,10 +552,22 @@ public class FrameConsultation extends JFrame {
 		}
 	}
 
+	/**
+	 * ---------------------------
+	 * Getters and setters
+	 * ---------------------------
+	 */
+
+	/**
+	 * @return cancelButton
+	 */
 	public JButton getCancelButton() {
 		return cancelButton;
 	}
 
+	/**
+	 * @param cancelButton
+	 */
 	public void setCancelButton(JButton cancelButton) {
 		this.cancelButton = cancelButton;
 	}

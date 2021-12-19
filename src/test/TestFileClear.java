@@ -3,7 +3,9 @@ package test;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 import hopital.Hopital;
 
@@ -11,7 +13,8 @@ public class TestFileClear {
 
     public static void main(String[] args) {
         BufferedReader readerRememberme = new BufferedReader(Hopital.getRemembermeReaderFile());
-        BufferedWriter writerRememberme = new BufferedWriter(Hopital.getRemembermeFileWriter());
+        OutputStreamWriter writerRememberme = new OutputStreamWriter(Hopital.getRemembermeFileWriter(),
+                StandardCharsets.UTF_8);
         PrintWriter printWriterRememberme = new PrintWriter(Hopital.getRemembermeFileWriter());
         String line;
         String string;

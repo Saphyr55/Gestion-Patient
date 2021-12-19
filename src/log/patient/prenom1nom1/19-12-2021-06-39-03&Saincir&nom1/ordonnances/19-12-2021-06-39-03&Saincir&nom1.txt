@@ -1,0 +1,11 @@
+Ordonnance du 19-12-2021
+
+Nom du patient : nom1
+Prenom du patient: prenom1
+
+Nom du medecin : Andy
+Prenom du medecin : Andy
+
+Medicaments prescrits : Doliprane x2 Ventoline
+
+Signature : Saincir

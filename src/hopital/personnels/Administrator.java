@@ -3,6 +3,8 @@ package hopital.personnels;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 
 import hopital.Hopital;
 
@@ -27,10 +29,10 @@ public class Administrator extends Personnel {
 			}
 			reader.close();
 			setIdentifiant(200000 + nLine);
-			BufferedWriter writer = new BufferedWriter(Hopital.getAdminsWriterFile());
+			OutputStreamWriter writer = new OutputStreamWriter(Hopital.getAdminsWriterFile(), StandardCharsets.UTF_8);
 			writer.write(nLine + "&" + getIdentifiant() + "&" + getFirstName() + "&" + getLastName() + "&" + getEmail()
 					+ "&" + getPassword());
-			writer.newLine();
+			writer.write("\n");
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();

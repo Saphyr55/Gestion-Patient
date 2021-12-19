@@ -9,7 +9,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+/**
+ * Classe qui permet lire le fichier rememberme.json
+ */
 public class LoadingRememberMe {
+
     private JSONParser parser;
     private JSONObject jsonObject;
     private static final String encoding = "UTF-8";

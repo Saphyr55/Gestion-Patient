@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class Patient implements IPersonne {
 	private String nameFolder;
 
 	private BufferedReader reader;
-	private BufferedWriter writer;
+	private OutputStreamWriter writer;
 
 	/**
 	 * Construteur de Patient
@@ -101,13 +103,12 @@ public class Patient implements IPersonne {
 			/*
 			 * Ecriture dans le dossier patients de l'hopital
 			 */
-			writer = new BufferedWriter(Hopital.getPatientsWriterFile());
+			writer = new OutputStreamWriter(Hopital.getPatientsWriterFile(), StandardCharsets.UTF_8);
 			writer.write(id +
 					Hopital.SEPARATOR + this.firstName + Hopital.SEPARATOR + this.lastName +
 					Hopital.SEPARATOR + this.birthday.format(Hopital.FORMATEUR_LOCALDATE) + Hopital.SEPARATOR
 					+ this.secuNumber +
-					Hopital.SEPARATOR + this.phoneNumber + Hopital.SEPARATOR + this.address);
-			writer.newLine();
+					Hopital.SEPARATOR + this.phoneNumber + Hopital.SEPARATOR + this.address + "\n");
 			reader.close();
 			writer.close();
 			Hopital.getPatients().add(this);
