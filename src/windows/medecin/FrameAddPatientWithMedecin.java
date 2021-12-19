@@ -103,11 +103,9 @@ public class FrameAddPatientWithMedecin extends JFrame {
         super(title);
         Hopital.loadingPatient();
         setOptionFrame();
-
         contentPane.setLayout(new BorderLayout());
         contentPane.add(setPanelResearchPatient(), BorderLayout.WEST);
         contentPane.add(setCenterPanel(), BorderLayout.CENTER);
-
         setVisible(true);
     }
 
@@ -137,6 +135,9 @@ public class FrameAddPatientWithMedecin extends JFrame {
 
         researchPatientTextField = new JTextField();
 
+        listPatientName.removeAll(listPatientName);
+        listPatientModel.removeAllElements();
+
         String namePatientString;
         for (int i = 0; i < Hopital.getPatients().size(); i++) {
             namePatientString = Hopital.getPatients().get(i).getLastName().toUpperCase() + " " +
@@ -153,7 +154,7 @@ public class FrameAddPatientWithMedecin extends JFrame {
         researchPatientPanel.add(researchPatientTextField, BorderLayout.NORTH);
 
         /**
-         * Change les donnée en recuperant l'index de liste de patient de l'hopital
+         * Change les données en recuperant l'index de liste de patient de l'hopital
          * et applique ces données
          */
         listPatientHopitalWithoutListPatientCurrentMedecin.addListSelectionListener(new ListSelectionListener() {
@@ -357,5 +358,29 @@ public class FrameAddPatientWithMedecin extends JFrame {
         this.cancelButton = cancelButton;
     }
 
-    
+    public JList<String> getListPatientHopitalWithoutListPatientCurrentMedecin() {
+        return listPatientHopitalWithoutListPatientCurrentMedecin;
+    }
+
+    public void setListPatientHopitalWithoutListPatientCurrentMedecin(
+            JList<String> listPatientHopitalWithoutListPatientCurrentMedecin) {
+        this.listPatientHopitalWithoutListPatientCurrentMedecin = listPatientHopitalWithoutListPatientCurrentMedecin;
+    }
+
+    public ArrayList<String> getListPatientName() {
+        return listPatientName;
+    }
+
+    public void setListPatientName(ArrayList<String> listPatientName) {
+        this.listPatientName = listPatientName;
+    }
+
+    public DefaultListModel<String> getListPatientModel() {
+        return listPatientModel;
+    }
+
+    public void setListPatientModel(DefaultListModel<String> listPatientModel) {
+        this.listPatientModel = listPatientModel;
+    }
+
 }

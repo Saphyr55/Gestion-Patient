@@ -193,6 +193,7 @@ public class FrameMedecin extends JFrame {
 	private static File consultationSwitchFileCurrentPatient;
 	private static File avismedicalFileCurrentPatient;
 	private static File consultationFileCurrentPatient;
+	private static File prescriptionFileCurrentPatient;
 	private static MaskFormatter dateFormatter;
 	private static MaskFormatter secuNumbeFormatter;
 	private static MaskFormatter phoneNumberFormatter;
@@ -460,6 +461,8 @@ public class FrameMedecin extends JFrame {
 				}
 			}
 		});
+		displayPrescriptionMenuItem.addActionListener(new DisplayPrescriptionMenuItemListener());
+		displayAvisMedicalMenuItem.addActionListener(new DisplayAvisMedicalMenuItemListener());
 
 		return consultationPopupMenu;
 	}
@@ -582,6 +585,7 @@ public class FrameMedecin extends JFrame {
 	private void setActionOnLeftClickOnListConsultation() {
 		if (currentPatient != null && currentPatient.getConsultationsFile() != null &&
 				!currentPatient.getConsultationsFile().isEmpty()) {
+
 			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
 			avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
 					+ consultationFileCurrentPatient.getName() + ".txt");
@@ -622,10 +626,12 @@ public class FrameMedecin extends JFrame {
 		if (frameAddPatientWithMedecin == null) {
 			frameAddPatientWithMedecin = new FrameAddPatientWithMedecin();
 			frameAddPatientWithMedecin.getCancelButton().addActionListener(new CancelButtonFrameAddPatientListener());
+
 		}
 		frameAddPatientWithMedecin.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent windowEvent) {
+				Hopital.getPatients().removeAll(Hopital.getPatients());
 				frameAddPatientWithMedecin = null;
 				panelPrincipal.revalidate();
 				panelPrincipal.repaint();
@@ -747,8 +753,8 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
-	 * @return
 	 * 
+	 * @return
 	 */
 	private JPanel setSwitchTypeConsultationPanel(JPanel panel) {
 		if (panel != null) {
@@ -865,8 +871,11 @@ public class FrameMedecin extends JFrame {
 	private JPanel setOrdonnancePanel(File file) {
 		ordonnancePanel = new JPanel(new BorderLayout());
 		ordonnanceStringLabel = new JLabel("Ordonnance");
+		ordonnanceStringLabel.setFont(font1);
 		ordonnanceTextArea = new JTextArea();
-		ordonnanceTextAreaPane = new JScrollPane();
+		ordonnanceTextArea.setFont(font1);
+		ordonnanceTextAreaPane = new JScrollPane(ordonnanceTextArea);
+		ordonnanceTextArea.setEditable(false);
 
 		if (file != null) {
 			try {
@@ -875,8 +884,7 @@ public class FrameMedecin extends JFrame {
 						LoadingLanguage.encoding));
 
 				while ((line = readerOrdonnance.readLine()) != null) {
-					ordonnanceTextArea.append(line + "n");
-					System.out.println("line");
+					ordonnanceTextArea.append(line + "\n");
 				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -885,6 +893,7 @@ public class FrameMedecin extends JFrame {
 			}
 		}
 
+		ordonnanceTextArea.setFont(new Font("SansSerif", Font.BOLD, 16));
 		ordonnancePanel.add(ordonnanceStringLabel, BorderLayout.NORTH);
 		ordonnancePanel.add(ordonnanceTextAreaPane, BorderLayout.CENTER);
 
@@ -903,6 +912,7 @@ public class FrameMedecin extends JFrame {
 		avisMedicalLabel.setFont(font1);
 		avisMedicalTextArea = new JTextArea();
 		avisMedicalTextAreaPane = new JScrollPane(avisMedicalTextArea);
+		avisMedicalTextArea.setEditable(false);
 
 		if (file != null) {
 			try {
@@ -912,7 +922,6 @@ public class FrameMedecin extends JFrame {
 
 				while ((line = readerAvisMedical.readLine()) != null) {
 					avisMedicalTextArea.append(line + "\n");
-					System.out.println(line);
 				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -1064,8 +1073,11 @@ public class FrameMedecin extends JFrame {
 	private class CancelButtonFrameAddPatientListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+
 			FrameMedecin.getFrameAddPatientWithMedecin().dispose();
 			FrameMedecin.setFrameAddPatientWithMedecin(null);
+			Hopital.getPatients().removeAll(Hopital.getPatients());
+
 			namePatients.removeAllElements();
 			listNamePatient.removeAll(listNamePatient);
 			for (int i = 0; i < currentMedecin.getPatients().size(); i++) {
@@ -1078,6 +1090,48 @@ public class FrameMedecin extends JFrame {
 			panelPrincipal.revalidate();
 			panelPrincipal.repaint();
 		}
+	}
+
+	/**
+	 * Affiche le panel de l'avis medical
+	 */
+	private class DisplayAvisMedicalMenuItemListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+			avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
+					+ consultationFileCurrentPatient.getName() + ".txt");
+
+			dataPatientPanel.remove(switchTypeConsultationPanel);
+			switchTypeConsultationPanel = setSwitchTypeConsultationPanel(
+					setAvisMedicalPanel(avismedicalFileCurrentPatient));
+			dataPatientPanel.add(switchTypeConsultationPanel);
+			panelPrincipal.revalidate();
+			panelPrincipal.repaint();
+		}
+
+	}
+
+	/**
+	 * Affiche le panel d'ordonnance
+	 */
+	private class DisplayPrescriptionMenuItemListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+			prescriptionFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/ordonnances/"
+					+ consultationFileCurrentPatient.getName() + ".txt");
+
+			dataPatientPanel.remove(switchTypeConsultationPanel);
+			switchTypeConsultationPanel = setSwitchTypeConsultationPanel(
+					setOrdonnancePanel(prescriptionFileCurrentPatient));
+			dataPatientPanel.add(switchTypeConsultationPanel);
+			panelPrincipal.revalidate();
+			panelPrincipal.repaint();
+		}
+
 	}
 
 	/**

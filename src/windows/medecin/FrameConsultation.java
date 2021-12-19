@@ -445,9 +445,9 @@ public class FrameConsultation extends JFrame {
 	}
 
 	/**
-	 * --------------------------
+	 * ---------------------
 	 * Principaux listeners
-	 * --------------------------
+	 * ---------------------
 	 */
 
 	/**
@@ -553,9 +553,9 @@ public class FrameConsultation extends JFrame {
 	}
 
 	/**
-	 * ---------------------------
+	 * --------------------
 	 * Getters and setters
-	 * ---------------------------
+	 * --------------------
 	 */
 
 	/**

@@ -312,6 +312,13 @@ public abstract class Hopital {
 	}
 
 	/**
+	 * @param patients
+	 */
+	public static void setPatients(ArrayList<Patient> patients) {
+		Hopital.patients = patients;
+	}
+
+	/**
 	 * @return remembermeFileWriter
 	 */
 	public static FileOutputStream getRemembermeFileWriter() {
