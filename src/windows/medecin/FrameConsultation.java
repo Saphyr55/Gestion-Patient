@@ -9,6 +9,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -335,9 +336,9 @@ public class FrameConsultation extends JFrame {
 	 */
 	private JPanel setDiagnosticPanel() {
 		diagnosticPanel = new JPanel();
-		diagnosticLabel = new JLabel((String) loadingLanguage
-				.getJsonObject()
-				.get("frame_medecin_new_consultation_medical_advice"));
+		diagnosticLabel = new JLabel("Diagnostique");// (String) loadingLanguage
+		// .getJsonObject()
+		// .get("frame_medecin_new_consultation_medical_advice"));
 		diagnosticLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
 		diagnosticTextArea = new JTextArea();
 		diagnosticTextArea.setLineWrap(true);
@@ -527,12 +528,11 @@ public class FrameConsultation extends JFrame {
 			List<String> avisMedicalLineList = Arrays.asList(avisMedicaltextArea.getText().split("\n"));
 			String prescriptionLineList = prescriptionTextArea.getText().replace("\n", " ");
 			List<String> appariellagesRequest = appariellageAlreadyAddArrayList;
+			List<String> diagnosticList = Arrays.asList(diagnosticTextArea.getText().split("\n"));
 
 			/**
 			 * Verification des entrées
 			 */
-			if (avisMedicalLineList.isEmpty())
-				avisMedicalLineList = null;
 
 			if (prescriptionLineList.equals("") ||
 					prescriptionLineList.equals(" "))
@@ -541,14 +541,23 @@ public class FrameConsultation extends JFrame {
 			if (appariellagesRequest.isEmpty())
 				appariellagesRequest = null;
 
+			if (diagnosticList.isEmpty() ||
+					diagnosticTextArea.getText().equals("")) {
+				diagnosticList = null;
+			}
+
 			/**
 			 * Creation de la consultation
 			 */
-			new Consultation(currentMedecin, currentPatient, prescriptionLineList, avisMedicalLineList,
-					appariellagesRequest, WriteType.WRITE_IN_ORDONNANCE);
-
-			FrameMedecin.getFrameConsultation().dispose();
-			FrameMedecin.setFrameConsultation(null);
+			if (!avisMedicalLineList.isEmpty() ||
+					!avisMedicaltextArea.getText().equals("")) {
+				new Consultation(currentMedecin, currentPatient, prescriptionLineList,
+						avisMedicalLineList, diagnosticList,
+						appariellagesRequest, WriteType.WRITE_IN_ORDONNANCE);
+				FrameMedecin.getFrameConsultation().dispose();
+				FrameMedecin.setFrameConsultation(null);
+			} else
+				JOptionPane.showMessageDialog(contentPane, "L'avis doit etre remplie");
 		}
 	}
 
@@ -564,6 +573,7 @@ public class FrameConsultation extends JFrame {
 				appariellagePanel.setVisible(false);
 				prescriptionPanel.setVisible(true);
 				diagnosticPanel.setVisible(false);
+
 			} else if (index == 1) {
 				diagnosticPanel.setVisible(false);
 				prescriptionPanel.setVisible(false);

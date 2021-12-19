@@ -18,7 +18,6 @@ public class TestConsultation {
 
         ArrayList<String> appareillageList = new ArrayList<>();
         appareillageList.add("Attelle");
-
         String medicaments = "2 doliprane ";
         Hopital.loadingMedecin();
         Hopital.loadingPatient();
@@ -41,7 +40,7 @@ public class TestConsultation {
         Patient patient2 = medecin.getPatients().get(7);
 
         new Consultation(medecin, patient2, medicaments, null,
-                appareillageList,
+                appareillageList, null,
                 Consultation.WriteType.WRITE_IN_ORDONNANCE);
 
     }

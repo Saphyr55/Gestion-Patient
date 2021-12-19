@@ -1,6 +1,5 @@
 package hopital;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -42,19 +41,20 @@ public class Consultation {
 	private Patient patient;
 	private String medicaments;
 	private List<String> avisMedical;
+	private List<String> appareillageList;
+	private List<String> diagnosticList;
 	private File avisMedicalFile;
 	private File avisMedicalFolder;
-	private List<String> appareillageList;
 	private File consultation;
 	private File ordonnanceFolder;
 	private File ordonnance;
 	private File appareillageFolder;
 	private File appareillage;
+	private File diagnostic;
+	private File diagnosticFolder;
 	private Date dateConsultation;
 	private String nameConsultation;
-	private static String format = ".txt";
-
-	public static final String nameOrdonnanceDebugLoadWindow = "ordonnance0";
+	private static final String format = ".txt";
 
 	/**
 	 * Constructeur d'une ordonnance
@@ -62,7 +62,8 @@ public class Consultation {
 	 * @param medecin
 	 * @param patient
 	 */
-	public Consultation(Medecin medecin, Patient patient, String medicaments, List<String> avisMedical,
+	public Consultation(Medecin medecin, Patient patient, String medicaments,
+			List<String> avisMedical, List<String> diagnosticList,
 			List<String> appareillageList, WriteType writeType) {
 
 		/**
@@ -79,6 +80,7 @@ public class Consultation {
 		this.medicaments = medicaments;
 		this.appareillageList = appareillageList;
 		this.avisMedical = avisMedical;
+		this.diagnosticList = diagnosticList;
 
 		/**
 		 * Formatage de la date et les noms
@@ -119,7 +121,7 @@ public class Consultation {
 				if (this.medicaments != null) {
 					try {
 						this.ordonnanceFolder = new File("./src/log/patient/" + patient.getFirstName().toLowerCase()
-								+ patient.getLastName().toLowerCase() + "/" + nameConsultation + "/" + "ordonnances/");
+								+ patient.getLastName().toLowerCase() + "/" + nameConsultation + "/" + "ordonnance/");
 						if (!ordonnanceFolder.exists()) {
 							this.ordonnanceFolder.mkdir();
 							System.out.println("Le dossier d'ordonnance creer");
@@ -132,7 +134,7 @@ public class Consultation {
 						 */
 						this.ordonnance = new File("./src/log/patient/" + patient.getFirstName().toLowerCase()
 								+ patient.getLastName().toLowerCase() + "/" + this.nameConsultation + "/"
-								+ "ordonnances/"
+								+ "ordonnance/"
 								+ this.nameConsultation + format);
 						if (ordonnance.createNewFile()) {
 							System.out.println("Ordonnance creer");
@@ -156,7 +158,7 @@ public class Consultation {
 						 */
 						this.appareillageFolder = new File("./src/log/patient/" + patient.getFirstName().toLowerCase()
 								+ patient.getLastName().toLowerCase() + "/" + this.nameConsultation + "/"
-								+ "appareillages/");
+								+ "appareillage/");
 						if (!this.appareillageFolder.exists()) {
 							this.appareillageFolder.mkdir();
 							System.out.println("Le dossier appariellage creer");
@@ -168,7 +170,7 @@ public class Consultation {
 						 */
 						this.appareillage = new File("./src/log/patient/" + patient.getFirstName().toLowerCase()
 								+ patient.getLastName().toLowerCase() + "/" + this.nameConsultation + "/"
-								+ "appareillages/" + this.nameConsultation + format);
+								+ "appareillage/" + this.nameConsultation + format);
 						if (appareillage.createNewFile()) {
 							System.out.println("Appareillage creer");
 						} else
@@ -212,7 +214,7 @@ public class Consultation {
 						if (this.avisMedicalFile.createNewFile()) {
 							System.out.println("Avis medical creer");
 						} else
-							throw new IOException("Creation de l'appareillage a echoué");
+							throw new IOException("Creation de l'avis medical a echoué");
 
 						/**
 						 * Formattage de l'avis medicale
@@ -221,6 +223,47 @@ public class Consultation {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+
+					/**
+					 * -----------------------------------
+					 * Creation du fichier de dignostique
+					 * -----------------------------------
+					 */
+					if (this.diagnosticList != null) {
+						try {
+							/**
+							 * Creation du dossier de diagnostique
+							 */
+							this.diagnosticFolder = new File("./src/log/patient/"
+									+ patient.getFirstName().toLowerCase() // nom patient
+									+ patient.getLastName().toLowerCase() // prenom patient
+									+ "/" + nameConsultation + "/" + "diagnostic/"); // nom du dossier
+							if (!diagnosticFolder.exists()) {
+								this.diagnosticFolder.mkdir();
+								System.out.println("Le dossier de diagnostique creer");
+							} else
+								throw new IOException("Dossier existant");
+
+							/**
+							 * Creation du fichier de l'avis medical
+							 */
+							this.diagnostic = new File("./src/log/patient/" + patient.getFirstName().toLowerCase()
+									+ patient.getLastName().toLowerCase() + "/" + this.nameConsultation + "/"
+									+ "diagnostic/" + nameConsultation + format);
+							if (this.diagnostic.createNewFile()) {
+								System.out.println("Diagnostique creer");
+							} else
+								throw new IOException("Creation de fichier de diagnostique a echoué");
+
+							/**
+							 * Formattage de l'avis medicale
+							 */
+							formatageDiagnostic(this.diagnostic, this.diagnosticList);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+
 				} else
 					throw new IOException("Une consultation doit avoir un avis medical");
 				patient.getConsultations().add(this);
@@ -240,10 +283,10 @@ public class Consultation {
 	 * @param appareillage
 	 */
 	private void formatageAppariellage(File appareillage) {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(appareillage, true))) {
+		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(appareillage, true),
+				StandardCharsets.UTF_8)) {
 			for (int i = 0; i < appareillageList.size(); i++) {
-				writer.write(appareillageList.get(i));
-				writer.newLine();
+				writer.write(appareillageList.get(i) + "\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -284,16 +327,35 @@ public class Consultation {
 			writer.write("\n" + "\n");
 			writer.write("Nom du patient : " + patient.getLastName());
 			writer.write("\n");
-			writer.write("Prenom du patient: " + patient.getFirstName());
+			writer.write("Prénom du patient: " + patient.getFirstName());
 			writer.write("\n" + "\n");
 			writer.write("Nom du medecin : " + medecin.getFirstName());
 			writer.write("\n");
-			writer.write("Prenom du medecin : " + medecin.getFirstName());
+			writer.write("Prénom du medecin : " + medecin.getFirstName());
 			writer.write("\n" + "\n");
 			writer.write("Medicaments prescrits : ");
 			writer.write(medicaments);
 			writer.write("\n" + "\n");
 			writer.write("Signature : " + medecin.getLastName());
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Formattage du ficher de diagnostique
+	 * 
+	 * @param diagnostic
+	 * @param diagnosticListString
+	 */
+	private void formatageDiagnostic(File diagnostic, List<String> diagnosticListString) {
+		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(
+				diagnostic, true),
+				StandardCharsets.UTF_8)) {
+			for (int i = 0; i < diagnosticListString.size(); i++) {
+				writer.write(diagnosticListString.get(i) + "\n");
+			}
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();

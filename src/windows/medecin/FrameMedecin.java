@@ -175,6 +175,15 @@ public class FrameMedecin extends JFrame {
 	private BufferedReader readerAvisMedical;
 
 	/**
+	 * Avis medical panel
+	 */
+	private JPanel diagnosticPanel;
+	private JLabel diagnosticLabel;
+	private JTextArea diagnosticTextArea;
+	private JScrollPane diagnosticTextAreaPane;
+	private BufferedReader readerDiagnostic;
+
+	/**
 	 * --------------------------------------
 	 * Frame generer par la Frame du medecin
 	 * --------------------------------------
@@ -194,6 +203,7 @@ public class FrameMedecin extends JFrame {
 	private static File avismedicalFileCurrentPatient;
 	private static File consultationFileCurrentPatient;
 	private static File prescriptionFileCurrentPatient;
+	private static File diagnosticFileCurrentPatient;
 	private static MaskFormatter dateFormatter;
 	private static MaskFormatter secuNumbeFormatter;
 	private static MaskFormatter phoneNumberFormatter;
@@ -463,6 +473,7 @@ public class FrameMedecin extends JFrame {
 		});
 		displayPrescriptionMenuItem.addActionListener(new DisplayPrescriptionMenuItemListener());
 		displayAvisMedicalMenuItem.addActionListener(new DisplayAvisMedicalMenuItemListener());
+		displayDiagnosticsMenuItem.addActionListener(new DisplayDiagnosticMenuItemListener());
 
 		return consultationPopupMenu;
 	}
@@ -938,6 +949,41 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
+	 * Methode pour creer le panel de diagnostique
+	 */
+	private JPanel setDiagnosticPanel(File file) {
+
+		diagnosticPanel = new JPanel(new BorderLayout());
+		diagnosticLabel = new JLabel("Avis medical");
+		diagnosticLabel.setFont(font1);
+		diagnosticTextArea = new JTextArea();
+		diagnosticTextAreaPane = new JScrollPane(diagnosticTextArea);
+		diagnosticTextArea.setEditable(false);
+
+		if (file != null) {
+			try {
+				String line;
+				readerDiagnostic = new BufferedReader(
+						new InputStreamReader(new FileInputStream(file), LoadingLanguage.encoding));
+
+				while ((line = readerDiagnostic.readLine()) != null) {
+					diagnosticTextArea.append(line + "\n");
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		diagnosticTextArea.setFont(new Font("SansSerif", Font.BOLD, 16));
+		diagnosticPanel.add(diagnosticLabel, BorderLayout.NORTH);
+		diagnosticPanel.add(diagnosticTextAreaPane, BorderLayout.CENTER);
+
+		return diagnosticPanel;
+	}
+
+	/**
 	 * -------------------------------------------------------
 	 * Les Principaux Listeners
 	 * -------------------------------------------------------
@@ -1099,16 +1145,7 @@ public class FrameMedecin extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
-			avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
-					+ consultationFileCurrentPatient.getName() + ".txt");
-
-			dataPatientPanel.remove(switchTypeConsultationPanel);
-			switchTypeConsultationPanel = setSwitchTypeConsultationPanel(
-					setAvisMedicalPanel(avismedicalFileCurrentPatient));
-			dataPatientPanel.add(switchTypeConsultationPanel);
-			panelPrincipal.revalidate();
-			panelPrincipal.repaint();
+			switchPanelResetGeneral(avismedicalFileCurrentPatient, "avismedical");
 		}
 
 	}
@@ -1120,18 +1157,42 @@ public class FrameMedecin extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
-			prescriptionFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/ordonnances/"
-					+ consultationFileCurrentPatient.getName() + ".txt");
+			switchPanelResetGeneral(prescriptionFileCurrentPatient, "ordonnance");
+		}
 
+	}
+
+	/**
+	 * Affiche le panel de diagnostique
+	 */
+	private class DisplayDiagnosticMenuItemListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			switchPanelResetGeneral(diagnosticFileCurrentPatient, "diagnostic");
+		}
+	}
+
+	/**
+	 * Permet de changer de panel lors du clique d'un des boutons de la popup
+	 * afficher lors du clique droit de la liste de consultation
+	 * 
+	 * @param fileCurrentPatient
+	 * @param nameFolder
+	 */
+	private void switchPanelResetGeneral(File fileCurrentPatient, String nameFolder) {
+		consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+		fileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/" + nameFolder + "/"
+				+ consultationFileCurrentPatient.getName() + ".txt");
+		if (fileCurrentPatient.exists()) {
 			dataPatientPanel.remove(switchTypeConsultationPanel);
 			switchTypeConsultationPanel = setSwitchTypeConsultationPanel(
-					setOrdonnancePanel(prescriptionFileCurrentPatient));
+					setDiagnosticPanel(fileCurrentPatient));
 			dataPatientPanel.add(switchTypeConsultationPanel);
 			panelPrincipal.revalidate();
 			panelPrincipal.repaint();
-		}
-
+		} else
+			JOptionPane.showMessageDialog(panelPrincipal, "Consultation non existant");
 	}
 
 	/**
