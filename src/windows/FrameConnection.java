@@ -43,8 +43,10 @@ import hopital.loading.language.LoadingLanguage;
 import hopital.loading.paths.LoadingPath;
 import hopital.personnels.Administrator;
 import hopital.personnels.Medecin;
+import hopital.personnels.Technician;
 import windows.admin.FrameAdmin;
 import windows.medecin.FrameMedecin;
+import windows.technicien.FrameTechnician;
 
 /**
  * Frame de connexion
@@ -107,6 +109,7 @@ public class FrameConnection extends JFrame {
 	 */
 	private static Medecin currentMedecin;
 	private static Administrator currentAdmin;
+	private static Technician curreTechnician;
 
 	/*
 	 * List de langue en string, et l'enum Language
@@ -126,6 +129,7 @@ public class FrameConnection extends JFrame {
 	 */
 	private static FrameAdmin frameAdmin;
 	private static FrameMedecin frameMedecin;
+	private static FrameTechnician frameTechnician;
 
 	public FrameConnection() {
 		super(title);
@@ -341,6 +345,7 @@ public class FrameConnection extends JFrame {
 			 */
 			BufferedReader readerAdmins = new BufferedReader(Hopital.getAdminsReaderFile());
 			BufferedReader readerMedecins = new BufferedReader(Hopital.getMedecinReaderFile());
+			BufferedReader readerTechnician = new BufferedReader(Hopital.getTechnicianReaderFile());
 			try {
 
 				/*
@@ -396,6 +401,27 @@ public class FrameConnection extends JFrame {
 						j++;
 				}
 				readerMedecins.close();
+
+				// meme chose pour le fichier technician
+				while ((line = readerTechnician.readLine()) != null) {
+					string = line;
+					strings = string.split("&");
+					nLine++;
+					if (strings[1].equals(identifiantText) && strings[strings.length - 1].equals(password)) {
+						Hopital.loadingTechnician();
+						for (int i = 0; i < Hopital.getTechnicians().size(); i++) {
+							if (Hopital.getTechnicians().get(i).getIdentifiant() == Integer
+									.parseInt(identifiantText)) {
+								curreTechnician = Hopital.getTechnicians().get(i);
+							}
+						}
+						setRemembermeFile();
+						frameTechnician = new FrameTechnician();
+						dispose();
+					} else
+						j++;
+				}
+				readerTechnician.close();
 
 				/*
 				 * Mauvaise connexion

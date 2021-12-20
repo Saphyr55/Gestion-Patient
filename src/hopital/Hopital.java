@@ -20,6 +20,7 @@ import hopital.loading.paths.LoadingPath;
 import hopital.patient.Patient;
 import hopital.personnels.Administrator;
 import hopital.personnels.Medecin;
+import hopital.personnels.Technician;
 
 public abstract class Hopital {
 
@@ -35,8 +36,7 @@ public abstract class Hopital {
 	private static ArrayList<Administrator> admins = new ArrayList<>();
 	private static ArrayList<Patient> patients = new ArrayList<>();
 	private static ArrayList<Patient> patientsLogger = new ArrayList<>();
-	private static ArrayList<Administrator> administratorsLooger = new ArrayList<>();
-	private static ArrayList<Medecin> medecinsLogger = new ArrayList<>();
+	private static ArrayList<Technician> technicians = new ArrayList<>();
 
 	/**
 	 * Paths
@@ -45,6 +45,7 @@ public abstract class Hopital {
 	public static final String pathPatients = (String) loadingPath.getJsonObject().get("path_patients");
 	public static final String pathMedecins = (String) loadingPath.getJsonObject().get("path_medecins");
 	public static final String pathAdmins = (String) loadingPath.getJsonObject().get("path_admin");
+	public static final String pathTechnician = "./src/log/technician/technician.txt";
 	public static final String pathFolderMedecin = (String) loadingPath.getJsonObject().get("path_folder");
 	public static final String pathRememberme = (String) loadingPath.getJsonObject().get("path_lastconnection");
 
@@ -56,6 +57,7 @@ public abstract class Hopital {
 	private static FileOutputStream patientsWriterFile;
 	private static FileOutputStream medecinWriterFile;
 	private static FileOutputStream adminsWriterFile;
+	private static FileOutputStream technicianWriterFile;
 	private static FileOutputStream remembermeFileWriter;
 
 	/**
@@ -64,6 +66,7 @@ public abstract class Hopital {
 	private static InputStreamReader patientsReaderFile;
 	private static InputStreamReader medecinReaderFile;
 	private static InputStreamReader adminsReaderFile;
+	private static InputStreamReader technicianReaderFile;
 	private static InputStreamReader remembermeFileReader;
 
 	/**
@@ -73,6 +76,7 @@ public abstract class Hopital {
 	private static BufferedReader readerAdmins;
 	private static BufferedReader readerPatients;
 	private static BufferedReader readerMedecinPatients;
+	private static BufferedReader readerTechnician;
 
 	/**
 	 * Format
@@ -83,7 +87,7 @@ public abstract class Hopital {
 	public static final String SEPARATOR = "&";
 
 	/**
-	 * Crée le fichier remember me
+	 * Creation du fichier remember me
 	 */
 	public static void createFileRememberme() {
 		try {
@@ -219,6 +223,28 @@ public abstract class Hopital {
 	}
 
 	/**
+	 * Lis le fichier technician.txt puis ajoute les technician du fichier
+	 * dans une arryalist
+	 */
+	public static void loadingTechnician() {
+		try {
+			readerTechnician = new BufferedReader(getTechnicianReaderFile());
+			String line = null;
+			String string = null;
+			String[] strings = null;
+
+			while ((line = readerTechnician.readLine()) != null) {
+				string = line;
+				strings = string.split(SEPARATOR);
+				new Technician(Integer.parseInt(strings[0]), strings[1], strings[2], strings[3], strings[4]);
+			}
+			readerTechnician.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * @return the patientsReaderFile
 	 */
 	public static InputStreamReader getPatientsReaderFile() {
@@ -290,6 +316,48 @@ public abstract class Hopital {
 		return adminsReaderFile;
 	}
 
+	public static InputStreamReader getTechnicianReaderFile() {
+		try {
+			technicianReaderFile = new InputStreamReader(new FileInputStream(pathTechnician), LoadingLanguage.encoding);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return technicianReaderFile;
+	}
+
+	public static FileOutputStream getTechnicianWriterFile() {
+		try {
+			technicianWriterFile = new FileOutputStream(pathTechnician, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return technicianWriterFile;
+	}
+
+	/**
+	 * @return remembermeFileWriter
+	 */
+	public static FileOutputStream getRemembermeFileWriter() {
+		try {
+			remembermeFileWriter = new FileOutputStream(pathRememberme, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return remembermeFileWriter;
+	}
+
+	/**
+	 * @return remembermeFileReader
+	 */
+	public static InputStreamReader getRemembermeReaderFile() {
+		try {
+			remembermeFileReader = new InputStreamReader(new FileInputStream(pathRememberme), LoadingLanguage.encoding);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return remembermeFileReader;
+	}
+
 	/**
 	 * @return the medecins
 	 */
@@ -318,28 +386,12 @@ public abstract class Hopital {
 		Hopital.patients = patients;
 	}
 
-	/**
-	 * @return remembermeFileWriter
-	 */
-	public static FileOutputStream getRemembermeFileWriter() {
-		try {
-			remembermeFileWriter = new FileOutputStream(pathRememberme, true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return remembermeFileWriter;
+	public static ArrayList<Technician> getTechnicians() {
+		return technicians;
 	}
 
-	/**
-	 * @return remembermeFileReader
-	 */
-	public static InputStreamReader getRemembermeReaderFile() {
-		try {
-			remembermeFileReader = new InputStreamReader(new FileInputStream(pathRememberme), LoadingLanguage.encoding);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return remembermeFileReader;
+	public static void setTechnicians(ArrayList<Technician> technicians) {
+		Hopital.technicians = technicians;
 	}
 
 }

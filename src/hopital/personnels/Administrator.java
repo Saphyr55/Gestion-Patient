@@ -23,8 +23,7 @@ public class Administrator extends Personnel {
 		super(firstName, lastName, email, password);
 		try {
 			BufferedReader reader = new BufferedReader(Hopital.getAdminsReaderFile());
-			String line;
-			while ((line = reader.readLine()) != null) {
+			while ((reader.readLine()) != null) {
 				nLine++;
 			}
 			reader.close();

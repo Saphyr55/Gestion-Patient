@@ -2,41 +2,43 @@ package test;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.simple.JSONObject;
 
 import hopital.Hopital;
 
 public class TestFileClear {
 
     public static void main(String[] args) {
-        BufferedReader readerRememberme = new BufferedReader(Hopital.getRemembermeReaderFile());
-        OutputStreamWriter writerRememberme = new OutputStreamWriter(Hopital.getRemembermeFileWriter(),
-                StandardCharsets.UTF_8);
-        PrintWriter printWriterRememberme = new PrintWriter(Hopital.getRemembermeFileWriter());
-        String line;
-        String string;
-        String result = "";
+
+        JSONObject object = new JSONObject();
+        object.put("appareillage", true);
+        Map<String, Boolean> list = new HashMap<>();
+        list.put("String", false);
+        list.put("dzda", false);
+        list.put("dadazda", false);
+        list.put("qasaq", false);
+        list.put("saswwqq", false);
+        object.putAll(list);
+
         try {
-            while ((line = readerRememberme.readLine()) != null) {
-                string = line;
-                result = string;
-                System.out.println(string);
-            }
-            result = result.replaceAll("dadadada", "");
-            writerRememberme.append("");
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        } finally {
-            try {
-                readerRememberme.close();
-                writerRememberme.close();
-                printWriterRememberme.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            File file = new File("./src/test.json");
+            if (file.createNewFile())
+                System.out.println("Creation réussi");
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file, true),
+                    StandardCharsets.UTF_8);
+            writer.write(object.toJSONString());
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -84,7 +84,7 @@ public class FrameConsultation extends JFrame {
 	 */
 	private JPanel panelWest;
 	private JPanel optionCanAddPanel;
-	private String[] optionAddListStrings = {
+	public final static String[] optionAddListStrings = {
 			(String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation_prescription"),
 			(String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation_medical_device"),
 			(String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation_magnetic_resonance_imaging"),
