@@ -5,11 +5,8 @@ package windows.medecin;
 
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -20,15 +17,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -49,9 +47,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.text.MaskFormatter;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import hopital.Consultation;
 import hopital.Hopital;
@@ -147,7 +146,6 @@ public class FrameMedecin extends JFrame {
 	private JTextField phoneStringTextField;
 	private JFormattedTextField phonePatientTextField;
 	private JTextField addressStringTextField, addressPatientTextField;
-	private JButton testButtonForSwitch;
 
 	/**
 	 * Ordonnance panel
@@ -210,6 +208,7 @@ public class FrameMedecin extends JFrame {
 	private static MaskFormatter dateFormatter;
 	private static MaskFormatter secuNumbeFormatter;
 	private static MaskFormatter phoneNumberFormatter;
+	private static Map<String, Boolean> appariellagesRequest;
 
 	/**
 	 * --------------------
@@ -621,8 +620,7 @@ public class FrameMedecin extends JFrame {
 				consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
 				avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
 						+ consultationFileCurrentPatient.getName() + ".txt");
-			}
-			if (avismedicalFileCurrentPatient.exists()) {
+
 				dataPatientPanel.remove(switchTypeConsultationPanel);
 				switchTypeConsultationPanel = setSwitchTypeConsultationPanel(
 						setAvisMedicalPanel(avismedicalFileCurrentPatient));
@@ -1027,19 +1025,26 @@ public class FrameMedecin extends JFrame {
 		appariellageTextAreaPane = new JScrollPane(appariellageTextArea);
 		appariellageTextArea.setEditable(false);
 
+		JSONParser parser = new JSONParser();
+
 		if (file != null) {
 			try {
-				String line;
 				readerAppariellage = new BufferedReader(
 						new InputStreamReader(new FileInputStream(file), LoadingLanguage.encoding));
-
-				while ((line = readerAppariellage.readLine()) != null) {
-					appariellageTextArea.append(line + "\n");
+				JSONObject object = (JSONObject) parser.parse(readerAppariellage);
+				HashMap<String, Boolean> appareillageHashMap = (HashMap<String, Boolean>) object.clone();
+				for (Entry<String, Boolean> element : appareillageHashMap.entrySet()) {
+					if (element.getValue() == false)
+						appariellageTextArea.append(element.getKey() + " : non octroyé" + "\n");
+					else
+						appariellageTextArea.append(element.getKey() + " : octroyé" + "\n");
 				}
 				readerAppariellage.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (org.json.simple.parser.ParseException e) {
 				e.printStackTrace();
 			}
 		}
@@ -1069,14 +1074,16 @@ public class FrameMedecin extends JFrame {
 			List<String> avisMedicalLineList = Arrays
 					.asList(frameConsultation.getAvisMedicaltextArea().getText().split("\n"));
 			String prescriptionLineList = frameConsultation.getPrescriptionTextArea().getText().replace("\n", " ");
-			List<String> appariellagesRequest = frameConsultation.getAppariellageAlreadyAddArrayList();
+			appariellagesRequest = new HashMap<>();
+			for (int i = 0; i < frameConsultation.getAppariellageAlreadyAddArrayList().size(); i++) {
+				appariellagesRequest.put(frameConsultation.getAppariellageAlreadyAddArrayList().get(i), false);
+			}
 			List<String> diagnosticList = Arrays
 					.asList(frameConsultation.getDiagnosticTextArea().getText().split("\n"));
 
 			/**
 			 * Verification des entrées
 			 */
-
 			if (prescriptionLineList.equals("") ||
 					prescriptionLineList.equals(" "))
 				prescriptionLineList = null;
@@ -1332,7 +1339,7 @@ public class FrameMedecin extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
 			appariellageFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/appareillage/"
-					+ consultationFileCurrentPatient.getName() + ".txt");
+					+ consultationFileCurrentPatient.getName() + ".json");
 			if (appariellageFileCurrentPatient.exists()) {
 				dataPatientPanel.remove(switchTypeConsultationPanel);
 				switchTypeConsultationPanel = setSwitchTypeConsultationPanel(

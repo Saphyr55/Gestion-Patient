@@ -2,19 +2,19 @@ package hopital;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import hopital.loading.language.Language;
-import hopital.loading.language.LoadingLanguage;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import hopital.patient.Patient;
 import hopital.personnels.Medecin;
 
@@ -41,7 +41,7 @@ public class Consultation {
 	private Patient patient;
 	private String medicaments;
 	private List<String> avisMedical;
-	private List<String> appareillageList;
+	private Map<String, Boolean> appareillageMap;
 	private List<String> diagnosticList;
 	private File avisMedicalFile;
 	private File avisMedicalFolder;
@@ -54,6 +54,9 @@ public class Consultation {
 	private File diagnosticFolder;
 	private Date dateConsultation;
 	private String nameConsultation;
+	private JSONParser parserAppareillage;
+	private JSONObject jsonObjectAppareillage;
+	private static final String encoding = "UTF-8";
 	private static final String format = ".txt";
 
 	/**
@@ -64,7 +67,7 @@ public class Consultation {
 	 */
 	public Consultation(Medecin medecin, Patient patient, String medicaments,
 			List<String> avisMedical, List<String> diagnosticList,
-			List<String> appareillageList, WriteType writeType) {
+			Map<String, Boolean> appareillageMap, WriteType writeType) {
 
 		/**
 		 * Verification : si le dossier du patient n'existe pas on le creer
@@ -78,7 +81,7 @@ public class Consultation {
 		this.patient = patient;
 		this.medecin = medecin;
 		this.medicaments = medicaments;
-		this.appareillageList = appareillageList;
+		this.appareillageMap = appareillageMap;
 		this.avisMedical = avisMedical;
 		this.diagnosticList = diagnosticList;
 
@@ -151,7 +154,7 @@ public class Consultation {
 				 * Creation de la demande d'appariellage
 				 * --------------------------------------
 				 */
-				if (this.appareillageList != null) {
+				if (this.appareillageMap != null) {
 					try {
 						/**
 						 * Creation du dossier de demande apperiallage
@@ -170,7 +173,7 @@ public class Consultation {
 						 */
 						this.appareillage = new File("./src/log/patient/" + patient.getFirstName().toLowerCase()
 								+ patient.getLastName().toLowerCase() + "/" + this.nameConsultation + "/"
-								+ "appareillage/" + this.nameConsultation + format);
+								+ "appareillage/" + this.nameConsultation + ".json");
 						if (appareillage.createNewFile()) {
 							System.out.println("Appareillage creer");
 						} else
@@ -179,7 +182,7 @@ public class Consultation {
 						/**
 						 * Formatage d'appariellage
 						 */
-						formatageAppariellage(this.appareillage);
+						formatageAppariellage(this.appareillage, appareillageMap);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -282,12 +285,13 @@ public class Consultation {
 	 * 
 	 * @param appareillage
 	 */
-	private void formatageAppariellage(File appareillage) {
-		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(appareillage, true),
+	private void formatageAppariellage(File appareillageJSON, Map<String, Boolean> appareillages) {
+		jsonObjectAppareillage = new JSONObject();
+		try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(appareillageJSON, true),
 				StandardCharsets.UTF_8)) {
-			for (int i = 0; i < appareillageList.size(); i++) {
-				writer.write(appareillageList.get(i) + "\n");
-			}
+			jsonObjectAppareillage.putAll(appareillages);
+			writer.write(jsonObjectAppareillage.toJSONString());
+			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
