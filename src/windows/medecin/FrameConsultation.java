@@ -131,19 +131,17 @@ public class FrameConsultation extends JFrame {
 	private JScrollPane diagnosticScrollPane;
 
 	/**
-	 * 
+	 * Panel d'appariellage
 	 */
 	private JPanel appariellagePanel;
-
 	private JPanel appariellageAlreadyAddPanel;
 	private JLabel apparielageRequestLabel;
 	private JList<String> appariellageAlreadyAddList;
 	private DefaultListModel<String> appariellageAlreadyAddModel = new DefaultListModel<>();
 	private JScrollPane appariellageAlreadyAddScrollPane;
 	private ArrayList<String> appariellageAlreadyAddArrayList = new ArrayList<>();
-
 	private JPanel appariellageToAddPanel;
-	private JPanel appariellageToAddListPanel, appariellageToAddInputPanel;
+	private JPanel appariellageToAddInputPanel;
 	private JTextField apparielFiltreTextField;
 	private JButton appariellageToAddButton;
 	private JList<String> appariellageToAddList;
@@ -489,7 +487,7 @@ public class FrameConsultation extends JFrame {
 	 */
 
 	/**
-	 * Afficher le appariellage selectionner dans le text field
+	 * Affiche l'appariellage selectionner dans le text field
 	 */
 	private class AppariellageToAddListListener implements ListSelectionListener {
 		@Override
@@ -509,6 +507,8 @@ public class FrameConsultation extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (appariellageToAddModel.contains(apparielFiltreTextField.getText())
 					&& !appariellageAlreadyAddArrayList.contains(apparielFiltreTextField.getText())) {
+
+				// ajout des elements
 				appariellageAlreadyAddModel.addElement(apparielFiltreTextField.getText());
 				appariellageAlreadyAddArrayList.add(apparielFiltreTextField.getText());
 			}
@@ -557,7 +557,7 @@ public class FrameConsultation extends JFrame {
 				FrameMedecin.getFrameConsultation().dispose();
 				FrameMedecin.setFrameConsultation(null);
 			} else
-				JOptionPane.showMessageDialog(contentPane, "L'avis doit etre remplie");
+				JOptionPane.showMessageDialog(contentPane, "L'avis médical doit etre remplie");
 		}
 	}
 
