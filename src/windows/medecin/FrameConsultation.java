@@ -28,6 +28,7 @@ import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
 import hopital.personnels.Medecin;
 import windows.FrameConnection;
+import windows.medecin.FrameMedecin.ConfirmButtonListener;
 
 import java.awt.GridLayout;
 import java.awt.CardLayout;
@@ -162,6 +163,8 @@ public class FrameConsultation extends JFrame {
 	/**
 	 * 
 	 */
+	private FrameMedecin frameMedecin = FrameConnection.getFrameMedecin();
+	private FrameMedecin.ConfirmButtonListener confirmButtonListener = frameMedecin.new ConfirmButtonListener();
 	private Medecin currentMedecin = FrameConnection.getCurrentMedecin();
 	private Patient currentPatient = FrameMedecin.getSelectedPatient();
 	private LocalDate today = LocalDate.now();
@@ -475,7 +478,7 @@ public class FrameConsultation extends JFrame {
 		confirmConsultationPanel.add(confirmButton);
 		confirmConsultationPanel.add(cancelButton);
 		signCheckBox.addActionListener(new ActionListenerSignBox());
-		confirmButton.addActionListener(new ConfirmButtonListener());
+		confirmButton.addActionListener(confirmButtonListener);
 
 		return confirmConsultationPanel;
 	}
@@ -514,51 +517,6 @@ public class FrameConsultation extends JFrame {
 			}
 		}
 
-	}
-
-	/**
-	 * Creation de la consultation en recuperant toutes le données saisie lors
-	 * de la frame de creation de consultation
-	 */
-	private class ConfirmButtonListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-
-			List<String> avisMedicalLineList = Arrays.asList(avisMedicaltextArea.getText().split("\n"));
-			String prescriptionLineList = prescriptionTextArea.getText().replace("\n", " ");
-			List<String> appariellagesRequest = appariellageAlreadyAddArrayList;
-			List<String> diagnosticList = Arrays.asList(diagnosticTextArea.getText().split("\n"));
-
-			/**
-			 * Verification des entrées
-			 */
-
-			if (prescriptionLineList.equals("") ||
-					prescriptionLineList.equals(" "))
-				prescriptionLineList = null;
-
-			if (appariellagesRequest.isEmpty())
-				appariellagesRequest = null;
-
-			if (diagnosticList.isEmpty() ||
-					diagnosticTextArea.getText().equals("")) {
-				diagnosticList = null;
-			}
-
-			/**
-			 * Creation de la consultation
-			 */
-			if (!avisMedicalLineList.isEmpty() ||
-					!avisMedicaltextArea.getText().equals("")) {
-				new Consultation(currentMedecin, currentPatient, prescriptionLineList,
-						avisMedicalLineList, diagnosticList,
-						appariellagesRequest, WriteType.WRITE_IN_ORDONNANCE);
-				FrameMedecin.getFrameConsultation().dispose();
-				FrameMedecin.setFrameConsultation(null);
-			} else
-				JOptionPane.showMessageDialog(contentPane, "L'avis médical doit etre remplie");
-		}
 	}
 
 	/**
@@ -622,6 +580,38 @@ public class FrameConsultation extends JFrame {
 	 */
 	public void setCancelButton(JButton cancelButton) {
 		this.cancelButton = cancelButton;
+	}
+
+	public JTextArea getAvisMedicaltextArea() {
+		return avisMedicaltextArea;
+	}
+
+	public void setAvisMedicaltextArea(JTextArea avisMedicaltextArea) {
+		this.avisMedicaltextArea = avisMedicaltextArea;
+	}
+
+	public JTextArea getPrescriptionTextArea() {
+		return prescriptionTextArea;
+	}
+
+	public void setPrescriptionTextArea(JTextArea prescriptionTextArea) {
+		this.prescriptionTextArea = prescriptionTextArea;
+	}
+
+	public JTextArea getDiagnosticTextArea() {
+		return diagnosticTextArea;
+	}
+
+	public void setDiagnosticTextArea(JTextArea diagnosticTextArea) {
+		this.diagnosticTextArea = diagnosticTextArea;
+	}
+
+	public ArrayList<String> getAppariellageAlreadyAddArrayList() {
+		return appariellageAlreadyAddArrayList;
+	}
+
+	public void setAppariellageAlreadyAddArrayList(ArrayList<String> appariellageAlreadyAddArrayList) {
+		this.appariellageAlreadyAddArrayList = appariellageAlreadyAddArrayList;
 	}
 
 }

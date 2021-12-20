@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -54,6 +55,7 @@ import javax.swing.text.MaskFormatter;
 
 import hopital.Consultation;
 import hopital.Hopital;
+import hopital.Consultation.WriteType;
 import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
@@ -113,15 +115,6 @@ public class FrameMedecin extends JFrame {
 	private JMenuItem menuItemAddPatient, menuItemSupprPatient, menuItemAddConsultation;
 
 	/**
-	 * Composant des données du patient
-	 */
-	private JPanel panelPatient, panelTop, panelBottom, panelData;
-	private JLabel lastNamePatient, firstNamePatient, birthdayPatient, agePatient;
-
-	private JTextArea consultationText;
-	private JButton suppr;
-
-	/**
 	 * 
 	 */
 	private JPanel consultationPanel;
@@ -136,7 +129,7 @@ public class FrameMedecin extends JFrame {
 	 * Popup menu pour la liste de patient
 	 */
 	private JPopupMenu consultationPopupMenu;
-	private JMenuItem displayPrescriptionMenuItem, displayIRMMenuItem,
+	private JMenuItem displayPrescriptionMenuItem, displayIRMMenuItem, displayAppariellageMenuItem,
 			displayRadiologyMenuItem, displayAvisMedicalMenuItem,
 			displayDiagnosticsMenuItem, displaySurgeryMenuItem, addConsultationMenuItem, deleteConsultationMenuItem;
 
@@ -175,13 +168,22 @@ public class FrameMedecin extends JFrame {
 	private BufferedReader readerAvisMedical;
 
 	/**
-	 * Avis medical panel
+	 * Diagnostic panel
 	 */
 	private JPanel diagnosticPanel;
 	private JLabel diagnosticLabel;
 	private JTextArea diagnosticTextArea;
 	private JScrollPane diagnosticTextAreaPane;
 	private BufferedReader readerDiagnostic;
+
+	/**
+	 * Diagnostic panel
+	 */
+	private JPanel appariellagePanel;
+	private JLabel appariellageLabel;
+	private JTextArea appariellageTextArea;
+	private JScrollPane appariellageTextAreaPane;
+	private BufferedReader readerAppariellage;
 
 	/**
 	 * --------------------------------------
@@ -200,10 +202,11 @@ public class FrameMedecin extends JFrame {
 	private static Patient currentPatient;
 	private static int indexConsultationList;
 	private static File consultationSwitchFileCurrentPatient;
-	private static File avismedicalFileCurrentPatient;
 	private static File consultationFileCurrentPatient;
+	private static File avismedicalFileCurrentPatient;
 	private static File prescriptionFileCurrentPatient;
 	private static File diagnosticFileCurrentPatient;
+	private static File appariellageFileCurrentPatient;
 	private static MaskFormatter dateFormatter;
 	private static MaskFormatter secuNumbeFormatter;
 	private static MaskFormatter phoneNumberFormatter;
@@ -313,24 +316,26 @@ public class FrameMedecin extends JFrame {
 				@SuppressWarnings("unchecked")
 				JList<String> list = (JList<String>) event.getSource();
 				int index = list.locationToIndex(event.getPoint());
-				if (event.getClickCount() == 1) {
-					// le patient courant sur l'index recuperer lors du clique
-					currentPatient = currentMedecin.getPatients().get(index);
+				if (index >= 0) {
+					if (event.getClickCount() == 1) {
+						// le patient courant sur l'index recuperer lors du clique
+						currentPatient = currentMedecin.getPatients().get(index);
 
-					/**
-					 * Le clique gauche declenche la liste la de consultation et affiche les données
-					 * du patient du patient selectionner
-					 */
-					if (SwingUtilities.isLeftMouseButton(event)) {
-						setActionOnLeftClickOnListPatient(event);
-					}
+						/**
+						 * Le clique gauche declenche la liste la de consultation et affiche les données
+						 * du patient du patient selectionner
+						 */
+						if (SwingUtilities.isLeftMouseButton(event)) {
+							setActionOnLeftClickOnListPatient(event);
+						}
 
-					/**
-					 * Le clique droit declenche une popup permetant de supprimer ou ajouter un
-					 * patient
-					 */
-					else if (SwingUtilities.isRightMouseButton(event)) {
-						setActionOnRightClickListPatient(event);
+						/**
+						 * Le clique droit declenche une popup permetant de supprimer ou ajouter un
+						 * patient
+						 */
+						else if (SwingUtilities.isRightMouseButton(event)) {
+							setActionOnRightClickListPatient(event);
+						}
 					}
 				}
 			}
@@ -391,7 +396,7 @@ public class FrameMedecin extends JFrame {
 	/**
 	 * Action sur la liste de patient au clique gauche
 	 */
-	private void setActionOnLeftClickOnListPatient(MouseEvent event) {
+	public void setActionOnLeftClickOnListPatient(MouseEvent event) {
 		/**
 		 * Affichie les données du patient
 		 */
@@ -419,7 +424,8 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
-	 * 
+	 * Affiche une popup au clique droit d'une liste de consultation VIDE
+	 * Popup affichant seulement ajouter une consultation
 	 * 
 	 * @return
 	 */
@@ -439,30 +445,42 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
+	 * Affiche une popup au clique droit de la liste de consultation du patient
+	 * courant
+	 * Popup affichant ; ajouter une consultation, suppression de la consultation et
+	 * autre par rapport au consultation.
 	 * 
 	 * @return
 	 */
 	private JPopupMenu setPopupMenuOnRightClickListConsultation() {
 		consultationPopupMenu = new JPopupMenu();
 
+		addConsultationMenuItem = new JMenuItem("Ajouter consultation");
+		deleteConsultationMenuItem = new JMenuItem("Supprimer consultation");
 		displayAvisMedicalMenuItem = new JMenuItem("Afficher l'avis medical");
 		displayDiagnosticsMenuItem = new JMenuItem("Afficher le diagnostique");
 		displayPrescriptionMenuItem = new JMenuItem("Afficher l'ordonnance");
+		displayAppariellageMenuItem = new JMenuItem("Afficher les appariellages");
+		/**
+		 * Les 3 ci dessous sont non fonctionnels, ils sont là pour etre logique
+		 * avec la frame d'ajout de consultation
+		 */
 		displayIRMMenuItem = new JMenuItem("Afficher le suivi IRM");
 		displayRadiologyMenuItem = new JMenuItem("Afficher le suivi de Radiology");
-		addConsultationMenuItem = new JMenuItem("Ajouter consultation");
-		deleteConsultationMenuItem = new JMenuItem("Supprimer consultation");
 		displaySurgeryMenuItem = new JMenuItem("Affichier le suivie de chirurgie");
 
+		// ajout de tous les menus items
 		consultationPopupMenu.add(addConsultationMenuItem);
 		consultationPopupMenu.add(deleteConsultationMenuItem);
 		consultationPopupMenu.add(displayAvisMedicalMenuItem);
-		consultationPopupMenu.add(displayPrescriptionMenuItem);
 		consultationPopupMenu.add(displayDiagnosticsMenuItem);
+		consultationPopupMenu.add(displayPrescriptionMenuItem);
+		consultationPopupMenu.add(displayAppariellageMenuItem);
 		consultationPopupMenu.add(displayIRMMenuItem);
 		consultationPopupMenu.add(displayRadiologyMenuItem);
 		consultationPopupMenu.add(displaySurgeryMenuItem);
 
+		// ajout des listeners
 		addConsultationMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -471,9 +489,11 @@ public class FrameMedecin extends JFrame {
 				}
 			}
 		});
+		deleteConsultationMenuItem.addActionListener(new DeleteConsultationMenuItemListener());
 		displayPrescriptionMenuItem.addActionListener(new DisplayPrescriptionMenuItemListener());
 		displayAvisMedicalMenuItem.addActionListener(new DisplayAvisMedicalMenuItemListener());
 		displayDiagnosticsMenuItem.addActionListener(new DisplayDiagnosticMenuItemListener());
+		displayAppariellageMenuItem.addActionListener(new DisplayApperiellageMenuItemListener());
 
 		return consultationPopupMenu;
 	}
@@ -563,7 +583,8 @@ public class FrameMedecin extends JFrame {
 		addConsultationButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setFrameConsultation();
+				if (currentPatient != null)
+					setFrameConsultation();
 			}
 		});
 
@@ -593,20 +614,22 @@ public class FrameMedecin extends JFrame {
 	 * Methode appeller lors du clique gauche de la de consultation
 	 * Permet d'afficher le panel de l'ordonnance
 	 */
-	private void setActionOnLeftClickOnListConsultation() {
+	public void setActionOnLeftClickOnListConsultation() {
 		if (currentPatient != null && currentPatient.getConsultationsFile() != null &&
 				!currentPatient.getConsultationsFile().isEmpty()) {
-
-			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
-			avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
-					+ consultationFileCurrentPatient.getName() + ".txt");
-
-			dataPatientPanel.remove(switchTypeConsultationPanel);
-			switchTypeConsultationPanel = setSwitchTypeConsultationPanel(
-					setAvisMedicalPanel(avismedicalFileCurrentPatient));
-			dataPatientPanel.add(switchTypeConsultationPanel);
-			panelPrincipal.revalidate();
-			panelPrincipal.repaint();
+			if (indexConsultationList >= 0) {
+				consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+				avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
+						+ consultationFileCurrentPatient.getName() + ".txt");
+			}
+			if (avismedicalFileCurrentPatient.exists()) {
+				dataPatientPanel.remove(switchTypeConsultationPanel);
+				switchTypeConsultationPanel = setSwitchTypeConsultationPanel(
+						setAvisMedicalPanel(avismedicalFileCurrentPatient));
+				dataPatientPanel.add(switchTypeConsultationPanel);
+				panelPrincipal.revalidate();
+				panelPrincipal.repaint();
+			}
 		}
 	}
 
@@ -897,6 +920,7 @@ public class FrameMedecin extends JFrame {
 				while ((line = readerOrdonnance.readLine()) != null) {
 					ordonnanceTextArea.append(line + "\n");
 				}
+				readerOrdonnance.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -914,6 +938,7 @@ public class FrameMedecin extends JFrame {
 	/**
 	 * Methode pour creer le panel de l'avis medical
 	 * 
+	 * @param file
 	 * @return avisMedicalPanel
 	 */
 	private JPanel setAvisMedicalPanel(File file) {
@@ -934,6 +959,7 @@ public class FrameMedecin extends JFrame {
 				while ((line = readerAvisMedical.readLine()) != null) {
 					avisMedicalTextArea.append(line + "\n");
 				}
+				readerAvisMedical.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -950,11 +976,14 @@ public class FrameMedecin extends JFrame {
 
 	/**
 	 * Methode pour creer le panel de diagnostique
+	 * 
+	 * @param file
+	 * @return diagnosticPanel
 	 */
 	private JPanel setDiagnosticPanel(File file) {
 
 		diagnosticPanel = new JPanel(new BorderLayout());
-		diagnosticLabel = new JLabel("Avis medical");
+		diagnosticLabel = new JLabel("Diagnostic");
 		diagnosticLabel.setFont(font1);
 		diagnosticTextArea = new JTextArea();
 		diagnosticTextAreaPane = new JScrollPane(diagnosticTextArea);
@@ -969,6 +998,7 @@ public class FrameMedecin extends JFrame {
 				while ((line = readerDiagnostic.readLine()) != null) {
 					diagnosticTextArea.append(line + "\n");
 				}
+				readerDiagnostic.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -984,10 +1014,97 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
+	 * Affiche le panel d'appapiellage de la consultation
+	 * 
+	 * @param file
+	 * @return diagnosticPanel
+	 */
+	private JPanel setAppareillagePanel(File file) {
+		appariellagePanel = new JPanel(new BorderLayout());
+		appariellageLabel = new JLabel("Appariellages");
+		appariellageLabel.setFont(font1);
+		appariellageTextArea = new JTextArea();
+		appariellageTextAreaPane = new JScrollPane(appariellageTextArea);
+		appariellageTextArea.setEditable(false);
+
+		if (file != null) {
+			try {
+				String line;
+				readerAppariellage = new BufferedReader(
+						new InputStreamReader(new FileInputStream(file), LoadingLanguage.encoding));
+
+				while ((line = readerAppariellage.readLine()) != null) {
+					appariellageTextArea.append(line + "\n");
+				}
+				readerAppariellage.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		appariellageTextArea.setFont(new Font("SansSerif", Font.BOLD, 16));
+		appariellagePanel.add(appariellageLabel, BorderLayout.NORTH);
+		appariellagePanel.add(appariellageTextAreaPane, BorderLayout.CENTER);
+
+		return appariellagePanel;
+	}
+
+	/**
 	 * -------------------------------------------------------
 	 * Les Principaux Listeners
 	 * -------------------------------------------------------
 	 */
+
+	/**
+	 * Creation de la consultation en recuperant toutes le données saisie lors
+	 * de la frame de creation de consultation
+	 */
+	public class ConfirmButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			List<String> avisMedicalLineList = Arrays
+					.asList(frameConsultation.getAvisMedicaltextArea().getText().split("\n"));
+			String prescriptionLineList = frameConsultation.getPrescriptionTextArea().getText().replace("\n", " ");
+			List<String> appariellagesRequest = frameConsultation.getAppariellageAlreadyAddArrayList();
+			List<String> diagnosticList = Arrays
+					.asList(frameConsultation.getDiagnosticTextArea().getText().split("\n"));
+
+			/**
+			 * Verification des entrées
+			 */
+
+			if (prescriptionLineList.equals("") ||
+					prescriptionLineList.equals(" "))
+				prescriptionLineList = null;
+
+			if (appariellagesRequest.isEmpty())
+				appariellagesRequest = null;
+
+			if (diagnosticList.isEmpty() ||
+					frameConsultation.getAvisMedicaltextArea().getText().equals("")) {
+				diagnosticList = null;
+			}
+
+			/**
+			 * Creation de la consultation
+			 */
+			if (!avisMedicalLineList.isEmpty() ||
+					!frameConsultation.getAvisMedicaltextArea().getText().equals("")) {
+				new Consultation(currentMedecin, currentPatient, prescriptionLineList,
+						avisMedicalLineList, diagnosticList,
+						appariellagesRequest, WriteType.WRITE_IN_ORDONNANCE);
+				FrameMedecin.getFrameConsultation().dispose();
+				FrameMedecin.setFrameConsultation(null);
+				setActionOnLeftClickOnListPatient(null);
+				setActionOnLeftClickOnListConsultation();
+			} else
+				JOptionPane.showMessageDialog(frameConsultation.getContentPane(), "L'avis médical doit etre remplie");
+		}
+	}
 
 	/**
 	 * Le listener du text field pour chercher un patient
@@ -1145,7 +1262,18 @@ public class FrameMedecin extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			switchPanelResetGeneral(avismedicalFileCurrentPatient, "avismedical");
+			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+			avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
+					+ consultationFileCurrentPatient.getName() + ".txt");
+			if (avismedicalFileCurrentPatient.exists()) {
+				dataPatientPanel.remove(switchTypeConsultationPanel);
+				switchTypeConsultationPanel = setSwitchTypeConsultationPanel(setAvisMedicalPanel(
+						avismedicalFileCurrentPatient));
+				dataPatientPanel.add(switchTypeConsultationPanel);
+				panelPrincipal.revalidate();
+				panelPrincipal.repaint();
+			} else
+				JOptionPane.showMessageDialog(panelPrincipal, "Avis medical non existant");
 		}
 
 	}
@@ -1157,7 +1285,18 @@ public class FrameMedecin extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			switchPanelResetGeneral(prescriptionFileCurrentPatient, "ordonnance");
+			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+			prescriptionFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/ordonnance/"
+					+ consultationFileCurrentPatient.getName() + ".txt");
+			if (prescriptionFileCurrentPatient.exists()) {
+				dataPatientPanel.remove(switchTypeConsultationPanel);
+				switchTypeConsultationPanel = setSwitchTypeConsultationPanel(setOrdonnancePanel(
+						prescriptionFileCurrentPatient));
+				dataPatientPanel.add(switchTypeConsultationPanel);
+				panelPrincipal.revalidate();
+				panelPrincipal.repaint();
+			} else
+				JOptionPane.showMessageDialog(panelPrincipal, "Ordonnance non existant");
 		}
 
 	}
@@ -1169,30 +1308,80 @@ public class FrameMedecin extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			switchPanelResetGeneral(diagnosticFileCurrentPatient, "diagnostic");
+			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+			diagnosticFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/diagnostic/"
+					+ consultationFileCurrentPatient.getName() + ".txt");
+			if (diagnosticFileCurrentPatient.exists()) {
+				dataPatientPanel.remove(switchTypeConsultationPanel);
+				switchTypeConsultationPanel = setSwitchTypeConsultationPanel(setDiagnosticPanel(
+						diagnosticFileCurrentPatient));
+				dataPatientPanel.add(switchTypeConsultationPanel);
+				panelPrincipal.revalidate();
+				panelPrincipal.repaint();
+			} else
+				JOptionPane.showMessageDialog(panelPrincipal, "Diagnostique non existant");
 		}
 	}
 
 	/**
-	 * Permet de changer de panel lors du clique d'un des boutons de la popup
-	 * afficher lors du clique droit de la liste de consultation
-	 * 
-	 * @param fileCurrentPatient
-	 * @param nameFolder
+	 * Affiche le panel de d'appariellage
 	 */
-	private void switchPanelResetGeneral(File fileCurrentPatient, String nameFolder) {
-		consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
-		fileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/" + nameFolder + "/"
-				+ consultationFileCurrentPatient.getName() + ".txt");
-		if (fileCurrentPatient.exists()) {
-			dataPatientPanel.remove(switchTypeConsultationPanel);
-			switchTypeConsultationPanel = setSwitchTypeConsultationPanel(
-					setDiagnosticPanel(fileCurrentPatient));
-			dataPatientPanel.add(switchTypeConsultationPanel);
-			panelPrincipal.revalidate();
-			panelPrincipal.repaint();
-		} else
-			JOptionPane.showMessageDialog(panelPrincipal, "Consultation non existant");
+	private class DisplayApperiellageMenuItemListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+			appariellageFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/appareillage/"
+					+ consultationFileCurrentPatient.getName() + ".txt");
+			if (appariellageFileCurrentPatient.exists()) {
+				dataPatientPanel.remove(switchTypeConsultationPanel);
+				switchTypeConsultationPanel = setSwitchTypeConsultationPanel(
+						setAppareillagePanel(
+								appariellageFileCurrentPatient));
+				dataPatientPanel.add(switchTypeConsultationPanel);
+				panelPrincipal.revalidate();
+				panelPrincipal.repaint();
+			} else
+				JOptionPane.showMessageDialog(panelPrincipal, "Appareillage non existant");
+		}
+
+	}
+
+	/**
+	 * Permet de supprimer une consultation
+	 */
+	private class DeleteConsultationMenuItemListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int input = JOptionPane.showConfirmDialog(null, "Etes-vous sur de supprimer la consultation");
+			if (input == JOptionPane.YES_OPTION) {
+
+				consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+
+				String[] nameFolder = { "/appareillage/", "/diagnostic/", "/ordonnance/", "/avismedical/" };
+				File file;
+				File folder;
+
+				/**
+				 * Tous les fichier textes et dossiers a supprimer
+				 */
+				for (int i = 0; i < nameFolder.length; i++) {
+					file = new File(consultationFileCurrentPatient.toPath() + nameFolder[i]
+							+ consultationFileCurrentPatient.getName() + ".txt");
+					folder = new File(consultationFileCurrentPatient.toPath() + nameFolder[i]);
+					// suppression des dossiers et fichiers
+					if (file.exists())
+						file.delete();
+					if (folder.exists())
+						folder.delete();
+				}
+
+				consultationFileCurrentPatient.delete();
+				currentPatient.getConsultationsFile().remove(indexConsultationList);
+				setActionOnLeftClickOnListPatient(null);
+			}
+		}
 	}
 
 	/**
@@ -1206,34 +1395,6 @@ public class FrameMedecin extends JFrame {
 	 */
 	public JList<String> getListConsultation() {
 		return listConsultationJList;
-	}
-
-	/**
-	 * @return birthdayPatient
-	 */
-	public JLabel getBirthdayPatient() {
-		return birthdayPatient;
-	}
-
-	/**
-	 * @param birthdayPatient
-	 */
-	public void setBirthdayPatient(JLabel birthdayPatient) {
-		this.birthdayPatient = birthdayPatient;
-	}
-
-	/**
-	 * @return agePatient
-	 */
-	public JLabel getAgePatient() {
-		return agePatient;
-	}
-
-	/**
-	 * @param agePatient
-	 */
-	public void setAgePatient(JLabel agePatient) {
-		this.agePatient = agePatient;
 	}
 
 	/**

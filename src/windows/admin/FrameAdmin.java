@@ -209,70 +209,72 @@ public class FrameAdmin extends JFrame {
 				@SuppressWarnings("unchecked")
 				JList<String> list = (JList<String>) event.getSource();
 				int index = list.locationToIndex(event.getPoint());
-				if (event.getClickCount() == 1) {
-					// le patient courant sur l'index recuperer lors du clique
-					currentPatient = Hopital.getPatients().get(index);
+				if (index >= 0) {
+					if (event.getClickCount() == 1) {
+						// le patient courant sur l'index recuperer lors du clique
+						currentPatient = Hopital.getPatients().get(index);
 
-					/**
-					 * Le clique gauche declenche la liste la de consultation du patient
-					 * selectionner
-					 */
-					if (SwingUtilities.isLeftMouseButton(event)) {
-						patientLastnameInputTextField.setText(currentPatient.getLastName());
-						patientFirstnameInpuTextField.setText(currentPatient.getFirstName());
-						patientDateInputFormattedTextField
-								.setText(currentPatient.getBirthday()
-										.format(Hopital.FORMATEUR_LOCALDATE).replace("-", ""));
-						patientAddressInputTextField.setText(currentPatient.getAddress());
-						patientSecuNumberInputFormattedTextField.setText(currentPatient.getSecuNumber());
-						patientNumberPhoneInputFormFormattedTextField.setText(currentPatient.getPhoneNumber());
-					}
+						/**
+						 * Le clique gauche declenche la liste la de consultation du patient
+						 * selectionner
+						 */
+						if (SwingUtilities.isLeftMouseButton(event)) {
+							patientLastnameInputTextField.setText(currentPatient.getLastName());
+							patientFirstnameInpuTextField.setText(currentPatient.getFirstName());
+							patientDateInputFormattedTextField
+									.setText(currentPatient.getBirthday()
+											.format(Hopital.FORMATEUR_LOCALDATE).replace("-", ""));
+							patientAddressInputTextField.setText(currentPatient.getAddress());
+							patientSecuNumberInputFormattedTextField.setText(currentPatient.getSecuNumber());
+							patientNumberPhoneInputFormFormattedTextField.setText(currentPatient.getPhoneNumber());
+						}
 
-					/**
-					 * Le clique droit declenche une popup permetant de supprimer ou ajouter un
-					 * patient
-					 */
-					else if (SwingUtilities.isRightMouseButton(event)) {
-						try {
-							/**
-							 * La popup
-							 */
-							setPopupMenuOnRigthClickListPatient().show(
-									event.getComponent(), event.getX(), event.getY());
+						/**
+						 * Le clique droit declenche une popup permetant de supprimer ou ajouter un
+						 * patient
+						 */
+						else if (SwingUtilities.isRightMouseButton(event)) {
+							try {
+								/**
+								 * La popup
+								 */
+								setPopupMenuOnRigthClickListPatient().show(
+										event.getComponent(), event.getX(), event.getY());
 
-							/**
-							 * Si la selection est supprimer alors lance showConfimDialog
-							 * pour pouvoir confirmer l'acte de suppression
-							 */
-							menuItemSupprPatient.addActionListener(new ActionListener() {
-								@Override
-								public void actionPerformed(ActionEvent e) {
-									int input = JOptionPane.showConfirmDialog(null,
-											(String) loadingLanguage.getJsonObject()
-													.get("frame_admin_confirm_delete_patient"));
+								/**
+								 * Si la selection est supprimer alors lance showConfimDialog
+								 * pour pouvoir confirmer l'acte de suppression
+								 */
+								menuItemSupprPatient.addActionListener(new ActionListener() {
+									@Override
+									public void actionPerformed(ActionEvent e) {
+										int input = JOptionPane.showConfirmDialog(null,
+												(String) loadingLanguage.getJsonObject()
+														.get("frame_admin_confirm_delete_patient"));
 
-									/*
-									 * 
-									 */
-									if (input == JOptionPane.YES_OPTION) {
-										System.out.println(currentPatient.getLastName() + " a ete supprimer");
+										/*
+										 * 
+										 */
+										if (input == JOptionPane.YES_OPTION) {
+											System.out.println(currentPatient.getLastName() + " a ete supprimer");
+										}
 									}
-								}
-							});
+								});
 
-							/**
-							 * Si la selection est d'ajouter un patient
-							 * affichage une fenetre d'ajout de patient dans la liste de medecin
-							 */
-							menuItemAddPatient.addActionListener(new ActionListener() {
-								@Override
-								public void actionPerformed(ActionEvent e) {
-									setFrameAddPatient();
-								}
-							});
+								/**
+								 * Si la selection est d'ajouter un patient
+								 * affichage une fenetre d'ajout de patient dans la liste de medecin
+								 */
+								menuItemAddPatient.addActionListener(new ActionListener() {
+									@Override
+									public void actionPerformed(ActionEvent e) {
+										setFrameAddPatient();
+									}
+								});
 
-						} catch (IndexOutOfBoundsException e) {
-							e.printStackTrace();
+							} catch (IndexOutOfBoundsException e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}

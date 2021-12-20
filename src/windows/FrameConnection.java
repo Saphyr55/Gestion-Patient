@@ -121,6 +121,12 @@ public class FrameConnection extends JFrame {
 	private String password = "";
 	private String identifiantText = "";
 
+	/**
+	 * 
+	 */
+	private static FrameAdmin frameAdmin;
+	private static FrameMedecin frameMedecin;
+
 	public FrameConnection() {
 		super(title);
 		setOptionFrame(model);
@@ -357,7 +363,7 @@ public class FrameConnection extends JFrame {
 							}
 						}
 						setRemembermeFile();
-						new FrameAdmin();
+						frameAdmin = new FrameAdmin();
 						dispose();
 					} else
 						j++;
@@ -384,7 +390,7 @@ public class FrameConnection extends JFrame {
 							}
 						}
 						setRemembermeFile();
-						new FrameMedecin();
+						frameMedecin = new FrameMedecin();
 						dispose();
 					} else
 						j++;
@@ -554,6 +560,22 @@ public class FrameConnection extends JFrame {
 	 */
 	public static LookAndFeel getModel() {
 		return model;
+	}
+
+	public FrameAdmin getFrameAdmin() {
+		return frameAdmin;
+	}
+
+	public void setFrameAdmin(FrameAdmin frameAdmin) {
+		this.frameAdmin = frameAdmin;
+	}
+
+	public static FrameMedecin getFrameMedecin() {
+		return frameMedecin;
+	}
+
+	public static void setFrameMedecin(FrameMedecin frameMedecin) {
+		FrameConnection.frameMedecin = frameMedecin;
 	}
 
 }
