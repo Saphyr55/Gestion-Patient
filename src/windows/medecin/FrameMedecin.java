@@ -23,7 +23,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -620,7 +619,6 @@ public class FrameMedecin extends JFrame {
 				consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
 				avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
 						+ consultationFileCurrentPatient.getName() + ".txt");
-
 				dataPatientPanel.remove(switchTypeConsultationPanel);
 				switchTypeConsultationPanel = setSwitchTypeConsultationPanel(
 						setAvisMedicalPanel(avismedicalFileCurrentPatient));
@@ -1376,10 +1374,15 @@ public class FrameMedecin extends JFrame {
 				 * Tous les fichier textes et dossiers a supprimer
 				 */
 				for (int i = 0; i < nameFolder.length; i++) {
-					file = new File(consultationFileCurrentPatient.toPath() + nameFolder[i]
-							+ consultationFileCurrentPatient.getName() + ".txt");
-					folder = new File(consultationFileCurrentPatient.toPath() + nameFolder[i]);
-					// suppression des dossiers et fichiers
+					if (!nameFolder[i].equals(nameFolder[0])) {
+						file = new File(consultationFileCurrentPatient.toPath() + nameFolder[i]
+								+ consultationFileCurrentPatient.getName() + ".txt");
+						folder = new File(consultationFileCurrentPatient.toPath() + nameFolder[i]);
+					} else {
+						file = new File(consultationFileCurrentPatient.toPath() + nameFolder[i]
+								+ consultationFileCurrentPatient.getName() + ".json");
+						folder = new File(consultationFileCurrentPatient.toPath() + nameFolder[i]);
+					}
 					if (file.exists())
 						file.delete();
 					if (folder.exists())

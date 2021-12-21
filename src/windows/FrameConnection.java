@@ -46,7 +46,7 @@ import hopital.personnels.Medecin;
 import hopital.personnels.Technician;
 import windows.admin.FrameAdmin;
 import windows.medecin.FrameMedecin;
-import windows.technicien.FrameTechnician;
+import windows.technician.FrameTechnician;
 
 /**
  * Frame de connexion

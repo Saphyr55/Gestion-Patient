@@ -1,4 +1,4 @@
-package windows.technicien;
+package windows.technician;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -204,7 +206,87 @@ public class FrameTechnician extends JFrame {
         panelListPatient.add(panelTop, BorderLayout.NORTH);
         panelListPatient.add(listPatientScrollPane, BorderLayout.CENTER);
 
+        listPatient.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int index = listPatient.getSelectedIndex();
+                currentPatient = Hopital.getPatients().get(index);
+                lastnamePatientTextField.setText(currentPatient.getLastName());
+                firstnamePatientTextField.setText(currentPatient.getFirstName());
+                birthdayPatientTextField.setText(currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE)
+                        .replace("-", ""));
+                secuNumberPatientTextField.setText(currentPatient.getSecuNumber());
+                phonePatientTextField.setText(currentPatient.getPhoneNumber());
+                addressPatientTextField.setText(currentPatient.getAddress());
+                loadingListConsultation(currentPatient);
+                contentPane.revalidate();
+                contentPane.repaint();
+            }
+
+        });
+
         return panelListPatient;
+    }
+
+    /**
+     * Charge toutes les ordonnances du dossier du patient en parametre
+     * Puis ajoute le nom des fichier au x
+     * 
+     * @param patient
+     */
+    private void loadingListConsultation(Patient patient) {
+
+        /**
+         * Si la liste est vide on la remplie
+         */
+        if (nameListConsultationDefaultModel.isEmpty()) {
+
+            /**
+             * Recuperation de toutes les consultations du patient
+             */
+            Hopital.loadingConsultationPatient(patient);
+
+            for (int i = 0; i < patient.getConsultationsFile().size(); i++) {
+
+                /**
+                 * Formate le nom du fichier de le consultation
+                 */
+                String nameConsultation = patient.getConsultationsFile().get(i).getName()
+                        .replace("&", " ").replace(".txt", "");
+                /**
+                 * Ajout de tous les elements pour la JList dans
+                 * nameListConsultationDefaultModel
+                 * si model de la liste de onsultation ne containt pas deja l'élement
+                 */
+                if (!nameListConsultationDefaultModel.contains(nameConsultation)) {
+
+                    /**
+                     * Met tous les noms des consultation dans le model et dans la liste
+                     */
+                    nameListConsultationDefaultModel.addElement(nameConsultation);
+                    nameConsultationList.add(nameConsultation);
+                }
+            }
+
+            /**
+             * Initiatlisation de la JList et le JScrollPane
+             */
+            listConsultationJList = new JList<>(nameListConsultationDefaultModel);
+            listConsultationScrollPane = new JScrollPane(listConsultationJList);
+        }
+
+        /**
+         * Si la liste n'est pas vide on la vide
+         * On reinitialise la jlist et jscrollpane
+         * Et on appelle la meme fonction
+         */
+        else {
+            nameListConsultationDefaultModel.removeAllElements();
+            nameConsultationList.removeAll(nameConsultationList);
+
+            loadingListConsultation(patient);
+        }
     }
 
     /**
@@ -215,58 +297,46 @@ public class FrameTechnician extends JFrame {
         centerPanel = new JPanel(new GridLayout(1, 2));
 
         centerPanel.add(setPanelData());
-        centerPanel.add(setListConsultationRequest());
+        centerPanel.add(setConsultationRequestPanel());
 
         return centerPanel;
     }
 
-    private JPanel setListConsultationRequest() {
+    private JPanel setConsultationRequestPanel() {
 
-        listRequestAppareillagePanel = new JPanel();
+        listRequestAppareillagePanel = new JPanel(new BorderLayout());
         confirmRequestAppareillageButton = new JButton("Confimation des requette");
-        currentPatient = Hopital.getPatients().get(0);
-        Hopital.loadingConsultationPatient(currentPatient);
 
-        File currentConsultationFile = Hopital.getPatients().get(0).getConsultationsFile().get(0);
-        appareillageFile = new File("./src/log/patient/" + currentPatient.getFirstName().toLowerCase()
-                + currentPatient.getLastName().toLowerCase() + "/" + currentConsultationFile.getName()
-                + "/appareillage/" + currentConsultationFile.getName() + ".json");
+        if (requestAppareillageList != null) {
+            appareillageListScrollPane = new JScrollPane(requestAppareillageList);
+            listRequestAppareillagePanel.add(appareillageListScrollPane, BorderLayout.CENTER);
+            listRequestAppareillagePanel.add(confirmRequestAppareillageButton, BorderLayout.SOUTH);
+            listRequestAppareillagePanel.setPreferredSize(new Dimension((width / 4), height - 50));
 
-        appareillageMap = (HashMap<String, Boolean>) appareilllageFileToHashMap(appareillageFile);
-        requestAppareillageListModel = new DefaultListModel<>();
-        requestAppareillageList = new CheckBoxList(requestAppareillageListModel);
+            confirmRequestAppareillageButton.addActionListener(new ActionListener() {
 
-        for (Entry<String, Boolean> element : appareillageMap.entrySet()) {
-            requestAppareillageListModel.addElement(new CheckBoxNode(element.getKey(), element.getValue()));
-        }
-
-        appareillageListScrollPane = new JScrollPane(requestAppareillageList);
-        listRequestAppareillagePanel.add(appareillageListScrollPane);
-        listRequestAppareillagePanel.add(confirmRequestAppareillageButton);
-        listRequestAppareillagePanel.setPreferredSize(new Dimension((width / 4), height - 50));
-
-        confirmRequestAppareillageButton.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if (appareillageFile.delete()) {
-                        System.out.println("Suppression reussi");
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        if (appareillageFile.delete()) {
+                            System.out.println("Suppression reussi");
+                        }
+                        appareillageFile.createNewFile();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
                     }
-                    appareillageFile.createNewFile();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(appareillageFile, true),
-                        StandardCharsets.UTF_8)) {
+                    try (OutputStreamWriter writer = new OutputStreamWriter(
+                            new FileOutputStream(appareillageFile, true),
+                            StandardCharsets.UTF_8)) {
 
-                    writer.write(CheckBoxList.getJsonObjectAppareillage().toJSONString());
-                    writer.close();
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                        writer.write(CheckBoxList.getJsonObjectAppareillage().toJSONString());
+                        writer.close();
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
 
         return listRequestAppareillagePanel;
     }
@@ -403,9 +473,6 @@ public class FrameTechnician extends JFrame {
         JPanel panelTop = new JPanel(new BorderLayout());
         foundConsultationField = new JTextField();
 
-        listConsultationJList = new JList<>(nameListConsultationDefaultModel);
-        listConsultationScrollPane = new JScrollPane(listConsultationJList);
-
         /**
          * Option text sur le button et autre
          */
@@ -421,6 +488,9 @@ public class FrameTechnician extends JFrame {
         panelTop.setPreferredSize(new Dimension(0, 40));
         foundConsultationField.setPreferredSize(new Dimension(0, 100));
 
+        listConsultationJList = new JList<>(nameListConsultationDefaultModel);
+        listConsultationScrollPane = new JScrollPane(listConsultationJList);
+
         /**
          * Ajout du button d'ajout de patient et de recherche de patient dans le
          * panelTop
@@ -430,8 +500,44 @@ public class FrameTechnician extends JFrame {
         consultationPanel.add(panelTop, BorderLayout.NORTH);
         consultationPanel.add(listConsultationScrollPane, BorderLayout.CENTER);
 
+        if (listConsultationJList != null) {
+            listConsultationJList.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent event) {
+                    JList<String> list = (JList<String>) event.getSource();
+                    int index = list.locationToIndex(event.getPoint());
+                    if (index >= 0) {
+                        File currentConsultationFile = currentPatient.getConsultationsFile().get(index);
+                        appareillageFile = new File("./src/log/patient/" +
+                                currentPatient.getFirstName().toLowerCase()
+                                + currentPatient.getLastName().toLowerCase() + "/" +
+                                currentConsultationFile.getName()
+                                + "/appareillage/" + currentConsultationFile.getName() + ".json");
+                        appareillageMap = (HashMap<String, Boolean>) appareilllageFileToHashMap(appareillageFile);
+                        requestAppareillageListModel = new DefaultListModel<>();
+                        requestAppareillageList = new CheckBoxList(requestAppareillageListModel);
+                        for (Entry<String, Boolean> element : appareillageMap.entrySet()) {
+                            requestAppareillageListModel.addElement(new CheckBoxNode(element.getKey(),
+                                    element.getValue()));
+                        }
+                        centerPanel.remove(listRequestAppareillagePanel);
+                        centerPanel.add(setConsultationRequestPanel());
+                        contentPane.revalidate();
+                        contentPane.repaint();
+                    }
+                }
+            });
+        }
+
         return consultationPanel;
+
     }
+
+    /**
+     * --------------------
+     * Getters and setters
+     * --------------------
+     */
 
     public static Patient getCurrentPatient() {
         return currentPatient;

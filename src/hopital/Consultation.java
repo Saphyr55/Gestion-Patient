@@ -333,7 +333,7 @@ public class Consultation {
 			writer.write("\n");
 			writer.write("Prénom du patient: " + patient.getFirstName());
 			writer.write("\n" + "\n");
-			writer.write("Nom du medecin : " + medecin.getFirstName());
+			writer.write("Nom du medecin : " + medecin.getLastName());
 			writer.write("\n");
 			writer.write("Prénom du medecin : " + medecin.getFirstName());
 			writer.write("\n" + "\n");
@@ -458,5 +458,4 @@ public class Consultation {
 		this.appareillageMap = appareillageMap;
 	}
 
-	
 }
