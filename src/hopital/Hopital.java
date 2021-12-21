@@ -13,8 +13,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import hopital.Consultation.WriteType;
 import hopital.loading.language.LoadingLanguage;
 import hopital.loading.paths.LoadingPath;
 import hopital.patient.Patient;
@@ -214,10 +216,12 @@ public abstract class Hopital {
 		File[] consultationPatientFile = new File(
 				"./src/log/patient/" + patient.getFirstName() + patient.getLastName() + "/")
 						.listFiles();
+		
 		if (consultationPatientFile != null) {
 			for (int i = 0; i < consultationPatientFile.length; i++) {
-				if (!patient.getConsultationsFile().contains(consultationPatientFile[i]))
+				if (!patient.getConsultationsFile().contains(consultationPatientFile[i])) {
 					patient.getConsultationsFile().add(consultationPatientFile[i]);
+				}
 			}
 		}
 	}
@@ -359,21 +363,21 @@ public abstract class Hopital {
 	}
 
 	/**
-	 * @return the medecins
+	 * @return medecins
 	 */
 	public static ArrayList<Medecin> getMedecins() {
 		return medecins;
 	}
 
 	/**
-	 * @return the admins
+	 * @return admins
 	 */
 	public static ArrayList<Administrator> getAdmins() {
 		return admins;
 	}
 
 	/**
-	 * @return the patients
+	 * @return patients
 	 */
 	public static ArrayList<Patient> getPatients() {
 		return patients;

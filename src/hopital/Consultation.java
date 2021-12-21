@@ -449,4 +449,14 @@ public class Consultation {
 	public void setMedicaments(String medicaments) {
 		this.medicaments = medicaments;
 	}
+
+	public Map<String, Boolean> getAppareillageMap() {
+		return appareillageMap;
+	}
+
+	public void setAppareillageMap(Map<String, Boolean> appareillageMap) {
+		this.appareillageMap = appareillageMap;
+	}
+
+	
 }

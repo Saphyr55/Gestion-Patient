@@ -114,7 +114,7 @@ public class FrameMedecin extends JFrame {
 	private JMenuItem menuItemAddPatient, menuItemSupprPatient, menuItemAddConsultation;
 
 	/**
-	 * 
+	 * Panel de consultation
 	 */
 	private JPanel consultationPanel;
 	private JList<String> listConsultationJList;
@@ -189,7 +189,7 @@ public class FrameMedecin extends JFrame {
 	 * --------------------------------------
 	 */
 	private static FrameConsultation frameConsultation;
-	private static FrameAddPatientWithMedecin frameAddPatientWithMedecin;
+	private static FrameMedecinAddPatient frameAddPatientWithMedecin;
 
 	/**
 	 * -------------------------------------
@@ -449,7 +449,7 @@ public class FrameMedecin extends JFrame {
 	 * Popup affichant ; ajouter une consultation, suppression de la consultation et
 	 * autre par rapport au consultation.
 	 * 
-	 * @return
+	 * @return consultationPopupMenu
 	 */
 	private JPopupMenu setPopupMenuOnRightClickListConsultation() {
 		consultationPopupMenu = new JPopupMenu();
@@ -656,7 +656,7 @@ public class FrameMedecin extends JFrame {
 	 */
 	private void setFrameAddPatientWithMedecin() {
 		if (frameAddPatientWithMedecin == null) {
-			frameAddPatientWithMedecin = new FrameAddPatientWithMedecin();
+			frameAddPatientWithMedecin = new FrameMedecinAddPatient();
 			frameAddPatientWithMedecin.getCancelButton().addActionListener(new CancelButtonFrameAddPatientListener());
 
 		}
@@ -786,6 +786,8 @@ public class FrameMedecin extends JFrame {
 
 	/**
 	 * 
+	 * 
+	 * @param panel
 	 * @return
 	 */
 	private JPanel setSwitchTypeConsultationPanel(JPanel panel) {
@@ -1435,7 +1437,7 @@ public class FrameMedecin extends JFrame {
 	/**
 	 * @return frameAddPatientWithMedecin
 	 */
-	public static FrameAddPatientWithMedecin getFrameAddPatientWithMedecin() {
+	public static FrameMedecinAddPatient getFrameAddPatientWithMedecin() {
 		return frameAddPatientWithMedecin;
 	}
 
@@ -1491,7 +1493,7 @@ public class FrameMedecin extends JFrame {
 	/**
 	 * @param frameAddPatientWithMedecin
 	 */
-	public static void setFrameAddPatientWithMedecin(FrameAddPatientWithMedecin frameAddPatientWithMedecin) {
+	public static void setFrameAddPatientWithMedecin(FrameMedecinAddPatient frameAddPatientWithMedecin) {
 		FrameMedecin.frameAddPatientWithMedecin = frameAddPatientWithMedecin;
 	}
 

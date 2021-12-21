@@ -1,16 +1,16 @@
 {
     "appariel_medical": [
-        "Splint",
-        "Insufflation balloon",
-        "Oxygen cylinder",
-        "Sterile swabs",
-        "Nasal oxygen catheter",
-        "Blood pressure monitor",
-        "Electrocardiography",
-        "Cuff",
-        "Vascular doppler",
-        "Radiographer"
-     ],
+        "Attelle",
+        "Ballon d’insufflation",
+        "Bouteille d'oxygène",
+        "Compresses stériles",
+        "Sonde nasale à oxygène",
+        "Tensiomètre",
+        "Électrocardiographie (ECG)",
+        "Brassard",
+        "Doppler vasculaire",
+        "Radiographe"
+    ],
 
     "frame_connection_title":"Connection - Univ Tours",
     "frame_connection_id":"Your ID",

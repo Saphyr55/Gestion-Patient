@@ -37,7 +37,7 @@ import hopital.patient.Patient.PatientTypeCreate;
 import hopital.personnels.Medecin;
 import windows.FrameConnection;
 
-public class FrameAddPatientWithMedecin extends JFrame {
+public class FrameMedecinAddPatient extends JFrame {
 
     private static LoadingDimens loadingDimens = FrameConnection.getLoadingDimens();
     private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
@@ -99,7 +99,7 @@ public class FrameAddPatientWithMedecin extends JFrame {
     /**
      * Construteur de la frame
      */
-    public FrameAddPatientWithMedecin() {
+    public FrameMedecinAddPatient() {
         super(title);
         Hopital.loadingPatient();
         setOptionFrame();

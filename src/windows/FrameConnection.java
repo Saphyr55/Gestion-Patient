@@ -109,7 +109,7 @@ public class FrameConnection extends JFrame {
 	 */
 	private static Medecin currentMedecin;
 	private static Administrator currentAdmin;
-	private static Technician curreTechnician;
+	private static Technician currentTechnician;
 
 	/*
 	 * List de langue en string, et l'enum Language
@@ -412,11 +412,11 @@ public class FrameConnection extends JFrame {
 						for (int i = 0; i < Hopital.getTechnicians().size(); i++) {
 							if (Hopital.getTechnicians().get(i).getIdentifiant() == Integer
 									.parseInt(identifiantText)) {
-								curreTechnician = Hopital.getTechnicians().get(i);
+								currentTechnician = Hopital.getTechnicians().get(i);
 							}
 						}
 						setRemembermeFile();
-						frameTechnician = new FrameTechnician();
+						setFrameTechnician(new FrameTechnician());
 						dispose();
 					} else
 						j++;
@@ -592,8 +592,8 @@ public class FrameConnection extends JFrame {
 		return frameAdmin;
 	}
 
-	public void setFrameAdmin(FrameAdmin frameAdmin) {
-		this.frameAdmin = frameAdmin;
+	public static void setFrameAdmin(FrameAdmin frameAdmin) {
+		FrameConnection.frameAdmin = frameAdmin;
 	}
 
 	public static FrameMedecin getFrameMedecin() {
@@ -602,6 +602,14 @@ public class FrameConnection extends JFrame {
 
 	public static void setFrameMedecin(FrameMedecin frameMedecin) {
 		FrameConnection.frameMedecin = frameMedecin;
+	}
+
+	public static FrameTechnician getFrameTechnician() {
+		return frameTechnician;
+	}
+
+	public static void setFrameTechnician(FrameTechnician frameTechnician) {
+		FrameConnection.frameTechnician = frameTechnician;
 	}
 
 }
