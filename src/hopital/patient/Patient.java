@@ -198,7 +198,7 @@ public class Patient implements IPersonne {
 						"./src/log/medecin/" + medecin.getFirstName().toLowerCase()
 								+ medecin.getLastName().toLowerCase() + "/patients.txt",
 						true));
-				writer.write(nLine + Hopital.SEPARATOR + this.id + Hopital.SEPARATOR + getFirstName()
+				writer.write(this.id + Hopital.SEPARATOR + getFirstName()
 						+ Hopital.SEPARATOR + getLastName() + Hopital.SEPARATOR
 						+ this.birthday.format(Hopital.FORMATEUR_LOCALDATE) + Hopital.SEPARATOR + this.secuNumber
 						+ Hopital.SEPARATOR + this.phoneNumber + Hopital.SEPARATOR + this.address);

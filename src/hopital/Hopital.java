@@ -125,12 +125,11 @@ public abstract class Hopital {
 	 * Lis le fichier medecins puis ajoute les medecins du fichier
 	 * dans une liste
 	 * Puis lis tous les fichiers "patients.txt" chez tous les medecins
-	 * Puis ajoute les patients dans les arrayliste respective des medecins
+	 * Puis ajoute les patients dans les arraylist respective des medecins
 	 */
 	public static void loadingMedecin() {
 		try {
 			readerMedecin = new BufferedReader(getMedecinReaderFile());
-			readerPatients = new BufferedReader(getPatientsReaderFile());
 			String line;
 			String string;
 			String[] strings;
@@ -152,15 +151,15 @@ public abstract class Hopital {
 				while ((line = readerMedecinPatients.readLine()) != null) {
 					string = line;
 					strings = string.split(SEPARATOR);
-					LocalDate date = LocalDate.parse(strings[4], FORMATEUR_LOCALDATE);
-					new Patient(Integer.parseInt(strings[1]), medecin, strings[2], strings[3], date, strings[5],
-							strings[6], strings[7],
+					new Patient(Integer.parseInt(strings[0]), medecin, strings[1], strings[2],
+							LocalDate.parse(strings[3], FORMATEUR_LOCALDATE), strings[4],
+							strings[5], strings[6],
 							Patient.PatientTypeCreate.LOADING_PATIENT_WITH_MEDECIN_IN_LIST);
 				}
 			}
 
 			readerMedecin.close();
-			readerPatients.close();
+			readerMedecinPatients.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

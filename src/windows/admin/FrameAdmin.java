@@ -365,7 +365,7 @@ public class FrameAdmin extends JFrame {
 		confirmModifButton = new JButton(
 				(String) loadingLanguage.getJsonObject().get("frame_admin_confirm_modification"));
 		confirmModifButton.setEnabled(false);
-		confirmModifButton.addActionListener(new ConfirmModificationButtonListener());
+		confirmModifButton.addActionListener(new ConfirmModificationListener());
 		panelBottom.add(confirmModifButton);
 
 		/**
@@ -505,16 +505,13 @@ public class FrameAdmin extends JFrame {
 				switchLectureModifDataPatient
 						.setText((String) loadingLanguage.getJsonObject()
 								.get("frame_admin_switch_mode_read"));
-				patientLastnameInputTextField.setEditable(true);
-				patientFirstnameInpuTextField.setEditable(true);
-				patientDateInputFormattedTextField.setEditable(true);
 				patientSecuNumberInputFormattedTextField.setEditable(true);
 				patientNumberPhoneInputFormFormattedTextField.setEditable(true);
 				patientAddressInputTextField.setEditable(true);
 				confirmModifButton.setEnabled(true);
 				contentPanel.revalidate();
 				contentPanel.repaint();
-
+				
 			} else if (switchLectureModifDataPatient.getText()
 					.equals((String) loadingLanguage.getJsonObject()
 							.get("frame_admin_switch_mode_read"))) {
@@ -522,9 +519,6 @@ public class FrameAdmin extends JFrame {
 				switchLectureModifDataPatient
 						.setText((String) loadingLanguage.getJsonObject()
 								.get("frame_admin_switch_mode_modification"));
-				patientLastnameInputTextField.setEditable(false);
-				patientFirstnameInpuTextField.setEditable(false);
-				patientDateInputFormattedTextField.setEditable(false);
 				patientSecuNumberInputFormattedTextField.setEditable(false);
 				patientNumberPhoneInputFormFormattedTextField.setEditable(false);
 				patientAddressInputTextField.setEditable(false);
@@ -613,8 +607,15 @@ public class FrameAdmin extends JFrame {
 			int input = JOptionPane.showConfirmDialog(null,
 					(String) loadingLanguage.getJsonObject()
 							.get("frame_admin_confirm_delete_patient"));
+
+			/**
+			 * 
+			 */
 			if (input == JOptionPane.YES_OPTION) {
 
+				/**
+				 * 
+				 */
 				String linePatientToDelete = ""
 						+ currentPatient.getIdentifiant() + "&"
 						+ currentPatient.getFirstName() + "&"
@@ -624,28 +625,80 @@ public class FrameAdmin extends JFrame {
 						+ currentPatient.getPhoneNumber() + "&"
 						+ currentPatient.getAddress();
 
-				String linePatientToDeleteInMedecin;
-				Medecin medecin;
+				/**
+				 * 
+				 */
+				Medecin medecin = null;
+				Hopital.loadingMedecin();
 				int j = 0;
 				for (int i = 0; i < Hopital.getMedecins().size(); i++) {
 					medecin = Hopital.getMedecins().get(i);
-					if (medecin.getPatients().get(i).getIdentifiant() == currentPatient.getIdentifiant()) {
-						j++;
-						break;
+					try {
+						if (medecin.getPatients().get(i).getIdentifiant() == currentPatient.getIdentifiant()) {
+							System.out.println("medecin trouvé :" + medecin.getFirstName());
+							j++;
+							break;
+						}
+					} catch (IndexOutOfBoundsException e) {
+						System.out.println("Le patient non trouvé pour le medecin " + medecin.getLastName());
+						continue;
 					}
 				}
-				if (j == 1) {
-					
 
-					
+				/**
+				 * 
+				 */
+				if (j == 1 && medecin != null) {
 
+					ArrayList<String> linesMedecin = new ArrayList<>();
+					String lineMedecin;
+					File patientMedecinFile = new File("./src/log/medecin/"
+							+ medecin.getFirstName().toLowerCase()
+							+ medecin.getLastName().toLowerCase()
+							+ "/patients.txt");
+
+					/**
+					 * 
+					 * 
+					 */
+					try (BufferedReader reader = new BufferedReader(
+							new InputStreamReader(new FileInputStream(patientMedecinFile.getAbsolutePath()),
+									"UTF-8"))) {
+						System.out.println(
+								"En cour de supression du patient chez le medecin " + medecin.getLastName() + "...");
+
+						while ((lineMedecin = reader.readLine()) != null) {
+							System.out.println(linePatientToDelete + " : " + lineMedecin);
+							if (lineMedecin.equals(linePatientToDelete)) {
+								linesMedecin.add(lineMedecin);
+							} else
+								continue;
+						}
+						reader.close();
+
+						if (patientMedecinFile.delete())
+							System.out.println("Suppression du fichier patient réussi");
+						if (patientMedecinFile.createNewFile())
+							System.out.println("Recreation du fichier patient réussi");
+
+						try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(
+								patientMedecinFile.getAbsolutePath(), true), StandardCharsets.UTF_8)) {
+							for (int i = 0; i < linesMedecin.size(); i++) {
+								writer.write(linesMedecin.get(i) + "\n");
+							}
+							writer.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 				}
-					
+				System.out.println("------------------------");
 
-				File[] filesPatient = new File("./src/log/medecin/").listFiles();
-				
-				
-
+				/**
+				 * 
+				 */
 				File patientFile = new File("./src/log/patient/patients.txt");
 				ArrayList<String> lines = new ArrayList<>();
 				String line;
@@ -653,8 +706,11 @@ public class FrameAdmin extends JFrame {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
 							patientFile.getAbsolutePath()), "UTF-8"));
 					while ((line = reader.readLine()) != null) {
-						if (!line.equals(linePatientToDelete))
+						System.out.println(line + " : " + linePatientToDelete);
+						if (line.equals(linePatientToDelete)) {
 							lines.add(line);
+						} else
+							continue;
 					}
 					reader.close();
 				} catch (IOException e) {
@@ -678,6 +734,33 @@ public class FrameAdmin extends JFrame {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+
+				System.out.println("--------");
+				System.out.println("Supression des consultations");
+
+				String[] nameFolder = { "/appareillage/", "/diagnostic/", "/ordonnance/", "/avismedical/" };
+				File[] consultationPatientFile = new File(
+						"./src/log/patient/" + currentPatient.getFirstName().toLowerCase()
+								+ currentPatient.getLastName().toLowerCase() + "/")
+										.listFiles();
+
+				for (int i = 0; i < consultationPatientFile.length; i++) {
+					File fileConsultation = new File(consultationPatientFile[i].getPath() + nameFolder[i]
+							+ consultationPatientFile[i].getName());
+					System.out.println(fileConsultation.toPath());
+					File folderConsultation = new File(
+							consultationPatientFile[i].getPath() + nameFolder[i]);
+					System.out.println(folderConsultation.toPath());
+					if (fileConsultation.exists()) {
+						fileConsultation.delete();
+						if (folderConsultation.exists())
+							folderConsultation.delete();
+					}
+				}
+
+				/**
+				 * 
+				 */
 				Hopital.getPatients().remove(currentPatient);
 				namePatients.removeAllElements();
 				listNamePatient.removeAll(listNamePatient);
@@ -699,7 +782,7 @@ public class FrameAdmin extends JFrame {
 	/**
 	 * Permet de confirmer la modification du patient courant
 	 */
-	private class ConfirmModificationButtonListener implements ActionListener {
+	private class ConfirmModificationListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
@@ -725,11 +808,82 @@ public class FrameAdmin extends JFrame {
 					+ firstname + "&"
 					+ lastname.toUpperCase() + "&"
 					+ birthday.replace("/", "-").replace(" ", "") + "&"
-					+ secuNumber + "&"
-					+ phoneNumber + "&"
+					+ secuNumber.replace(" ", "") + "&"
+					+ phoneNumber.replace(" ", "") + "&"
 					+ address;
 			System.out.println(lineToChange);
 			System.out.println(newLine);
+
+			/**
+			 * 
+			 */
+			Medecin medecin = null;
+			Hopital.loadingMedecin();
+			int j = 0;
+			for (int i = 0; i < Hopital.getMedecins().size(); i++) {
+				medecin = Hopital.getMedecins().get(i);
+				try {
+					if (medecin.getPatients().get(i).getIdentifiant() == currentPatient.getIdentifiant()) {
+						System.out.println("medecin trouvé :" + medecin.getFirstName());
+						j++;
+						break;
+					}
+				} catch (IndexOutOfBoundsException e) {
+					System.out.println("Le patient non trouvé pour le medecin " + medecin.getLastName());
+					continue;
+				}
+			}
+
+			/**
+			 * 
+			 */
+			if (j == 1 && medecin != null) {
+
+				ArrayList<String> linesMedecin = new ArrayList<>();
+				String lineMedecin;
+				File patientMedecinFile = new File("./src/log/medecin/"
+						+ medecin.getFirstName().toLowerCase()
+						+ medecin.getLastName().toLowerCase()
+						+ "/patients.txt");
+
+				/**
+				 * 
+				 * 
+				 */
+				try (BufferedReader reader = new BufferedReader(
+						new InputStreamReader(new FileInputStream(patientMedecinFile.getAbsolutePath()),
+								"UTF-8"))) {
+					System.out.println(
+							"En cour de supression du patient chez le medecin " + medecin.getLastName() + "...");
+
+					while ((lineMedecin = reader.readLine()) != null) {
+						System.out.println(lineToChange + " : " + lineMedecin);
+						if (lineMedecin.equals(lineToChange)) {
+							linesMedecin.add(lineMedecin);
+						} else
+							linesMedecin.add(newLine);
+					}
+					reader.close();
+
+					if (patientMedecinFile.delete())
+						System.out.println("Suppression du fichier patient réussi");
+					if (patientMedecinFile.createNewFile())
+						System.out.println("Recreation du fichier patient réussi");
+
+					try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(
+							patientMedecinFile.getAbsolutePath(), true), StandardCharsets.UTF_8)) {
+						for (int i = 0; i < linesMedecin.size(); i++) {
+							writer.write(linesMedecin.get(i) + "\n");
+						}
+						writer.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
 
 			File patientFile = new File("./src/log/patient/patients.txt");
 			ArrayList<String> lines = new ArrayList<>();
@@ -738,7 +892,7 @@ public class FrameAdmin extends JFrame {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
 						patientFile.getAbsolutePath()), "UTF-8"));
 				while ((line = reader.readLine()) != null) {
-					if (!line.equals(lineToChange))
+					if (line.equals(lineToChange))
 						lines.add(line);
 					else
 						lines.add(newLine);
@@ -746,10 +900,6 @@ public class FrameAdmin extends JFrame {
 				reader.close();
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
-
-			for (int i = 0; i < lines.size(); i++) {
-				System.out.println(lines.get(i));
 			}
 
 			try {

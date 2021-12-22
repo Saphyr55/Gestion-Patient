@@ -387,6 +387,15 @@ public class FrameMedecin extends JFrame {
 				}
 			});
 
+			menuItemAddConsultation.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					setFrameConsultation();
+				}
+
+			});
+
 		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
@@ -617,7 +626,8 @@ public class FrameMedecin extends JFrame {
 		if (currentPatient != null && currentPatient.getConsultationsFile() != null &&
 				!currentPatient.getConsultationsFile().isEmpty()) {
 			if (indexConsultationList >= 0) {
-				consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+				consultationFileCurrentPatient = currentPatient.getConsultationsFile()
+						.get(currentPatient.getConsultationsFile().size() - 1 - indexConsultationList);
 				avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
 						+ consultationFileCurrentPatient.getName() + ".txt");
 				dataPatientPanel.remove(switchTypeConsultationPanel);
@@ -1366,7 +1376,8 @@ public class FrameMedecin extends JFrame {
 			int input = JOptionPane.showConfirmDialog(null, "Etes-vous sur de supprimer la consultation");
 			if (input == JOptionPane.YES_OPTION) {
 
-				consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+				consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(
+						currentPatient.getConsultationsFile().size() - 1 - indexConsultationList);
 
 				String[] nameFolder = { "/appareillage/", "/diagnostic/", "/ordonnance/", "/avismedical/" };
 				File file;
@@ -1392,7 +1403,8 @@ public class FrameMedecin extends JFrame {
 				}
 
 				consultationFileCurrentPatient.delete();
-				currentPatient.getConsultationsFile().remove(indexConsultationList);
+				currentPatient.getConsultationsFile()
+						.remove(currentPatient.getConsultationsFile().size() - 1 - indexConsultationList);
 				setActionOnLeftClickOnListPatient(null);
 			}
 		}
