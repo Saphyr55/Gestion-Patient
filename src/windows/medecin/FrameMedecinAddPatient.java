@@ -140,8 +140,9 @@ public class FrameMedecinAddPatient extends JFrame {
 
         String namePatientString;
         for (int i = 0; i < Hopital.getPatients().size(); i++) {
-            namePatientString = Hopital.getPatients().get(i).getLastName().toUpperCase() + " " +
-                    Hopital.getPatients().get(i).getFirstName();
+            namePatientString = Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getLastName()
+                    .toUpperCase() + " " +
+                    Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getFirstName();
             listPatientModel.addElement(namePatientString);
             listPatientName.add(namePatientString);
         }
@@ -163,7 +164,7 @@ public class FrameMedecinAddPatient extends JFrame {
                 int index = listPatientHopitalWithoutListPatientCurrentMedecin.getSelectedIndex();
                 for (int i = 0; i < Hopital.getPatients().size(); i++) {
                     if (i == index) {
-                        currentPatient = Hopital.getPatients().get(i);
+                        currentPatient = Hopital.getPatients().get(Hopital.getPatients().size()-1-i);
                         lastnameCurrentPatient = currentPatient.getLastName();
                         firstnameCurrentPatient = currentPatient.getFirstName();
                         birthdayCurrentPatient = currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE);
@@ -330,9 +331,18 @@ public class FrameMedecinAddPatient extends JFrame {
             int j = 0;
             for (int i = 0; i < currentMedecin.getPatients().size(); i++) {
                 // condition si le patient n'existe pas dans la liste de medecin
-                if (!currentPatient.getFirstName().equals(currentMedecin.getPatients().get(i).getFirstName()) &&
-                        !currentPatient.getLastName().equals(currentMedecin.getPatients().get(i).getLastName()) &&
-                        currentPatient.getIdentifiant() != currentMedecin.getPatients().get(i).getIdentifiant())
+                if (!currentPatient
+                        .getFirstName().equals(
+                                currentMedecin
+                                        .getPatients().get(currentMedecin.getPatients().size() - 1 - i).getFirstName())
+                        &&
+                        !currentPatient.getLastName().equals(currentMedecin.getPatients().get(
+                                currentMedecin.getPatients().size() - 1
+                                        - i)
+                                .getLastName())
+                        &&
+                        currentPatient.getIdentifiant() != currentMedecin.getPatients().get(
+                                currentMedecin.getPatients().size() - 1 - i).getIdentifiant())
                     j++; // on incremente j et si j est egale a la taille de liste de patient du medecin
                          // alors on ajoute le patient
             }

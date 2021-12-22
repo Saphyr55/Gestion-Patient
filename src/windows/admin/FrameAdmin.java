@@ -10,9 +10,20 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -37,6 +48,7 @@ import hopital.Hopital;
 import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
+import hopital.personnels.Medecin;
 import windows.FrameConnection;
 
 /**
@@ -85,7 +97,8 @@ public class FrameAdmin extends JFrame {
 	/**
 	 * Données de certains composant
 	 */
-	private String[] namesStringsForTextFields = { (String) loadingLanguage.getJsonObject().get("frame_admin_lastname"),
+	private String[] namesStringsForTextFields = {
+			(String) loadingLanguage.getJsonObject().get("frame_admin_lastname"),
 			(String) loadingLanguage.getJsonObject().get("frame_admin_firstname"),
 			(String) loadingLanguage.getJsonObject().get("frame_admin_birthday"),
 			(String) loadingLanguage.getJsonObject().get("frame_admin_secu_number"),
@@ -162,8 +175,9 @@ public class FrameAdmin extends JFrame {
 		 * Liste de patient
 		 */
 		for (int i = 0; i < Hopital.getPatients().size(); i++) {
-			String namePatientString = Hopital.getPatients().get(i).getLastName().toUpperCase() + " "
-					+ Hopital.getPatients().get(i).getFirstName();
+			String namePatientString = Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getLastName()
+					.toUpperCase() + " "
+					+ Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getFirstName();
 			namePatients.addElement(namePatientString);
 			listNamePatient.add(namePatientString);
 		}
@@ -212,7 +226,7 @@ public class FrameAdmin extends JFrame {
 				if (index >= 0) {
 					if (event.getClickCount() == 1) {
 						// le patient courant sur l'index recuperer lors du clique
-						currentPatient = Hopital.getPatients().get(index);
+						currentPatient = Hopital.getPatients().get(Hopital.getPatients().size() - 1 - index);
 
 						/**
 						 * Le clique gauche declenche la liste la de consultation du patient
@@ -240,26 +254,6 @@ public class FrameAdmin extends JFrame {
 								 */
 								setPopupMenuOnRigthClickListPatient().show(
 										event.getComponent(), event.getX(), event.getY());
-
-								/**
-								 * Si la selection est supprimer alors lance showConfimDialog
-								 * pour pouvoir confirmer l'acte de suppression
-								 */
-								menuItemSupprPatient.addActionListener(new ActionListener() {
-									@Override
-									public void actionPerformed(ActionEvent e) {
-										int input = JOptionPane.showConfirmDialog(null,
-												(String) loadingLanguage.getJsonObject()
-														.get("frame_admin_confirm_delete_patient"));
-
-										/*
-										 * 
-										 */
-										if (input == JOptionPane.YES_OPTION) {
-											System.out.println(currentPatient.getLastName() + " a ete supprimer");
-										}
-									}
-								});
 
 								/**
 								 * Si la selection est d'ajouter un patient
@@ -371,6 +365,7 @@ public class FrameAdmin extends JFrame {
 		confirmModifButton = new JButton(
 				(String) loadingLanguage.getJsonObject().get("frame_admin_confirm_modification"));
 		confirmModifButton.setEnabled(false);
+		confirmModifButton.addActionListener(new ConfirmModificationButtonListener());
 		panelBottom.add(confirmModifButton);
 
 		/**
@@ -432,6 +427,8 @@ public class FrameAdmin extends JFrame {
 				(String) loadingLanguage.getJsonObject().get("frame_admin_popup_delete"));
 		popupMenuListPatient.add(menuItemAddPatient);
 		popupMenuListPatient.add(menuItemSupprPatient);
+		menuItemAddPatient.addActionListener(new AddButtonListener());
+		menuItemSupprPatient.addActionListener(new DeletePatientMenuItemListener());
 		return popupMenuListPatient;
 	}
 
@@ -581,10 +578,15 @@ public class FrameAdmin extends JFrame {
 				/**
 				 * Recharge tous les patients
 				 */
+				listNamePatient.removeAll(listNamePatient);
 				namePatients.removeAllElements();
 				for (int i = 0; i < Hopital.getPatients().size(); i++) {
-					namePatients.addElement(Hopital.getPatients().get(i).getLastName() + " " +
-							Hopital.getPatients().get(i).getFirstName());
+					namePatients.addElement(
+							Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getLastName() + " " +
+									Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getFirstName());
+					listNamePatient
+							.add(Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getLastName() + " " +
+									Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getFirstName());
 				}
 				listPatient = new JList<>(namePatients);
 				contentPanel.revalidate();
@@ -601,4 +603,186 @@ public class FrameAdmin extends JFrame {
 		}
 	}
 
+	/**
+	 * Permet de supprimer un patient lors du clique du menu item
+	 */
+	private class DeletePatientMenuItemListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			int input = JOptionPane.showConfirmDialog(null,
+					(String) loadingLanguage.getJsonObject()
+							.get("frame_admin_confirm_delete_patient"));
+			if (input == JOptionPane.YES_OPTION) {
+
+				String linePatientToDelete = ""
+						+ currentPatient.getIdentifiant() + "&"
+						+ currentPatient.getFirstName() + "&"
+						+ currentPatient.getLastName().toUpperCase() + "&"
+						+ currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE) + "&"
+						+ currentPatient.getSecuNumber() + "&"
+						+ currentPatient.getPhoneNumber() + "&"
+						+ currentPatient.getAddress();
+
+				String linePatientToDeleteInMedecin;
+				Medecin medecin;
+				int j = 0;
+				for (int i = 0; i < Hopital.getMedecins().size(); i++) {
+					medecin = Hopital.getMedecins().get(i);
+					if (medecin.getPatients().get(i).getIdentifiant() == currentPatient.getIdentifiant()) {
+						j++;
+						break;
+					}
+				}
+				if (j == 1) {
+					
+
+					
+
+				}
+					
+
+				File[] filesPatient = new File("./src/log/medecin/").listFiles();
+				
+				
+
+				File patientFile = new File("./src/log/patient/patients.txt");
+				ArrayList<String> lines = new ArrayList<>();
+				String line;
+				try {
+					BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
+							patientFile.getAbsolutePath()), "UTF-8"));
+					while ((line = reader.readLine()) != null) {
+						if (!line.equals(linePatientToDelete))
+							lines.add(line);
+					}
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				try {
+					if (patientFile.delete())
+						System.out.println("Suppression du fichier patient réussi");
+					if (patientFile.createNewFile())
+						System.out.println("Recreation du fichier patient réussi");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(
+						patientFile.getAbsolutePath(), true), StandardCharsets.UTF_8)) {
+					for (int i = 0; i < lines.size(); i++) {
+						writer.write(lines.get(i) + "\n");
+					}
+					writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				Hopital.getPatients().remove(currentPatient);
+				namePatients.removeAllElements();
+				listNamePatient.removeAll(listNamePatient);
+				for (int i = 0; i < Hopital.getPatients().size(); i++) {
+					String string = Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getLastName()
+							.toUpperCase() + " "
+							+ Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getFirstName();
+					namePatients.addElement(string);
+					listNamePatient.add(string);
+				}
+				listPatient = new JList<>(namePatients);
+				System.out.println(currentPatient.getLastName() + " a ete supprimer");
+				contentPanel.revalidate();
+				contentPanel.repaint();
+			}
+		}
+	}
+
+	/**
+	 * Permet de confirmer la modification du patient courant
+	 */
+	private class ConfirmModificationButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent event) {
+
+			String lastname = patientLastnameInputTextField.getText();
+			String firstname = patientFirstnameInpuTextField.getText();
+			String secuNumber = patientSecuNumberInputFormattedTextField.getText();
+			String phoneNumber = patientNumberPhoneInputFormFormattedTextField.getText();
+			String address = patientAddressInputTextField.getText();
+			String birthday = patientDateInputFormattedTextField.getText();
+
+			String lineToChange = ""
+					+ currentPatient.getIdentifiant() + "&"
+					+ currentPatient.getFirstName() + "&"
+					+ currentPatient.getLastName().toUpperCase() + "&"
+					+ currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE).replace("/", "-") + "&"
+					+ currentPatient.getSecuNumber() + "&"
+					+ currentPatient.getPhoneNumber() + "&"
+					+ currentPatient.getAddress();
+
+			String newLine = ""
+					+ currentPatient.getIdentifiant() + "&"
+					+ firstname + "&"
+					+ lastname.toUpperCase() + "&"
+					+ birthday.replace("/", "-").replace(" ", "") + "&"
+					+ secuNumber + "&"
+					+ phoneNumber + "&"
+					+ address;
+			System.out.println(lineToChange);
+			System.out.println(newLine);
+
+			File patientFile = new File("./src/log/patient/patients.txt");
+			ArrayList<String> lines = new ArrayList<>();
+			String line;
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
+						patientFile.getAbsolutePath()), "UTF-8"));
+				while ((line = reader.readLine()) != null) {
+					if (!line.equals(lineToChange))
+						lines.add(line);
+					else
+						lines.add(newLine);
+				}
+				reader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			for (int i = 0; i < lines.size(); i++) {
+				System.out.println(lines.get(i));
+			}
+
+			try {
+				patientFile.delete();
+				patientFile.createNewFile();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+			try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(
+					patientFile.getAbsolutePath(), true), StandardCharsets.UTF_8)) {
+				for (int i = 0; i < lines.size(); i++) {
+					writer.write(lines.get(i) + "\n");
+				}
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			Hopital.getPatients().removeAll(Hopital.getPatients());
+			Hopital.loadingPatient();
+			namePatients.removeAllElements();
+			listNamePatient.removeAll(listNamePatient);
+			for (int i = 0; i < Hopital.getPatients().size(); i++) {
+				String string = Hopital.getPatients().get(Hopital.getPatients().size() - i - 1)
+						.getLastName().toUpperCase() + " "
+						+ Hopital.getPatients().get(Hopital.getPatients().size() - i - 1).getFirstName();
+				namePatients.addElement(string);
+				listNamePatient.add(string);
+			}
+			listPatient = new JList<>(namePatients);
+			contentPanel.revalidate();
+			contentPanel.repaint();
+		}
+	}
 }

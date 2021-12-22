@@ -266,12 +266,12 @@ public class FrameMedecin extends JFrame {
 
 		String namePatientString;
 		for (int i = 0; i < currentMedecin.getPatients().size(); i++) {
-			namePatientString = currentMedecin.getPatients().get(i).getLastName().toUpperCase() + " "
-					+ currentMedecin.getPatients().get(i).getFirstName();
+			namePatientString = currentMedecin.getPatients().get(currentMedecin.getPatients().size() - 1 - i)
+					.getLastName().toUpperCase() + " "
+					+ currentMedecin.getPatients().get(currentMedecin.getPatients().size() - 1 - i).getFirstName();
 			namePatients.addElement(namePatientString);
 			listNamePatient.add(namePatientString);
 		}
-
 		listPatient = new JList<>(namePatients);
 		listPatientScrollPane = new JScrollPane(listPatient);
 
@@ -317,7 +317,8 @@ public class FrameMedecin extends JFrame {
 				if (index >= 0) {
 					if (event.getClickCount() == 1) {
 						// le patient courant sur l'index recuperer lors du clique
-						currentPatient = currentMedecin.getPatients().get(index);
+						currentPatient = currentMedecin.getPatients()
+								.get(currentMedecin.getPatients().size() - 1 - index);
 
 						/**
 						 * Le clique gauche declenche la liste la de consultation et affiche les données
@@ -469,7 +470,6 @@ public class FrameMedecin extends JFrame {
 
 		// ajout de tous les menus items
 		consultationPopupMenu.add(addConsultationMenuItem);
-		consultationPopupMenu.add(deleteConsultationMenuItem);
 		consultationPopupMenu.add(displayAvisMedicalMenuItem);
 		consultationPopupMenu.add(displayDiagnosticsMenuItem);
 		consultationPopupMenu.add(displayPrescriptionMenuItem);
@@ -477,6 +477,7 @@ public class FrameMedecin extends JFrame {
 		consultationPopupMenu.add(displayIRMMenuItem);
 		consultationPopupMenu.add(displayRadiologyMenuItem);
 		consultationPopupMenu.add(displaySurgeryMenuItem);
+		consultationPopupMenu.add(deleteConsultationMenuItem);
 
 		// ajout des listeners
 		addConsultationMenuItem.addActionListener(new ActionListener() {
@@ -711,7 +712,8 @@ public class FrameMedecin extends JFrame {
 				/**
 				 * Formate le nom du fichier de le consultation
 				 */
-				String nameConsultation = patient.getConsultationsFile().get(i).getName()
+				String nameConsultation = patient.getConsultationsFile().get(patient
+						.getConsultationsFile().size() - 1 - i).getName()
 						.replace("&", " ").replace(".txt", "");
 				/**
 				 * Ajout de tous les elements pour la JList dans

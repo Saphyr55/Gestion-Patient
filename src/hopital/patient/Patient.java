@@ -35,6 +35,7 @@ public class Patient implements IPersonne {
 	private String secuNumber;
 	private String phoneNumber;
 	private String address;
+	private Medecin medecin;
 
 	private File consultationDirectory;
 
@@ -181,6 +182,7 @@ public class Patient implements IPersonne {
 			this.secuNumber = secuNumber;
 			this.address = address;
 			this.phoneNumber = phoneNumber;
+			this.medecin = medecin;
 
 			/*
 			 * Ecriture dans le fichier patients du medecin
@@ -219,6 +221,7 @@ public class Patient implements IPersonne {
 			this.secuNumber = secuNumber;
 			this.address = address;
 			this.phoneNumber = phoneNumber;
+			this.medecin = medecin;
 			medecin.getPatients().add(this);
 		}
 	}
@@ -362,4 +365,13 @@ public class Patient implements IPersonne {
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
+	public Medecin getMedecin() {
+		return medecin;
+	}
+
+	public void setMedecin(Medecin medecin) {
+		this.medecin = medecin;
+	}
+
 }

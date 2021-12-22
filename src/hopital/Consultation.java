@@ -226,49 +226,49 @@ public class Consultation {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-
-					/**
-					 * -----------------------------------
-					 * Creation du fichier de dignostique
-					 * -----------------------------------
-					 */
-					if (this.diagnosticList != null) {
-						try {
-							/**
-							 * Creation du dossier de diagnostique
-							 */
-							this.diagnosticFolder = new File("./src/log/patient/"
-									+ patient.getFirstName().toLowerCase() // nom patient
-									+ patient.getLastName().toLowerCase() // prenom patient
-									+ "/" + nameConsultation + "/" + "diagnostic/"); // nom du dossier
-							if (!diagnosticFolder.exists()) {
-								this.diagnosticFolder.mkdir();
-								System.out.println("Le dossier de diagnostique creer");
-							} else
-								throw new IOException("Dossier existant");
-
-							/**
-							 * Creation du fichier de l'avis medical
-							 */
-							this.diagnostic = new File("./src/log/patient/" + patient.getFirstName().toLowerCase()
-									+ patient.getLastName().toLowerCase() + "/" + this.nameConsultation + "/"
-									+ "diagnostic/" + nameConsultation + format);
-							if (this.diagnostic.createNewFile()) {
-								System.out.println("Diagnostique creer");
-							} else
-								throw new IOException("Creation de fichier de diagnostique a echoué");
-
-							/**
-							 * Formattage de l'avis medicale
-							 */
-							formatageDiagnostic(this.diagnostic, this.diagnosticList);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-
 				} else
 					throw new IOException("Une consultation doit avoir un avis medical");
+
+				/**
+				 * -----------------------------------
+				 * Creation du fichier de dignostique
+				 * -----------------------------------
+				 */
+				if (this.diagnosticList != null) {
+					try {
+						/**
+						 * Creation du dossier de diagnostique
+						 */
+						this.diagnosticFolder = new File("./src/log/patient/"
+								+ patient.getFirstName().toLowerCase() // nom patient
+								+ patient.getLastName().toLowerCase() // prenom patient
+								+ "/" + nameConsultation + "/" + "diagnostic/"); // nom du dossier
+						if (!diagnosticFolder.exists()) {
+							this.diagnosticFolder.mkdir();
+							System.out.println("Le dossier de diagnostique creer");
+						} else
+							throw new IOException("Dossier existant");
+
+						/**
+						 * Creation du fichier de l'avis medical
+						 */
+						this.diagnostic = new File("./src/log/patient/" + patient.getFirstName().toLowerCase()
+								+ patient.getLastName().toLowerCase() + "/" + this.nameConsultation + "/"
+								+ "diagnostic/" + nameConsultation + format);
+						if (this.diagnostic.createNewFile()) {
+							System.out.println("Diagnostique creer");
+						} else
+							throw new IOException("Creation de fichier de diagnostique a echoué");
+
+						/**
+						 * Formattage de l'avis medicale
+						 */
+						formatageDiagnostic(this.diagnostic, this.diagnosticList);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+
 				patient.getConsultations().add(this);
 				patient.getConsultationsFile().add(this.consultation);
 			} catch (IOException e) {

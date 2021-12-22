@@ -187,8 +187,9 @@ public class FrameTechnician extends JFrame {
 
         String namePatientString;
         for (int i = 0; i < Hopital.getPatients().size(); i++) {
-            namePatientString = Hopital.getPatients().get(i).getLastName().toUpperCase() + " "
-                    + Hopital.getPatients().get(i).getFirstName();
+            namePatientString = Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getLastName()
+                    .toUpperCase() + " "
+                    + Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i).getFirstName();
             namePatients.addElement(namePatientString);
             listNamePatient.add(namePatientString);
         }
@@ -211,7 +212,7 @@ public class FrameTechnician extends JFrame {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int index = listPatient.getSelectedIndex();
-                currentPatient = Hopital.getPatients().get(index);
+                currentPatient = Hopital.getPatients().get(Hopital.getPatients().size() - 1 - index);
                 lastnamePatientTextField.setText(currentPatient.getLastName());
                 firstnamePatientTextField.setText(currentPatient.getFirstName());
                 birthdayPatientTextField.setText(currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE)
@@ -252,7 +253,8 @@ public class FrameTechnician extends JFrame {
                 /**
                  * Formate le nom du fichier de le consultation
                  */
-                String nameConsultation = patient.getConsultationsFile().get(i).getName()
+                String nameConsultation = patient.getConsultationsFile().get(patient.getConsultationsFile().size() - -i)
+                        .getName()
                         .replace("&", " ").replace(".txt", "");
                 /**
                  * Ajout de tous les elements pour la JList dans
@@ -507,7 +509,8 @@ public class FrameTechnician extends JFrame {
                     JList<String> list = (JList<String>) event.getSource();
                     int index = list.locationToIndex(event.getPoint());
                     if (index >= 0) {
-                        File currentConsultationFile = currentPatient.getConsultationsFile().get(index);
+                        File currentConsultationFile = currentPatient.getConsultationsFile()
+                                .get(currentPatient.getConsultationsFile().size() - 1 - index);
                         appareillageFile = new File("./src/log/patient/" +
                                 currentPatient.getFirstName().toLowerCase()
                                 + currentPatient.getLastName().toLowerCase() + "/" +

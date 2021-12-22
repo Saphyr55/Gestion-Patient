@@ -5,18 +5,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
-import hopital.Consultation.WriteType;
 import hopital.loading.language.LoadingLanguage;
 import hopital.loading.paths.LoadingPath;
 import hopital.patient.Patient;
@@ -119,14 +115,9 @@ public abstract class Hopital {
 
 				new Administrator(Integer.parseInt(strings[1]), strings[2], strings[3], strings[4], strings[5]);
 			}
+			readerAdmins.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				readerAdmins.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -168,15 +159,10 @@ public abstract class Hopital {
 				}
 			}
 
+			readerMedecin.close();
+			readerPatients.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				readerMedecin.close();
-				readerPatients.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -200,6 +186,7 @@ public abstract class Hopital {
 				new Patient(Integer.parseInt(strings[0]), strings[1], strings[2], date, strings[4], strings[5],
 						strings[6]);
 			}
+			readerPatients.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -216,7 +203,7 @@ public abstract class Hopital {
 		File[] consultationPatientFile = new File(
 				"./src/log/patient/" + patient.getFirstName() + patient.getLastName() + "/")
 						.listFiles();
-		
+
 		if (consultationPatientFile != null) {
 			for (int i = 0; i < consultationPatientFile.length; i++) {
 				if (!patient.getConsultationsFile().contains(consultationPatientFile[i])) {
