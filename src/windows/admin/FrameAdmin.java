@@ -233,7 +233,7 @@ public class FrameAdmin extends JFrame {
 						 * selectionner
 						 */
 						if (SwingUtilities.isLeftMouseButton(event)) {
-							patientLastnameInputTextField.setText(currentPatient.getLastName());
+							patientLastnameInputTextField.setText(currentPatient.getLastName().toUpperCase());
 							patientFirstnameInpuTextField.setText(currentPatient.getFirstName());
 							patientDateInputFormattedTextField
 									.setText(currentPatient.getBirthday()
@@ -511,7 +511,7 @@ public class FrameAdmin extends JFrame {
 				confirmModifButton.setEnabled(true);
 				contentPanel.revalidate();
 				contentPanel.repaint();
-				
+
 			} else if (switchLectureModifDataPatient.getText()
 					.equals((String) loadingLanguage.getJsonObject()
 							.get("frame_admin_switch_mode_read"))) {
@@ -542,7 +542,7 @@ public class FrameAdmin extends JFrame {
 			 * Recupere les données du rentrée dans les textes : nom, prenom, date, secu
 			 * number, phone number, et adresse
 			 */
-			String getLastnamePatient = frameAdminAddPatient.getPatientLastnameInputTextField().getText();
+			String getLastnamePatient = frameAdminAddPatient.getPatientLastnameInputTextField().getText().toUpperCase();
 			String getFirstnamePatient = frameAdminAddPatient.getPatientFirstnameInpuTextField().getText();
 			LocalDate getBirthdayPatient = LocalDate
 					.parse(frameAdminAddPatient.getPatientDateInputFormattedTextField().getText().replace("/", "-"),
@@ -669,7 +669,7 @@ public class FrameAdmin extends JFrame {
 
 						while ((lineMedecin = reader.readLine()) != null) {
 							System.out.println(linePatientToDelete + " : " + lineMedecin);
-							if (lineMedecin.equals(linePatientToDelete)) {
+							if (!(lineMedecin.equals(linePatientToDelete))) {
 								linesMedecin.add(lineMedecin);
 							} else
 								continue;
@@ -707,7 +707,7 @@ public class FrameAdmin extends JFrame {
 							patientFile.getAbsolutePath()), "UTF-8"));
 					while ((line = reader.readLine()) != null) {
 						System.out.println(line + " : " + linePatientToDelete);
-						if (line.equals(linePatientToDelete)) {
+						if (!(line.equals(linePatientToDelete))) {
 							lines.add(line);
 						} else
 							continue;
@@ -858,7 +858,7 @@ public class FrameAdmin extends JFrame {
 
 					while ((lineMedecin = reader.readLine()) != null) {
 						System.out.println(lineToChange + " : " + lineMedecin);
-						if (lineMedecin.equals(lineToChange)) {
+						if (!(lineMedecin.equals(lineToChange))) {
 							linesMedecin.add(lineMedecin);
 						} else
 							linesMedecin.add(newLine);
@@ -892,7 +892,7 @@ public class FrameAdmin extends JFrame {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
 						patientFile.getAbsolutePath()), "UTF-8"));
 				while ((line = reader.readLine()) != null) {
-					if (line.equals(lineToChange))
+					if (!(line.equals(lineToChange)))
 						lines.add(line);
 					else
 						lines.add(newLine);

@@ -1,0 +1,11 @@
+Ordonnance du 22-12-2021
+
+Nom du patient : VALENTIN
+Prénom du patient: Jules
+
+Nom du medecin : Saincir
+Prénom du medecin : Andy
+
+Medicaments prescrits : 2 doliprane
+
+Signature : Saincir

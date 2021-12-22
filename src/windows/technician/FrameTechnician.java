@@ -253,7 +253,8 @@ public class FrameTechnician extends JFrame {
                 /**
                  * Formate le nom du fichier de le consultation
                  */
-                String nameConsultation = patient.getConsultationsFile().get(patient.getConsultationsFile().size() - -i)
+                String nameConsultation = patient.getConsultationsFile()
+                        .get(patient.getConsultationsFile().size() - 1 - i)
                         .getName()
                         .replace("&", " ").replace(".txt", "");
                 /**
@@ -320,19 +321,18 @@ public class FrameTechnician extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        if (appareillageFile.delete()) {
-                            System.out.println("Suppression reussi");
-                        }
+                        appareillageFile.delete();
                         appareillageFile.createNewFile();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
                     try (OutputStreamWriter writer = new OutputStreamWriter(
-                            new FileOutputStream(appareillageFile, true),
-                            StandardCharsets.UTF_8)) {
-
-                        writer.write(CheckBoxList.getJsonObjectAppareillage().toJSONString());
-                        writer.close();
+                        new FileOutputStream(appareillageFile, true),
+                        StandardCharsets.UTF_8)) {
+                            
+                            writer.write(CheckBoxList.getJsonObjectAppareillage().toJSONString());
+                            writer.close();
+                            System.out.println("Appareillage confirmer");
                     } catch (Exception e2) {
                         e2.printStackTrace();
                     }
@@ -342,7 +342,7 @@ public class FrameTechnician extends JFrame {
 
         return listRequestAppareillagePanel;
     }
-
+    
     private static Map<String, Boolean> appareilllageFileToHashMap(File file) {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = null;

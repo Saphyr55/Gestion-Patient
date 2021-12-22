@@ -674,6 +674,18 @@ public class FrameMedecin extends JFrame {
 			public void windowClosing(WindowEvent windowEvent) {
 				Hopital.getPatients().removeAll(Hopital.getPatients());
 				frameAddPatientWithMedecin = null;
+
+				namePatients.removeAllElements();
+				listNamePatient.removeAll(listNamePatient);
+				for (int i = 0; i < currentMedecin.getPatients().size(); i++) {
+					String namePatientString = currentMedecin.getPatients()
+							.get(currentMedecin.getPatients().size() - 1 - i).getLastName().toUpperCase() + " "
+							+ currentMedecin.getPatients().get(currentMedecin.getPatients().size() - 1 - i)
+									.getFirstName();
+					namePatients.addElement(namePatientString);
+					listNamePatient.add(namePatientString);
+				}
+				listPatient = new JList<>(namePatients);
 				panelPrincipal.revalidate();
 				panelPrincipal.repaint();
 			}
@@ -1263,8 +1275,10 @@ public class FrameMedecin extends JFrame {
 			namePatients.removeAllElements();
 			listNamePatient.removeAll(listNamePatient);
 			for (int i = 0; i < currentMedecin.getPatients().size(); i++) {
-				String namePatientString = currentMedecin.getPatients().get(i).getLastName().toUpperCase() + " "
-						+ currentMedecin.getPatients().get(i).getFirstName();
+				String namePatientString = currentMedecin.getPatients()
+						.get(currentMedecin.getPatients().size() - 1 - i).getLastName().toUpperCase() + " "
+						+ currentMedecin.getPatients().get(currentMedecin.getPatients().size() - 1 - i)
+								.getFirstName();
 				namePatients.addElement(namePatientString);
 				listNamePatient.add(namePatientString);
 			}
