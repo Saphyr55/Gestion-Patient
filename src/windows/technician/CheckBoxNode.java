@@ -1,6 +1,7 @@
 package windows.technician;
 
 public class CheckBoxNode {
+
     public final String text;
     public final boolean selected;
 

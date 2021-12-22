@@ -1,9 +1,11 @@
-import hopital.personnels.Technician;
 import windows.FrameConnection;
+import windows.FrameHopitalStatistics;
 
 public class Launch {
 
 	public static void main(String[] args) {
-		new FrameConnection();
+
+		FrameConnection frameConnection = new FrameConnection();
+		new FrameHopitalStatistics();
 	}
 }

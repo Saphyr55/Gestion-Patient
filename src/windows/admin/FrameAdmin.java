@@ -694,7 +694,6 @@ public class FrameAdmin extends JFrame {
 						e1.printStackTrace();
 					}
 				}
-				System.out.println("------------------------");
 
 				/**
 				 * 

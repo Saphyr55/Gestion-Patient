@@ -17,8 +17,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -794,6 +797,8 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
+	 * Permet d'afficher le panel centrale avec les données du patient
+	 * le switch panel
 	 * 
 	 * @return dataPatientPanel
 	 */
@@ -807,10 +812,11 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
-	 * 
+	 * Permet changer le panel entre la liste de consultation et les données du
+	 * patient par le panel rentrer en parametre
 	 * 
 	 * @param panel
-	 * @return
+	 * @return switchTypeConsultationPanel
 	 */
 	private JPanel setSwitchTypeConsultationPanel(JPanel panel) {
 		if (panel != null) {
@@ -1048,7 +1054,6 @@ public class FrameMedecin extends JFrame {
 		appariellageTextArea = new JTextArea();
 		appariellageTextAreaPane = new JScrollPane(appariellageTextArea);
 		appariellageTextArea.setEditable(false);
-
 		JSONParser parser = new JSONParser();
 
 		if (file != null) {
@@ -1059,7 +1064,7 @@ public class FrameMedecin extends JFrame {
 				HashMap<String, Boolean> appareillageHashMap = (HashMap<String, Boolean>) object.clone();
 				for (Entry<String, Boolean> element : appareillageHashMap.entrySet()) {
 					if (element.getValue() == false)
-						appariellageTextArea.append(element.getKey() + " : non octroyé" + "\n");
+						appariellageTextArea.append(element.getKey() + " : en attente" + "\n");
 					else
 						appariellageTextArea.append(element.getKey() + " : octroyé" + "\n");
 				}
@@ -1214,6 +1219,60 @@ public class FrameMedecin extends JFrame {
 			 * 
 			 */
 			if (input == JOptionPane.YES_OPTION) {
+				String lineToRemove = ""
+						+ currentPatient.getIdentifiant() + "&"
+						+ currentPatient.getFirstName() + "&"
+						+ currentPatient.getLastName().toUpperCase() + "&"
+						+ currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE).replace("/", "-") + "&"
+						+ currentPatient.getSecuNumber() + "&"
+						+ currentPatient.getPhoneNumber() + "&"
+						+ currentPatient.getAddress();
+
+				File filePatients = new File("./src/log/medecin/" + currentMedecin.getFirstName().toLowerCase()
+						+ currentMedecin.getLastName().toLowerCase() + "/patients.txt");
+
+				List<String> lines = new ArrayList<>();
+				String line;
+				try (BufferedReader reader = new BufferedReader(
+						new InputStreamReader(new FileInputStream(filePatients)))) {
+					while ((line = reader.readLine()) != null) {
+						if (!(line.equals(lineToRemove))) {
+							lines.add(line);
+						} else
+							continue;
+					}
+					reader.close();
+					if (filePatients.delete())
+						System.out.println("Suppression du fichier patient réussi");
+					if (filePatients.createNewFile())
+						System.out.println("Recreation du fichier patient réussi");
+				} catch (Exception exception) {
+					exception.printStackTrace();
+				}
+
+				try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(filePatients, true),
+						StandardCharsets.UTF_8)) {
+					for (int i = 0; i < lines.size(); i++) {
+						writer.write(lines.get(i) + "\n");
+					}
+					writer.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+				currentMedecin.getPatients().remove(currentPatient);
+				listNamePatient.removeAll(listNamePatient);
+				namePatients.removeAllElements();
+				for (int i = 0; i < currentMedecin.getPatients().size(); i++) {
+					String lastname = currentMedecin.getPatients().get(i).getLastName().toUpperCase();
+					String firstname = currentMedecin.getPatients().get(i).getFirstName();
+					listNamePatient.add(lastname + " " + firstname);
+					namePatients.addElement(lastname + " " + firstname);
+				}
+				listPatient = new JList<>(namePatients);
+				panelPrincipal.revalidate();
+				panelPrincipal.repaint();
+
 				System.out.println(currentPatient.getLastName() + " a ete supprimer");
 			}
 		}
@@ -1295,7 +1354,8 @@ public class FrameMedecin extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(
+					currentPatient.getConsultationsFile().size() - 1 - indexConsultationList);
 			avismedicalFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/avismedical/"
 					+ consultationFileCurrentPatient.getName() + ".txt");
 			if (avismedicalFileCurrentPatient.exists()) {
@@ -1318,7 +1378,8 @@ public class FrameMedecin extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(
+					currentPatient.getConsultationsFile().size() - 1 - indexConsultationList);
 			prescriptionFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/ordonnance/"
 					+ consultationFileCurrentPatient.getName() + ".txt");
 			if (prescriptionFileCurrentPatient.exists()) {
@@ -1341,7 +1402,8 @@ public class FrameMedecin extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(
+					currentPatient.getConsultationsFile().size() - 1 - indexConsultationList);
 			diagnosticFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/diagnostic/"
 					+ consultationFileCurrentPatient.getName() + ".txt");
 			if (diagnosticFileCurrentPatient.exists()) {
@@ -1363,7 +1425,8 @@ public class FrameMedecin extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(indexConsultationList);
+			consultationFileCurrentPatient = currentPatient.getConsultationsFile()
+					.get(currentPatient.getConsultationsFile().size() - 1 - indexConsultationList);
 			appariellageFileCurrentPatient = new File(consultationFileCurrentPatient.toPath() + "/appareillage/"
 					+ consultationFileCurrentPatient.getName() + ".json");
 			if (appariellageFileCurrentPatient.exists()) {

@@ -369,6 +369,7 @@ public class FrameConnection extends JFrame {
 						}
 						setRemembermeFile();
 						frameAdmin = new FrameAdmin();
+						System.out.println(currentAdmin.getLastName() + " s'est connecté");
 						dispose();
 					} else
 						j++;
@@ -396,6 +397,7 @@ public class FrameConnection extends JFrame {
 						}
 						setRemembermeFile();
 						frameMedecin = new FrameMedecin();
+						System.out.println(currentMedecin.getLastName() + " s'est connecté");
 						dispose();
 					} else
 						j++;
@@ -417,6 +419,7 @@ public class FrameConnection extends JFrame {
 						}
 						setRemembermeFile();
 						setFrameTechnician(new FrameTechnician());
+						System.out.println(currentTechnician.getLastName() + " s'est connecté");
 						dispose();
 					} else
 						j++;
@@ -530,7 +533,7 @@ public class FrameConnection extends JFrame {
 	}
 
 	/**
-	 * @return the currentMedecin
+	 * @return currentMedecin
 	 */
 	public static Medecin getCurrentMedecin() {
 		return currentMedecin;
@@ -544,7 +547,7 @@ public class FrameConnection extends JFrame {
 	}
 
 	/**
-	 * @return the currentAdmin
+	 * @return currentAdmin
 	 */
 	public static Administrator getCurrentAdmin() {
 		return currentAdmin;
@@ -565,23 +568,20 @@ public class FrameConnection extends JFrame {
 	}
 
 	/**
-	 * 
-	 * @return loading language
+	 * @return loadingLanguage
 	 */
 	public static LoadingLanguage getLoadingLanguage() {
 		return loadingLanguage;
 	}
 
 	/**
-	 * 
-	 * @return loading dimens
+	 * @return loadingDimens
 	 */
 	public static LoadingDimens getLoadingDimens() {
 		return loadingDimens;
 	}
 
 	/**
-	 * 
 	 * @return model
 	 */
 	public static LookAndFeel getModel() {
