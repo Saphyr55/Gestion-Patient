@@ -164,7 +164,7 @@ public class FrameMedecinAddPatient extends JFrame {
                 int index = listPatientHopitalWithoutListPatientCurrentMedecin.getSelectedIndex();
                 for (int i = 0; i < Hopital.getPatients().size(); i++) {
                     if (i == index) {
-                        currentPatient = Hopital.getPatients().get(Hopital.getPatients().size()-1-i);
+                        currentPatient = Hopital.getPatients().get(Hopital.getPatients().size() - 1 - i);
                         lastnameCurrentPatient = currentPatient.getLastName();
                         firstnameCurrentPatient = currentPatient.getFirstName();
                         birthdayCurrentPatient = currentPatient.getBirthday().format(Hopital.FORMATEUR_LOCALDATE);
@@ -352,9 +352,11 @@ public class FrameMedecinAddPatient extends JFrame {
                         currentPatient.getBirthday(), currentPatient.getSecuNumber(),
                         currentPatient.getPhoneNumber(), currentPatient.getAddress(),
                         PatientTypeCreate.CREATE_PATIENT_WITH_MEDECIN);
-                JOptionPane.showMessageDialog(contentPane, "Le patient à été bien ajouté");
+                JOptionPane.showMessageDialog(contentPane, (String) loadingLanguage.getJsonObject()
+                        .get("frame_medecin_add_patient_confirm_dialog_successful"));
             } else
-                JOptionPane.showMessageDialog(contentPane, "Le patient existe déjà dans votre liste");
+                JOptionPane.showMessageDialog(contentPane, (String) loadingLanguage.getJsonObject()
+                        .get("frame_medecin_add_patient_confirm_dialog_failure"));
 
         }
 

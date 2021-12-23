@@ -591,8 +591,8 @@ public class FrameAdmin extends JFrame {
 			 * Affiche un message d'erreur si les inputs sont mauvais
 			 */
 			else {
-				JOptionPane.showMessageDialog(frameAdminAddPatient, "La saisie n'est pas correct.", "Input wrong",
-						JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(frameAdminAddPatient,
+						loadingLanguage.getJsonObject().get("frame_admin_joption_message_wrong_input"));
 			}
 		}
 	}

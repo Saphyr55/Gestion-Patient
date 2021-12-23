@@ -77,7 +77,6 @@ public class FrameConsultation extends JFrame {
 	 * 
 	 */
 	private JPanel contentPane = (JPanel) this.getContentPane();
-	private JFrame frameConsultation = FrameMedecin.getFrameConsultation();
 
 	/**
 	 * 
@@ -337,7 +336,8 @@ public class FrameConsultation extends JFrame {
 	 */
 	private JPanel setDiagnosticPanel() {
 		diagnosticPanel = new JPanel();
-		diagnosticLabel = new JLabel("Diagnostique");
+		diagnosticLabel = new JLabel(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_new_consultation_diagnostics"));
 		diagnosticLabel.setFont(new Font("Sans-Serif", Font.CENTER_BASELINE, 15));
 		diagnosticTextArea = new JTextArea();
 		diagnosticTextArea.setLineWrap(true);

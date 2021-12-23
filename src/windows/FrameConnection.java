@@ -369,7 +369,6 @@ public class FrameConnection extends JFrame {
 						}
 						setRemembermeFile();
 						frameAdmin = new FrameAdmin();
-						System.out.println(currentAdmin.getLastName() + " s'est connecté");
 						dispose();
 					} else
 						j++;
@@ -397,7 +396,6 @@ public class FrameConnection extends JFrame {
 						}
 						setRemembermeFile();
 						frameMedecin = new FrameMedecin();
-						System.out.println(currentMedecin.getLastName() + " s'est connecté");
 						dispose();
 					} else
 						j++;
@@ -418,8 +416,7 @@ public class FrameConnection extends JFrame {
 							}
 						}
 						setRemembermeFile();
-						setFrameTechnician(new FrameTechnician());
-						System.out.println(currentTechnician.getLastName() + " s'est connecté");
+						frameTechnician = new FrameTechnician();
 						dispose();
 					} else
 						j++;

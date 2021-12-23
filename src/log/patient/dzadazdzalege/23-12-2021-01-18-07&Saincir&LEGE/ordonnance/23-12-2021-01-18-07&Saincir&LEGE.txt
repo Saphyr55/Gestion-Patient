@@ -1,0 +1,11 @@
+Ordonnance du 23-12-2021
+
+Nom du patient : LEGE
+Prénom du patient: dzadazdza
+
+Nom du medecin : Saincir
+Prénom du medecin : Andy
+
+Medicaments prescrits : aaaaa aaaa
+
+Signature : Saincir

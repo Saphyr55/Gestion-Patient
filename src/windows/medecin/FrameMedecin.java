@@ -442,7 +442,8 @@ public class FrameMedecin extends JFrame {
 	 */
 	private JPopupMenu setPopupMenuOnRightClickListConsultationWithNoConsultation() {
 		consultationPopupMenu = new JPopupMenu();
-		addConsultationMenuItem = new JMenuItem("Ajouter consultation");
+		addConsultationMenuItem = new JMenuItem(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_popup_add_consultation"));
 		addConsultationMenuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -466,19 +467,30 @@ public class FrameMedecin extends JFrame {
 	private JPopupMenu setPopupMenuOnRightClickListConsultation() {
 		consultationPopupMenu = new JPopupMenu();
 
-		addConsultationMenuItem = new JMenuItem("Ajouter consultation");
-		deleteConsultationMenuItem = new JMenuItem("Supprimer consultation");
-		displayAvisMedicalMenuItem = new JMenuItem("Afficher l'avis medical");
-		displayDiagnosticsMenuItem = new JMenuItem("Afficher le diagnostique");
-		displayPrescriptionMenuItem = new JMenuItem("Afficher l'ordonnance");
-		displayAppariellageMenuItem = new JMenuItem("Afficher les appariellages");
+		addConsultationMenuItem = new JMenuItem(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_popup_add_consultation"));
+		deleteConsultationMenuItem = new JMenuItem(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_popup_delete_consultation"));
+		displayAvisMedicalMenuItem = new JMenuItem(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_popup_show_medical_advice"));
+		displayDiagnosticsMenuItem = new JMenuItem(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_popup_show_diagnostics"));
+		displayPrescriptionMenuItem = new JMenuItem(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_popup_show_prescription"));
+		displayAppariellageMenuItem = new JMenuItem(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_popup_show_appareillages"));
+
 		/**
-		 * Les 3 ci dessous sont non fonctionnels, ils sont là pour etre logique
-		 * avec la frame d'ajout de consultation
+		 * Les 3 ci-dessous sont non fonctionnels, ils sont juste là pour etre logique
+		 * avec la frame d'ajout de consultation et pour supposition d'ajout de nouvelle
+		 * fonctionnalité sur les consultations
 		 */
-		displayIRMMenuItem = new JMenuItem("Afficher le suivi IRM");
-		displayRadiologyMenuItem = new JMenuItem("Afficher le suivi de Radiology");
-		displaySurgeryMenuItem = new JMenuItem("Affichier le suivie de chirurgie");
+		displayIRMMenuItem = new JMenuItem(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_popup_show_irm"));
+		displayRadiologyMenuItem = new JMenuItem(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_popup_show_radiology"));
+		displaySurgeryMenuItem = new JMenuItem(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_popup_show_surgery"));
 
 		// ajout de tous les menus items
 		consultationPopupMenu.add(addConsultationMenuItem);
@@ -696,7 +708,7 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
-	 * Filtre de menu de recherche d'un patient
+	 * Filtre de menu de recherche d'une jlist
 	 * 
 	 * @param model
 	 * @param filter
@@ -866,19 +878,22 @@ public class FrameMedecin extends JFrame {
 		birthdayPatientTextField.setFont(font1);
 
 		// numero de securité social
-		secuNumberStringTextField = new JTextField("Secu number");
+		secuNumberStringTextField = new JTextField(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_secu_number"));
 		secuNumberPatientTextField = new JFormattedTextField(secuNumbeFormatter);
 		secuNumberStringTextField.setFont(font1);
 		secuNumberPatientTextField.setFont(font1);
 
 		// numero de telephone
-		phoneStringTextField = new JTextField("Phone number");
+		phoneStringTextField = new JTextField(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_phone_number"));
 		phonePatientTextField = new JFormattedTextField(phoneNumberFormatter);
 		phoneStringTextField.setFont(font1);
 		phonePatientTextField.setFont(font1);
 
 		// adresse
-		addressStringTextField = new JTextField("Address");
+		addressStringTextField = new JTextField(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_address"));
 		addressPatientTextField = new JTextField();
 		addressStringTextField.setFont(font1);
 		addressPatientTextField.setFont(font1);
@@ -932,7 +947,8 @@ public class FrameMedecin extends JFrame {
 	 */
 	private JPanel setOrdonnancePanel(File file) {
 		ordonnancePanel = new JPanel(new BorderLayout());
-		ordonnanceStringLabel = new JLabel("Ordonnance");
+		ordonnanceStringLabel = new JLabel(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_prescription"));
 		ordonnanceStringLabel.setFont(font1);
 		ordonnanceTextArea = new JTextArea();
 		ordonnanceTextArea.setFont(font1);
@@ -972,7 +988,8 @@ public class FrameMedecin extends JFrame {
 	private JPanel setAvisMedicalPanel(File file) {
 
 		avisMedicalPanel = new JPanel(new BorderLayout());
-		avisMedicalLabel = new JLabel("Avis medical");
+		avisMedicalLabel = new JLabel(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_medical_advice"));
 		avisMedicalLabel.setFont(font1);
 		avisMedicalTextArea = new JTextArea();
 		avisMedicalTextAreaPane = new JScrollPane(avisMedicalTextArea);
@@ -1011,7 +1028,8 @@ public class FrameMedecin extends JFrame {
 	private JPanel setDiagnosticPanel(File file) {
 
 		diagnosticPanel = new JPanel(new BorderLayout());
-		diagnosticLabel = new JLabel("Diagnostic");
+		diagnosticLabel = new JLabel(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_diagnostic"));
 		diagnosticLabel.setFont(font1);
 		diagnosticTextArea = new JTextArea();
 		diagnosticTextAreaPane = new JScrollPane(diagnosticTextArea);
@@ -1049,7 +1067,8 @@ public class FrameMedecin extends JFrame {
 	 */
 	private JPanel setAppareillagePanel(File file) {
 		appariellagePanel = new JPanel(new BorderLayout());
-		appariellageLabel = new JLabel("Appariellages");
+		appariellageLabel = new JLabel(
+				(String) loadingLanguage.getJsonObject().get("frame_medecin_appareillage"));
 		appariellageLabel.setFont(font1);
 		appariellageTextArea = new JTextArea();
 		appariellageTextAreaPane = new JScrollPane(appariellageTextArea);
@@ -1064,9 +1083,13 @@ public class FrameMedecin extends JFrame {
 				HashMap<String, Boolean> appareillageHashMap = (HashMap<String, Boolean>) object.clone();
 				for (Entry<String, Boolean> element : appareillageHashMap.entrySet()) {
 					if (element.getValue() == false)
-						appariellageTextArea.append(element.getKey() + " : en attente" + "\n");
+						appariellageTextArea.append(element.getKey() + " : "
+								+ (String) loadingLanguage.getJsonObject().get("frame_medecin_appareillage_on_hold")
+								+ "\n");
 					else
-						appariellageTextArea.append(element.getKey() + " : octroyé" + "\n");
+						appariellageTextArea.append(element.getKey() + " : " +
+								(String) loadingLanguage.getJsonObject().get("frame_medecin_appareillage_granted")
+								+ "\n");
 				}
 				readerAppariellage.close();
 			} catch (FileNotFoundException e) {
@@ -1137,7 +1160,7 @@ public class FrameMedecin extends JFrame {
 				FrameMedecin.setFrameConsultation(null);
 				setActionOnLeftClickOnListPatient(null);
 				setActionOnLeftClickOnListConsultation();
-			} else
+			} else // non fonctionnel
 				JOptionPane.showMessageDialog(frameConsultation.getContentPane(), "L'avis médical doit etre remplie");
 		}
 	}
@@ -1366,7 +1389,9 @@ public class FrameMedecin extends JFrame {
 				panelPrincipal.revalidate();
 				panelPrincipal.repaint();
 			} else
-				JOptionPane.showMessageDialog(panelPrincipal, "Avis medical non existant");
+				JOptionPane.showMessageDialog(panelPrincipal,
+						(String) loadingLanguage.getJsonObject().get("frame_medecin_medical_advice") + " " +
+								(String) loadingLanguage.getJsonObject().get("frame_medecin_not_exist"));
 		}
 
 	}
@@ -1390,7 +1415,9 @@ public class FrameMedecin extends JFrame {
 				panelPrincipal.revalidate();
 				panelPrincipal.repaint();
 			} else
-				JOptionPane.showMessageDialog(panelPrincipal, "Ordonnance non existant");
+				JOptionPane.showMessageDialog(panelPrincipal,
+						(String) loadingLanguage.getJsonObject().get("frame_medecin_prescription") + " " +
+								(String) loadingLanguage.getJsonObject().get("frame_medecin_not_exist"));
 		}
 
 	}
@@ -1414,7 +1441,9 @@ public class FrameMedecin extends JFrame {
 				panelPrincipal.revalidate();
 				panelPrincipal.repaint();
 			} else
-				JOptionPane.showMessageDialog(panelPrincipal, "Diagnostique non existant");
+				JOptionPane.showMessageDialog(panelPrincipal,
+						(String) loadingLanguage.getJsonObject().get("frame_medecin_diagnostic") + " " +
+								(String) loadingLanguage.getJsonObject().get("frame_medecin_not_exist"));
 		}
 	}
 
@@ -1438,7 +1467,9 @@ public class FrameMedecin extends JFrame {
 				panelPrincipal.revalidate();
 				panelPrincipal.repaint();
 			} else
-				JOptionPane.showMessageDialog(panelPrincipal, "Appareillage non existant");
+				JOptionPane.showMessageDialog(panelPrincipal,
+						(String) loadingLanguage.getJsonObject().get("frame_medecin_appareillage") + " " +
+								(String) loadingLanguage.getJsonObject().get("frame_medecin_not_exist"));
 		}
 
 	}
@@ -1450,7 +1481,8 @@ public class FrameMedecin extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			int input = JOptionPane.showConfirmDialog(null, "Etes-vous sur de supprimer la consultation");
+			int input = JOptionPane.showConfirmDialog(null,
+					(String) loadingLanguage.getJsonObject().get("frame_medecin_confirm_delete_consultation"));
 			if (input == JOptionPane.YES_OPTION) {
 
 				consultationFileCurrentPatient = currentPatient.getConsultationsFile().get(

@@ -1,10 +1,14 @@
 package windows.technician;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,46 +16,30 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.Component;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.Map.Entry;
-import java.util.stream.Stream;
 
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.MaskFormatter;
-import javax.swing.tree.DefaultMutableTreeNode;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -75,9 +63,10 @@ public class FrameTechnician extends JFrame {
      * strings.json
      */
     private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
+    private static JSONObject strings = loadingLanguage.getJsonObject();
     private static LoadingDimens dimens = new LoadingDimens();
 
-    public final static String title = "Technician - Univ Tours";
+    public final static String title = (String) strings.get("frame_technician_title");
     private static final int width = (int) ((long) dimens.getJsonObject().get("frame_medecin_width"));
     private static final int height = (int) ((long) dimens.getJsonObject().get("frame_medecin_height"));
 
@@ -99,8 +88,8 @@ public class FrameTechnician extends JFrame {
     private ArrayList<String> listNamePatient = new ArrayList<>();
 
     /**
-    * 
-    */
+     * 
+     */
     private JPanel centerPanel;
     private JPanel patientDataPanel;
     private JTextField lastnameStringTextField, lastnamePatientTextField;
@@ -116,8 +105,6 @@ public class FrameTechnician extends JFrame {
     private JList<CheckBoxList<?>> requestAppareillageList;
     private DefaultListModel<CheckBoxNode> requestAppareillageListModel;
     private JScrollPane appareillageListScrollPane;
-    private List<String> appareillageKeysList;
-    private List<Boolean> appareillageValuesList;
     private JButton confirmRequestAppareillageButton;
 
     private JPanel consultationPanel;
@@ -159,6 +146,9 @@ public class FrameTechnician extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Option de la frame
+     */
     public void setOptionFrame() {
         try {
             UIManager.setLookAndFeel(FrameConnection.getModel());
@@ -227,12 +217,14 @@ public class FrameTechnician extends JFrame {
 
         });
 
+        foundPatientField.getDocument().addDocumentListener(new DocumentListenerPatientField());
+
         return panelListPatient;
     }
 
     /**
      * Charge toutes les ordonnances du dossier du patient en parametre
-     * Puis ajoute le nom des fichier au x
+     * Puis ajoute le nom des fichier formatter
      * 
      * @param patient
      */
@@ -293,6 +285,8 @@ public class FrameTechnician extends JFrame {
     }
 
     /**
+     * Permet d'afficher le panel central contenant le panel des données du patient
+     * et ses demandes de d'appareillages de la consultation courante
      * 
      * @return centerPanel
      */
@@ -305,10 +299,18 @@ public class FrameTechnician extends JFrame {
         return centerPanel;
     }
 
+    /**
+     * Affiche le panel de requete d'appareillage
+     * Ce panel permet de cocher les appareillages de la consultation
+     * et confirme les requette en appuyant sur le bouton confirmer qui vas modifier
+     * les valeurs du fichier json contenant les reqettes appareillage
+     * 
+     * @return listRequestAppareillagePanel
+     */
     private JPanel setConsultationRequestPanel() {
 
         listRequestAppareillagePanel = new JPanel(new BorderLayout());
-        confirmRequestAppareillageButton = new JButton("Confimation des requette");
+        confirmRequestAppareillageButton = new JButton((String) strings.get("frame_technician_confirm_request"));
 
         if (requestAppareillageList != null) {
             appareillageListScrollPane = new JScrollPane(requestAppareillageList);
@@ -327,12 +329,12 @@ public class FrameTechnician extends JFrame {
                         e1.printStackTrace();
                     }
                     try (OutputStreamWriter writer = new OutputStreamWriter(
-                        new FileOutputStream(appareillageFile, true),
-                        StandardCharsets.UTF_8)) {
-                            
-                            writer.write(CheckBoxList.getJsonObjectAppareillage().toJSONString());
-                            writer.close();
-                            System.out.println("Appareillage confirmer");
+                            new FileOutputStream(appareillageFile, true),
+                            StandardCharsets.UTF_8)) {
+
+                        writer.write(CheckBoxList.getJsonObjectAppareillage().toJSONString());
+                        writer.close();
+                        System.out.println("Appareillage confirmer");
                     } catch (Exception e2) {
                         e2.printStackTrace();
                     }
@@ -342,7 +344,14 @@ public class FrameTechnician extends JFrame {
 
         return listRequestAppareillagePanel;
     }
-    
+
+    /**
+     * Convertie un fichier json comme clés des strings et comme valeurs des
+     * booleans en map
+     * 
+     * @param file
+     * @return map
+     */
     private static Map<String, Boolean> appareilllageFileToHashMap(File file) {
         JSONParser parser = new JSONParser();
         JSONObject jsonObject = null;
@@ -360,8 +369,9 @@ public class FrameTechnician extends JFrame {
     }
 
     /**
+     * Permet d'afficher le panel des données du patient courant
      * 
-     * @return
+     * @return patientDataPanel
      */
     private JPanel setPanelData() {
 
@@ -399,19 +409,20 @@ public class FrameTechnician extends JFrame {
         birthdayPatientTextField.setFont(font1);
 
         // numero de securité social
-        secuNumberStringTextField = new JTextField("Secu number");
+        secuNumberStringTextField = new JTextField((String) loadingLanguage.getJsonObject()
+                .get("frame_medecin_secu_number"));
         secuNumberPatientTextField = new JFormattedTextField(secuNumbeFormatter);
         secuNumberStringTextField.setFont(font1);
         secuNumberPatientTextField.setFont(font1);
 
         // numero de telephone
-        phoneStringTextField = new JTextField("Phone number");
+        phoneStringTextField = new JTextField((String) strings.get("frame_medecin_phone_number"));
         phonePatientTextField = new JFormattedTextField(phoneNumberFormatter);
         phoneStringTextField.setFont(font1);
         phonePatientTextField.setFont(font1);
 
         // adresse
-        addressStringTextField = new JTextField("Address");
+        addressStringTextField = new JTextField((String) strings.get("frame_medecin_address"));
         addressPatientTextField = new JTextField();
         addressStringTextField.setFont(font1);
         addressPatientTextField.setFont(font1);
@@ -532,8 +543,91 @@ public class FrameTechnician extends JFrame {
             });
         }
 
+        foundConsultationField.getDocument().addDocumentListener(new DocumentListenerConsultationField());
+
         return consultationPanel;
 
+    }
+
+    /**
+     * Filtre de menu de recherche d'une jlist
+     * 
+     * @param model
+     * @param filter
+     */
+    private void filterModel(DefaultListModel<String> model, String filter, List<String> list) {
+        for (String string : list) {
+            if (!string.startsWith(filter)) {
+                if (model.contains(string)) {
+                    model.removeElement(string);
+                }
+            } else {
+                if (!model.contains(string)) {
+                    model.addElement(string);
+                }
+            }
+        }
+    }
+
+    /**
+     * Le listener du text field pour chercher un patient
+     */
+    private class DocumentListenerPatientField implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            filter();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            filter();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            filter();
+        }
+
+        /**
+         * Recupere l'entrée dans le text field
+         * Et applique filtre model dans notre liste de patient
+         */
+        private void filter() {
+            String filter = foundPatientField.getText();
+            filterModel((DefaultListModel<String>) listPatient.getModel(), filter, listNamePatient);
+        }
+    }
+
+    /**
+     * Le listener du text field pour chercher une consultation
+     */
+    private class DocumentListenerConsultationField implements DocumentListener {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            filter();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            filter();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            filter();
+        }
+
+        /**
+         * Recupere l'entrée dans le text field
+         * Et applique filtre model dans notre liste de patient
+         */
+        private void filter() {
+            String filter = foundConsultationField.getText();
+            filterModel((DefaultListModel<String>) listConsultationJList.getModel(), filter,
+                    nameConsultationList);
+        }
     }
 
     /**
@@ -546,7 +640,7 @@ public class FrameTechnician extends JFrame {
         return currentPatient;
     }
 
-    public void setCurrentPatient(Patient currentPatient) {
+    public static void setCurrentPatient(Patient currentPatient) {
         FrameTechnician.currentPatient = currentPatient;
     }
 
