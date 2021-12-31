@@ -1,7 +1,3 @@
-ID and Password:
-    Medecin :
-        SAINCIR : ID: 100001 PASSWORD 1234
-    ADMIN :
-        SAINCIR : ID 200001 PASSWORD 1234
-    TECHNICIAN :
-        SAINCIR : ID 200001 PASSWORD 1234
+ID Admin : 200001, Password Admin 1234\n
+ID Medecin : 100001, Password Medecin 1234\n
+ID Technician : 300001, Password Technician 1234\n
