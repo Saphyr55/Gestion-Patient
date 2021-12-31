@@ -8,11 +8,8 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,6 +27,13 @@ import org.json.simple.parser.ParseException;
 import hopital.Consultation;
 import hopital.patient.Patient;
 
+/**
+ * Classe permettant de créer de une JList avec des checkbox
+ * elle est utilisé dans la frame technician pour pourvoir selectionner les
+ * appareillages du patient
+ * 
+ * @author unknown
+ */
 class CheckBoxList<E extends CheckBoxNode> extends JList<E> {
 
     private CheckBoxCellRenderer<E> renderer;
@@ -41,6 +45,11 @@ class CheckBoxList<E extends CheckBoxNode> extends JList<E> {
     private static ArrayList<Boolean> listCheck = new ArrayList<>();
     private static Map<String, Boolean> mapCheck = FrameTechnician.getAppareillageMap();
 
+    /**
+     * Constructeur
+     * 
+     * @param model
+     */
     protected CheckBoxList(ListModel<E> model) {
         super(model);
         patient = FrameTechnician.getCurrentPatient();
@@ -67,7 +76,6 @@ class CheckBoxList<E extends CheckBoxNode> extends JList<E> {
         addMouseMotionListener(renderer);
         putClientProperty("List.isFileList", Boolean.TRUE);
     }
-    // @see SwingUtilities2.pointOutsidePrefSize(...)
 
     private boolean pointOutsidePrefSize(Point p) {
         int i = locationToIndex(p);
@@ -98,6 +106,9 @@ class CheckBoxList<E extends CheckBoxNode> extends JList<E> {
         }
     }
 
+    /**
+     * 
+     */
     class CheckBoxCellRenderer<E extends CheckBoxNode> extends MouseAdapter implements ListCellRenderer<E> {
         private final JCheckBox checkBox = new JCheckBox();
         private int rollOverRowIndex = -1;
@@ -158,6 +169,9 @@ class CheckBoxList<E extends CheckBoxNode> extends JList<E> {
 
     }
 
+    /**
+     * 
+     */
     private void updateAppareillage() {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(

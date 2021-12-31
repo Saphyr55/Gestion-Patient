@@ -64,8 +64,10 @@ import hopital.personnels.Medecin;
 import windows.FrameConnection;
 
 /**
+ * Frame du medecin permettant de creer des consultations et d'ajouter des
+ * patients au medecin courant
+ * 
  * @author Andy
- *
  */
 public class FrameMedecin extends JFrame {
 
@@ -74,6 +76,12 @@ public class FrameMedecin extends JFrame {
 	 * Données generales pour la frame
 	 * -------------------------------------------------------
 	 */
+
+	/**
+	 * 
+	 */
+	private static Patient currentPatient;
+	private static int indexConsultationList;
 
 	/*
 	 * Charge de quoi charger les differents textes en differente langue dans
@@ -135,7 +143,7 @@ public class FrameMedecin extends JFrame {
 			displayDiagnosticsMenuItem, displaySurgeryMenuItem, addConsultationMenuItem, deleteConsultationMenuItem;
 
 	/**
-	 * 
+	 * panel des données du patient
 	 */
 	private JPanel dataPatientPanel;
 	private JPanel patientStringDataPanel;
@@ -186,21 +194,15 @@ public class FrameMedecin extends JFrame {
 	private BufferedReader readerAppariellage;
 
 	/**
-	 * --------------------------------------
 	 * Frame generer par la Frame du medecin
-	 * --------------------------------------
 	 */
 	private static FrameConsultation frameConsultation;
 	private static FrameMedecinAddPatient frameAddPatientWithMedecin;
 
 	/**
-	 * -------------------------------------
 	 * Donnée de l'hopital
-	 * -------------------------------------
 	 */
 	private static Medecin currentMedecin = FrameConnection.getCurrentMedecin();
-	private static Patient currentPatient;
-	private static int indexConsultationList;
 	private static File consultationSwitchFileCurrentPatient;
 	private static File consultationFileCurrentPatient;
 	private static File avismedicalFileCurrentPatient;
@@ -438,7 +440,7 @@ public class FrameMedecin extends JFrame {
 	 * Affiche une popup au clique droit d'une liste de consultation VIDE
 	 * Popup affichant seulement ajouter une consultation
 	 * 
-	 * @return
+	 * @return consultationPopupMenu
 	 */
 	private JPopupMenu setPopupMenuOnRightClickListConsultationWithNoConsultation() {
 		consultationPopupMenu = new JPopupMenu();
@@ -841,7 +843,9 @@ public class FrameMedecin extends JFrame {
 	}
 
 	/**
+	 * Permet de creer le panel des données du patient
 	 * 
+	 * @return patientStringDataPanel
 	 */
 	private JPanel setPanelDataString() {
 		/**

@@ -131,7 +131,7 @@ public class FrameAdmin extends JFrame {
 		contentPanel.add(setDataPatient(), BorderLayout.CENTER);
 		setVisible(isVisible);
 	}
-
+	
 	/**
 	 * Option de la frame
 	 */
@@ -431,6 +431,10 @@ public class FrameAdmin extends JFrame {
 		menuItemSupprPatient.addActionListener(new DeletePatientMenuItemListener());
 		return popupMenuListPatient;
 	}
+
+	// ---------------------
+	// Listeners
+	// ---------------------
 
 	/**
 	 * Le listener du text field pour chercher un patient

@@ -1,5 +1,18 @@
 package windows.medecin;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -9,7 +22,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -20,41 +32,27 @@ import javax.swing.event.ListSelectionListener;
 
 import org.json.simple.JSONArray;
 
-import hopital.Consultation;
 import hopital.Hopital;
-import hopital.Consultation.WriteType;
 import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
 import hopital.personnels.Medecin;
 import windows.FrameConnection;
-import windows.medecin.FrameMedecin.ConfirmButtonListener;
-
-import java.awt.GridLayout;
-import java.awt.CardLayout;
-import java.awt.FlowLayout;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Classe qui creer un fenetre pour le medecin qui lui permet de creer une
- * consultation au patient avec une prescription et un avis medecical au niveau
+ * consultation au patient avec une prescription et un avis medecical
  * 
  * @author Andy
  */
 public class FrameConsultation extends JFrame {
 
+	// --------------------
+	// Fields
+	// --------------------
+
 	/**
-	 * Langue et dimensions de la fenetre
+	 * Langue, dimensions de la fenetre et titre
 	 */
 	private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
 	private static LoadingDimens loadingDimens = FrameConnection.getLoadingDimens();
@@ -62,24 +60,17 @@ public class FrameConsultation extends JFrame {
 			.get("frame_medecin_create_consultation_width"));
 	public final static int height = (int) ((long) loadingDimens.getJsonObject()
 			.get("frame_medecin_create_consultation_height"));
-
-	/**
-	 * Option generale
-	 */
+	public static final String title = (String) loadingLanguage.getJsonObject()
+			.get("frame_medecin_new_consultation_tile");
 	private static boolean isVisible = true;
 
 	/**
-	 * Textes a charger
-	 */
-	public static final String title = (String) loadingLanguage.getJsonObject()
-			.get("frame_medecin_new_consultation_tile");
-	/**
-	 * 
+	 * panel principal
 	 */
 	private JPanel contentPane = (JPanel) this.getContentPane();
 
 	/**
-	 * 
+	 * Panel west
 	 */
 	private JPanel panelWest;
 	private JPanel optionCanAddPanel;
@@ -95,19 +86,19 @@ public class FrameConsultation extends JFrame {
 	private DefaultListModel<String> optionCanAddModel = new DefaultListModel<>();
 
 	/**
-	 * 
+	 * panel central
 	 */
 	private JPanel panelCenter, switchPanel;
 
 	/**
-	 * 
+	 * panel des données du patient
 	 */
 	private JPanel dataPatientPanel;
 	private JLabel lastnamePatientLabel, firstnamePatientLabel;
 	private JLabel birthdayPatientLabel, agePatientLabel, secuNumberPatientLabel;
 
 	/**
-	 * 
+	 * panel de l'avis medical
 	 */
 	private JPanel avisMedicalPanel;
 	private JLabel avisMedicalLabel;
@@ -115,7 +106,7 @@ public class FrameConsultation extends JFrame {
 	private JScrollPane avisMedicalScrollPane;
 
 	/**
-	 * 
+	 * panel de l'ordonnance
 	 */
 	private JPanel prescriptionPanel;
 	private JLabel prescriptionLabel;
@@ -123,8 +114,8 @@ public class FrameConsultation extends JFrame {
 	private JScrollPane prescriptionScrollPane;
 
 	/**
-	* 
-	*/
+	 * panel du diagnostique
+	 */
 	private JPanel diagnosticPanel;
 	private JLabel diagnosticLabel;
 	private JTextArea diagnosticTextArea;
@@ -152,7 +143,7 @@ public class FrameConsultation extends JFrame {
 	private Iterator<?> appariellages = appariellagesJsonArray.iterator();
 
 	/**
-	 * 
+	 * panel de confirmation
 	 */
 	private JPanel confirmConsultationPanel;
 	private JLabel signLabel;
@@ -171,6 +162,7 @@ public class FrameConsultation extends JFrame {
 
 	/**
 	 * Constructeur de la fenetre de la creation d'ordonnance
+	 * 
 	 */
 	public FrameConsultation() {
 		super(title);
@@ -203,10 +195,10 @@ public class FrameConsultation extends JFrame {
 	}
 
 	/**
-	 * Creer le panel ouest
-	 * Contient la liste de swicht panel
+	 * Creer le panel ouest, contient la liste qui vont servir
+	 * de passer d'un panel a un autre panel
 	 * 
-	 * @return panel du west
+	 * @return panel west
 	 */
 	private JPanel setOptionPanelWest() {
 
@@ -482,9 +474,9 @@ public class FrameConsultation extends JFrame {
 	}
 
 	/**
-	 * ---------------------
+	 * -----------------------------------------
 	 * Principaux listeners
-	 * ---------------------
+	 * -----------------------------------------
 	 */
 
 	/**
@@ -519,6 +511,8 @@ public class FrameConsultation extends JFrame {
 
 	/**
 	 * Affiche la partie de la fenetre selectionner
+	 * en rendant de panel selectionner visible et
+	 * les autres invisibles
 	 */
 	private class panelSwitchListSelectionListener implements ListSelectionListener {
 
@@ -580,34 +574,58 @@ public class FrameConsultation extends JFrame {
 		this.cancelButton = cancelButton;
 	}
 
+	/**
+	 * @return avisMedicaltextArea
+	 */
 	public JTextArea getAvisMedicaltextArea() {
 		return avisMedicaltextArea;
 	}
 
+	/**
+	 * @param avisMedicaltextArea
+	 */
 	public void setAvisMedicaltextArea(JTextArea avisMedicaltextArea) {
 		this.avisMedicaltextArea = avisMedicaltextArea;
 	}
 
+	/**
+	 * @return prescriptionTextArea
+	 */
 	public JTextArea getPrescriptionTextArea() {
 		return prescriptionTextArea;
 	}
 
+	/**
+	 * @param prescriptionTextArea
+	 */
 	public void setPrescriptionTextArea(JTextArea prescriptionTextArea) {
 		this.prescriptionTextArea = prescriptionTextArea;
 	}
 
+	/**
+	 * @return diagnosticTextArea
+	 */
 	public JTextArea getDiagnosticTextArea() {
 		return diagnosticTextArea;
 	}
 
+	/**
+	 * @param diagnosticTextArea
+	 */
 	public void setDiagnosticTextArea(JTextArea diagnosticTextArea) {
 		this.diagnosticTextArea = diagnosticTextArea;
 	}
 
+	/**
+	 * @return appariellageAlreadyAddArrayList
+	 */
 	public ArrayList<String> getAppariellageAlreadyAddArrayList() {
 		return appariellageAlreadyAddArrayList;
 	}
 
+	/**
+	 * @param appariellageAlreadyAddArrayList
+	 */
 	public void setAppariellageAlreadyAddArrayList(ArrayList<String> appariellageAlreadyAddArrayList) {
 		this.appariellageAlreadyAddArrayList = appariellageAlreadyAddArrayList;
 	}

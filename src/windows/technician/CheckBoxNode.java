@@ -9,5 +9,4 @@ public class CheckBoxNode {
         this.text = text;
         this.selected = selected;
     }
-
 }

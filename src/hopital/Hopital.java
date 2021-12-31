@@ -20,6 +20,11 @@ import hopital.personnels.Administrator;
 import hopital.personnels.Medecin;
 import hopital.personnels.Technician;
 
+/**
+ * Classe permettant de gerer le stockage des fichier dans des listes
+ * 
+ * @author Andy
+ */
 public abstract class Hopital {
 
 	/**

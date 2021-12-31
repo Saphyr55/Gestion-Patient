@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
-import java.time.LocalDate;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,16 +18,21 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.text.MaskFormatter;
 
-import hopital.Hopital;
 import hopital.loading.dimens.LoadingDimens;
 import hopital.loading.language.LoadingLanguage;
-import hopital.patient.Patient;
 import windows.FrameConnection;
 
 /**
  * FrameAdminAddPatient
+ * Permet de creer un patient via un formulaire
+ * 
+ * @author Andy
  */
 public class FrameAdminAddPatient extends JFrame {
+
+    // ---------------------
+    // Fields
+    // ---------------------
 
     private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
     private static LoadingDimens dimens = new LoadingDimens();
@@ -64,8 +68,12 @@ public class FrameAdminAddPatient extends JFrame {
     private static MaskFormatter phoneNumberFormatter;
     private static Font font1 = new Font("SansSerif", Font.BOLD, 20);
 
+    // -----------------------
+    // Constructeurs
+    // -----------------------
+
     /**
-     * 
+     * Constructeur de la frame
      */
     public FrameAdminAddPatient() {
         super(title);
@@ -91,6 +99,8 @@ public class FrameAdminAddPatient extends JFrame {
     }
 
     /**
+     * Permet de creer le panel du formulaire d'ajout de patient
+     * 
      * @return formPanel
      */
     private JPanel setFormPanel() {
@@ -143,6 +153,8 @@ public class FrameAdminAddPatient extends JFrame {
     }
 
     /**
+     * Permet de creer panel confirmation
+     * 
      * @return confirmPanel
      */
     private JPanel setConfirmPanel() {
@@ -175,6 +187,12 @@ public class FrameAdminAddPatient extends JFrame {
     }
 
     /**
+     * --------------------------
+     * Listeners
+     * --------------------------
+     */
+
+    /**
      * Active le bouton ajouter si le medecin signe
      */
     private class ActionListenerSignBox implements ActionListener {
@@ -188,6 +206,12 @@ public class FrameAdminAddPatient extends JFrame {
             }
         }
     }
+
+    /**
+     * ---------------------------
+     * Getters and setters
+     * ---------------------------
+     */
 
     /**
      * @return patientLastnameInputTextField

@@ -11,6 +11,8 @@ import org.json.simple.parser.ParseException;
 
 /**
  * Classe qui permet lire le fichier rememberme.json
+ * 
+ * @author Andy
  */
 public class LoadingRememberMe {
 

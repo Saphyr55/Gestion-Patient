@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -50,9 +49,8 @@ import windows.technician.FrameTechnician;
 
 /**
  * Frame de connexion
- * Permet au personnel de l'hopital de se connecter
- * avec leur identifiant et mot de passe pour pouvoir
- * acceder à le fenetre respective
+ * Permet au personnel de l'hopital de se connecter avec leur identifiant et mot
+ * de passe pour pouvoir acceder à leur fenetre respective
  * 
  * @author Andy
  *
@@ -91,7 +89,6 @@ public class FrameConnection extends JFrame {
 	private JPasswordField passwordFeild;
 	private JButton connexionButton;
 	private JLabel wrongConnexion;
-	private JButton passwordForgot;
 	private JPanel connexion;
 	private JLabel passwordLabel;
 	private JPanel passwordPanel;
@@ -131,6 +128,10 @@ public class FrameConnection extends JFrame {
 	private static FrameMedecin frameMedecin;
 	private static FrameTechnician frameTechnician;
 
+	// -----------------------
+	// Constructeurs
+	// -----------------------
+
 	public FrameConnection() {
 		super(title);
 		setOptionFrame(model);
@@ -158,6 +159,10 @@ public class FrameConnection extends JFrame {
 		contentPane.add(panelSelectLanguage, BorderLayout.SOUTH);
 		setVisible(isVisible);
 	}
+
+	// ------------------------
+	// Methodes
+	// ------------------------
 
 	/**
 	 * Option de la frame de connexion
@@ -197,6 +202,8 @@ public class FrameConnection extends JFrame {
 
 	/**
 	 * Representation du formulaire de connexion
+	 * 
+	 * @return panel de connexion
 	 */
 	private JPanel formulaireConnexion() {
 		connexionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 50));
@@ -230,7 +237,7 @@ public class FrameConnection extends JFrame {
 		/*
 		 * Partie de connexion
 		 */
-		connexion = new JPanel(new GridLayout(3, 1));
+		connexion = new JPanel(new GridLayout(2, 1));
 		connexionButton = new JButton((String) loadingLanguage.getJsonObject().get("frame_connection_login"));
 		connexionButton.setPreferredSize(new Dimension(200, 40));
 
@@ -238,10 +245,7 @@ public class FrameConnection extends JFrame {
 		 * Partie du mot de passe oublié et affichage d'un message erreur en rouge
 		 * disant mauvais mot de passe ou identifiant
 		 */
-		passwordForgot = new JButton((String) loadingLanguage.getJsonObject().get("frame_connection_password_forgot"));
 		wrongConnexion = new JLabel("<html><font color='red'></font></html>");
-		passwordForgot.setPreferredSize(new Dimension(100, 20));
-		passwordForgot.setContentAreaFilled(false);
 		wrongConnexion.setPreferredSize(new Dimension(100, 20));
 		wrongConnexion.setFont(new Font("Sans-Serif", Font.PLAIN, 15));
 
@@ -251,7 +255,6 @@ public class FrameConnection extends JFrame {
 		 * message du mauvais mot de passe
 		 */
 		connexion.add(connexionButton);
-		connexion.add(passwordForgot);
 		connexion.add(wrongConnexion);
 		/**
 		 * Panel se souvenir de moi
@@ -299,6 +302,52 @@ public class FrameConnection extends JFrame {
 
 		return connexionPanel;
 	}
+
+	/**
+	 * Stock le mot de passe et l'indentifiant dans un fichier
+	 * quand la case se souvenir est cocher
+	 * Et enregistre la case se souvenir au prochain lancement
+	 */
+	private void setRemembermeFile() {
+		if (rememberMeCheckBox.isSelected()) {
+			try {
+				Hopital.fileRememberme.exists();
+				Hopital.fileRememberme.delete();
+				Hopital.createFileRememberme();
+				JSONObject rememberSelected = new JSONObject();
+				rememberSelected.put("remember_me", true);
+				try (FileWriter fileJson = new FileWriter(
+						(String) loadingPath.getJsonObject().get("path_rememberme"))) {
+					fileJson.write(rememberSelected.toJSONString());
+				}
+				OutputStreamWriter writerRememberme = new OutputStreamWriter(Hopital.getRemembermeFileWriter());
+				writerRememberme.write(identifiantText + "&" + password + "\n");
+				writerRememberme.close();
+				rememberSelected.clear();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} else {
+			try {
+				Hopital.fileRememberme.exists();
+				Hopital.fileRememberme.delete();
+				Hopital.fileRememberme.deleteOnExit();
+				JSONObject rememberSelected = new JSONObject();
+				rememberSelected.put("remember_me", false);
+				try (FileWriter fileJson = new FileWriter(
+						(String) loadingPath.getJsonObject().get("path_rememberme"))) {
+					fileJson.write(rememberSelected.toJSONString());
+				}
+				rememberSelected.clear();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	// ------------------------
+	// Listeners
+	// ------------------------
 
 	/**
 	 * Change en mode dark ou light
@@ -453,49 +502,6 @@ public class FrameConnection extends JFrame {
 	}
 
 	/**
-	 * Stock le mot de passe et l'indentifiant dans un fichier
-	 * quand la case se souvenir est cocher
-	 * Et enregistre la case se souvenir au prochain lancement
-	 * 
-	 */
-	private void setRemembermeFile() {
-		if (rememberMeCheckBox.isSelected()) {
-			try {
-				Hopital.fileRememberme.exists();
-				Hopital.fileRememberme.delete();
-				Hopital.createFileRememberme();
-				JSONObject rememberSelected = new JSONObject();
-				rememberSelected.put("remember_me", true);
-				try (FileWriter fileJson = new FileWriter(
-						(String) loadingPath.getJsonObject().get("path_rememberme"))) {
-					fileJson.write(rememberSelected.toJSONString());
-				}
-				OutputStreamWriter writerRememberme = new OutputStreamWriter(Hopital.getRemembermeFileWriter());
-				writerRememberme.write(identifiantText + "&" + password + "\n");
-				writerRememberme.close();
-				rememberSelected.clear();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		} else {
-			try {
-				Hopital.fileRememberme.exists();
-				Hopital.fileRememberme.delete();
-				Hopital.fileRememberme.deleteOnExit();
-				JSONObject rememberSelected = new JSONObject();
-				rememberSelected.put("remember_me", false);
-				try (FileWriter fileJson = new FileWriter(
-						(String) loadingPath.getJsonObject().get("path_rememberme"))) {
-					fileJson.write(rememberSelected.toJSONString());
-				}
-				rememberSelected.clear();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	/**
 	 * Applique la langue selectionner
 	 */
 	public class ItemListenerLanguageSelection implements ItemListener {
@@ -527,6 +533,24 @@ public class FrameConnection extends JFrame {
 				}
 			}
 		}
+	}
+
+	// ---------------------------
+	// Getters and setters
+	// ---------------------------
+
+	/**
+	 * @return currentTechnician
+	 */
+	public static Technician getCurrentTechnician() {
+		return currentTechnician;
+	}
+
+	/**
+	 * @param currentTechnician
+	 */
+	public static void setCurrentTechnician(Technician currentTechnician) {
+		FrameConnection.currentTechnician = currentTechnician;
 	}
 
 	/**
@@ -585,26 +609,44 @@ public class FrameConnection extends JFrame {
 		return model;
 	}
 
+	/**
+	 * @return frameAdmin
+	 */
 	public FrameAdmin getFrameAdmin() {
 		return frameAdmin;
 	}
 
+	/**
+	 * @param frameAdmin
+	 */
 	public static void setFrameAdmin(FrameAdmin frameAdmin) {
 		FrameConnection.frameAdmin = frameAdmin;
 	}
 
+	/**
+	 * @return frameMedecin
+	 */
 	public static FrameMedecin getFrameMedecin() {
 		return frameMedecin;
 	}
 
+	/**
+	 * @param frameMedecin
+	 */
 	public static void setFrameMedecin(FrameMedecin frameMedecin) {
 		FrameConnection.frameMedecin = frameMedecin;
 	}
 
+	/**
+	 * @return frameTechnician
+	 */
 	public static FrameTechnician getFrameTechnician() {
 		return frameTechnician;
 	}
 
+	/**
+	 * @param frameTechnician
+	 */
 	public static void setFrameTechnician(FrameTechnician frameTechnician) {
 		FrameConnection.frameTechnician = frameTechnician;
 	}

@@ -13,26 +13,26 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * @author Utilisateur
- *
+ * Permet de lire le fichier path.json
+ * 
+ * @author Andy
  */
 public class LoadingPath {
-	
+
 	private JSONParser parser;
 	private JSONObject jsonObject;
 	private static final String encoding = "UTF-8";
-	
-	public LoadingPath() {
-        parser = new JSONParser();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
-        		"./src/ressources/paths/paths.json"), encoding))) 
-        {
-            jsonObject = (JSONObject) parser.parse(reader);
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+	public LoadingPath() {
+		parser = new JSONParser();
+
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(
+				"./src/ressources/paths/paths.json"), encoding))) {
+			jsonObject = (JSONObject) parser.parse(reader);
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 	}

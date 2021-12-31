@@ -50,11 +50,19 @@ import hopital.loading.language.LoadingLanguage;
 import hopital.patient.Patient;
 import windows.FrameConnection;
 
+/**
+ * Permet de creer qui la frame du technician
+ * La frame affiche les patients de l'hopital et affiche leurs consultations qui
+ * contient des requette d'appareillages et puis affiche les requettes sous
+ * forme de liste a selectionner
+ * 
+ * @author Andy
+ */
 public class FrameTechnician extends JFrame {
 
     /**
      * ----------------------
-     * Attributs et options
+     * Attributs
      * ----------------------
      */
 

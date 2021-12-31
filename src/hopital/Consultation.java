@@ -19,12 +19,10 @@ import hopital.patient.Patient;
 import hopital.personnels.Medecin;
 
 /**
- * Class ordonnance
+ * Class permetant de creer une ordonnance
  * 
  * @author Andy
- *
  */
-
 public class Consultation {
 
 	public static enum WriteType {
@@ -60,10 +58,20 @@ public class Consultation {
 	private static final String format = ".txt";
 
 	/**
-	 * Constructeur d'une ordonnance
+	 * Consustruteur de la consultation
+	 * Permet de gerer la gestion des fichiers de la consultation
+	 * Le consutructeur a deux choix SOIT de creer la consultation avec l'ecriture
+	 * dans le fichier du patient puis l'ajout de la consultation dans liste de
+	 * consultation du patient OU seulement l'ajout de la consultation dans liste de
+	 * consultation du patient
 	 * 
 	 * @param medecin
 	 * @param patient
+	 * @param medicaments
+	 * @param avisMedical
+	 * @param diagnosticList
+	 * @param appareillageMap
+	 * @param writeType
 	 */
 	public Consultation(Medecin medecin, Patient patient, String medicaments,
 			List<String> avisMedical, List<String> diagnosticList,
@@ -365,6 +373,10 @@ public class Consultation {
 			e.printStackTrace();
 		}
 	}
+
+	// -----------------------
+	// Getters and setters
+	// -----------------------
 
 	/**
 	 * @return the ordonnance

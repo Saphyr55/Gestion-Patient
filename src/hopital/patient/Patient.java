@@ -14,16 +14,15 @@ import java.util.ArrayList;
 
 import hopital.Consultation;
 import hopital.Hopital;
-import hopital.personnels.IPersonne;
+import hopital.personnels.IPersonnel;
 import hopital.personnels.Medecin;
 
 /**
+ * Classe permettant de creer un patient
  * 
  * @author Andy
- *
  */
-
-public class Patient implements IPersonne {
+public class Patient implements IPersonnel {
 
 	public static enum PatientTypeCreate {
 		LOADING_PATIENT_WITH_MEDECIN_IN_LIST, CREATE_PATIENT_WITH_MEDECIN

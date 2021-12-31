@@ -9,12 +9,20 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+/**
+ * Permet de lire le fichier dimens.json
+ * 
+ * @author Andy
+ */
 public class LoadingDimens {
 
 	private JSONParser parser;
 	private JSONObject jsonObject;
 	private static final String encoding = "UTF-8";
-	
+
+	/**
+	 * Constructeur
+	 */
 	public LoadingDimens() {
 		parser = new JSONParser();
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(

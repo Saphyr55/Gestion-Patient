@@ -20,7 +20,18 @@ import javax.swing.UIManager;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
+/**
+ * Frame de certaines statistiques de l'hopital
+ * 
+ * @author Andy
+ */
 public class FrameHopitalStatistics extends JFrame {
+
+    /**
+     * --------------------
+     * Fields
+     * --------------------
+     */
 
     private static final String title = "Statistics Hopital";
     private static final int height = 500;
@@ -45,6 +56,12 @@ public class FrameHopitalStatistics extends JFrame {
     private static Font font2 = new Font("SansSerif", Font.BOLD, 25);
 
     /**
+     * ------------------------
+     * Constructeur
+     * ------------------------
+     */
+
+    /**
      * Constructeur de la frame
      */
     public FrameHopitalStatistics() {
@@ -54,6 +71,12 @@ public class FrameHopitalStatistics extends JFrame {
         pack();
         setVisible(true);
     }
+
+    /**
+     * ----------------------------
+     * Methodes
+     * ----------------------------
+     */
 
     /**
      * Option de la frame
@@ -74,14 +97,15 @@ public class FrameHopitalStatistics extends JFrame {
 
     /**
      * Creer panel avec les données de l'hopital
+     * Les données sont rafraichis toutes les 5 secondes
      * 
-     * @return
+     * @return dataPanel
      */
     private JPanel setDataPanel() {
         dataPanel = new JPanel();
 
         /**
-         * Initialise les datas panels et les labels 
+         * Initialise les datas panels et les labels
          */
         for (int i = 0; i < stringsData.length; i++) {
             dataPanels[i] = new JPanel(new FlowLayout());
@@ -93,9 +117,7 @@ public class FrameHopitalStatistics extends JFrame {
             dataPanels[i].add(numberDataLabels[i]);
             dataPanel.add(dataPanels[i]);
         }
-        /**
-         * Affiche le nombre de  
-         */
+
         int totalPersonels = 0;
         for (int i = 0; i < files.length; i++) {
             if (i >= 1)
@@ -103,7 +125,7 @@ public class FrameHopitalStatistics extends JFrame {
             numberDataLabels[i].setText(String.valueOf(numberLines(files[i])));
         }
         numberDataLabels[numberDataLabels.length - 1].setText(String.valueOf(totalPersonels));
-        
+
         /**
          * Update toutes les 5 secondes les données
          */
@@ -129,7 +151,7 @@ public class FrameHopitalStatistics extends JFrame {
     }
 
     /**
-     * Renvois le nombre de ligne d'un fichier 
+     * Renvois le nombre de ligne d'un fichier
      * 
      * @param file
      * @return number

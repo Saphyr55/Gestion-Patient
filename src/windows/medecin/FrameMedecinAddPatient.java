@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -19,15 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import com.formdev.flatlaf.FlatLightLaf;
 
 import hopital.Hopital;
 import hopital.loading.dimens.LoadingDimens;
@@ -37,8 +31,21 @@ import hopital.patient.Patient.PatientTypeCreate;
 import hopital.personnels.Medecin;
 import windows.FrameConnection;
 
+/**
+ * Classe permetant un affichage d'un fenetre du medecin lui permetant d'ajouter
+ * des patients et de voir certaines et ces données
+ * ( Les données des patients ne sont pas toutes afficher car ces données ont
+ * été ajouter aprés la creation de cette classe )
+ * 
+ * @author Andy
+ */
 public class FrameMedecinAddPatient extends JFrame {
 
+    /**
+     * ------------------------------------
+     * Fields
+     * ------------------------------------
+     */
     private static LoadingDimens loadingDimens = FrameConnection.getLoadingDimens();
     private static LoadingLanguage loadingLanguage = FrameConnection.getLoadingLanguage();
 
@@ -125,6 +132,9 @@ public class FrameMedecinAddPatient extends JFrame {
     }
 
     /**
+     * Creer le panel pour pourvoir rechercher un patient avec la liste de patient
+     * de l'hopital et champ de saisie
+     * 
      * @return researchPatientPanel le panel de panel recherche d'un patient
      */
     private JPanel setPanelResearchPatient() {
@@ -361,6 +371,10 @@ public class FrameMedecinAddPatient extends JFrame {
         }
 
     }
+
+    // ------------------------------------
+    // Getters and setters
+    // ------------------------------------
 
     public JButton getCancelButton() {
         return cancelButton;

@@ -4,8 +4,9 @@
 package hopital.expections;
 
 /**
- * @author Utilisateur
- *
+ * Class expetion
+ * 
+ * @author Andy
  */
 public class ConsoleExeption extends Exception {
 

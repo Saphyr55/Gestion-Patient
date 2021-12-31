@@ -1,20 +1,18 @@
 package test;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
 
-import hopital.Hopital;
-
+/**
+ * 
+ * 
+ */
 public class TestFileClear {
 
     public static void main(String[] args) {

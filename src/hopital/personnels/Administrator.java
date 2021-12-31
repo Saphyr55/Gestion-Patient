@@ -1,18 +1,23 @@
 package hopital.personnels;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
 import hopital.Hopital;
 
+/**
+ * Classe permettant de creer un admin
+ * 
+ * @author Andy
+ */
 public class Administrator extends Personnel {
 
 	private int nLine = 1;
 
 	/**
+	 * Constructeur d'un admin, puis l'ecris dans le fichier des admins
 	 * 
 	 * @param firstName
 	 * @param lastName
@@ -39,7 +44,13 @@ public class Administrator extends Personnel {
 	}
 
 	/**
+	 * Permet d'ajouter un admin dans la liste de d'admin et de l'hopital
 	 * 
+	 * @param id
+	 * @param firstName
+	 * @param lastName
+	 * @param email
+	 * @param password
 	 */
 	public Administrator(int id, String firstName, String lastName, String email, String password) {
 		super(firstName, lastName, email, password);
