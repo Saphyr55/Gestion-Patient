@@ -1,0 +1,11 @@
+Ordonnance du 31-12-2021
+
+Nom du patient : FLORES
+Prénom du patient: Nuria
+
+Nom du medecin : Saincir
+Prénom du medecin : Andy
+
+Medicaments prescrits : 5 dolipranes
+
+Signature : Saincir

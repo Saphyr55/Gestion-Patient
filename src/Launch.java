@@ -9,6 +9,7 @@ import windows.FrameHopitalStatistics;
  * @author Andy
  */
 public class Launch {
+	
 	public static void main(String[] args) {
 		new FrameHopitalStatistics();
 		new FrameConnection();
